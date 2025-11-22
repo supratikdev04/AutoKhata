@@ -33,7 +33,7 @@ def exptracker():
         #    writer=csv.writer(file)
         #    writer.writerow([date,amount,category,note])
         supabase.table("expenses").insert({
-            "next_date":date,
+            "next_date":next_date,
             "amount":amount,
             "category":category,
             "note":note
