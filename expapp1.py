@@ -27,7 +27,7 @@ def exptracker():
         amount=request.form["amount"]
         category=request.form["category"]
         note=request.form["note"]
-        date=datetime.now().strftime("%Y-%m-%d")
+        next_date=datetime.now().strftime("%Y-%m-%d")
     
         #with open(CSV_FILE,"a",newline="")as file:
         #    writer=csv.writer(file)
