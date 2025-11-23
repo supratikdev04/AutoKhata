@@ -20,6 +20,56 @@ CSV_FILE= os.path.join("/tmp", "expenses1.csv")
 #        writer.writerow(["date","amount","category","note"])
 #OPORER GULO PYTHON ER CODE JE GULO HASH(#) ROACHE
 
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        hashed_pass = generate_password_hash(password)
+
+        existing = supabase.table("users").select("*").eq("email", email).execute()
+        if existing.data:
+            return "Email already registered!"
+
+        supabase.table("users").insert({
+            "email": email,
+            "password": hashed_pass
+        }).execute()
+
+        return redirect("/login")
+
+    return render_template("signup.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        user = supabase.table("users").select("*").eq("email", email).execute()
+
+        if not user.data:
+            return "User not found!"
+
+        stored_hash = user.data[0]["password"]
+
+        if not check_password_hash(stored_hash, password):
+            return "Incorrect password!"
+
+        session["user_id"] = user.data[0]["id"]
+        session["email"] = user.data[0]["email"]
+
+        return redirect("/")
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 @app.route("/",methods=["GET","POST"])
 def exptracker():
