@@ -92,9 +92,9 @@ def exptracker():
             "note":note,
             "user_id": session["user_id"]
         }).execute()
-        return redirect("/")
+        return redirect(url_for("exptracker"))
     response=supabase.table("expenses").select("*").eq("user_id",session["user_id"]).execute()
-    expense=response.data
+    expense=response.data or[]
     total=sum(float(item["amount"])for item in expense)
 
     #with open(CSV_FILE,"r")as file:
@@ -105,8 +105,10 @@ def exptracker():
     return render_template("exptracker.html",expense=expense, total=total)
 
 @app.route("/delete/<int:id>")
+@login_required
 def delete_row(id):
-    supabase.table("expenses").delete().eq("id",id).eq("user_id", session["user_id"]).execute()
+    user_id=session["user_id"]
+    supabase.table("expenses").delete().eq("id",id).eq("user_id",["user_id"]).execute()
     
     #rows = []
 
@@ -121,12 +123,12 @@ def delete_row(id):
     #    writer = csv.writer(file)
     #    writer.writerows(rows)
     
-    return redirect("/") 
+    return redirect(url_for("exptracker")) 
 
 
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
     #git config --global user.name "supratikdev04" && git config --global user.email "supratik.dev04@gmail.com"
