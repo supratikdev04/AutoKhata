@@ -1,6 +1,7 @@
 from flask import Flask , request,redirect, render_template
 from supabase import create_client,Client
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 
@@ -87,11 +88,11 @@ def exptracker():
             "next_date":next_date,
             "amount":amount,
             "category":category,
-            "note":note
+            "note":note,
             "user_id": session["user_id"]
         }).execute()
         return redirect("/")
-    response=supabase.table("expenses").select("*").execute()
+    response=supabase.table("expenses").select("*").eq("user_id",session["user_id"]).execute()
     expense=response.data
     total=sum(float(item["amount"])for item in expense)
 
@@ -104,7 +105,7 @@ def exptracker():
 
 @app.route("/delete/<int:id>")
 def delete_row(id):
-    supabase.table("expenses").delete().eq("id",id).execute()
+    supabase.table("expenses").delete().eq("id",id).eq("user_id", session["user_id"]).execute()
     
     #rows = []
 
