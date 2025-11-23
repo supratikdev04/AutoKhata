@@ -82,11 +82,13 @@ def exptracker():
         #with open(CSV_FILE,"a",newline="")as file:
         #    writer=csv.writer(file)
         #    writer.writerow([date,amount,category,note])
+
         supabase.table("expenses").insert({
             "next_date":next_date,
             "amount":amount,
             "category":category,
             "note":note
+            "user_id": session["user_id"]
         }).execute()
         return redirect("/")
     response=supabase.table("expenses").select("*").execute()
