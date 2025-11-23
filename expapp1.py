@@ -1,4 +1,4 @@
-from flask import Flask , request,redirect, render_template
+from flask import Flask , request,redirect, render_template,session
 from supabase import create_client,Client
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = "mysecret123"  # any random string
 
 SUPABASE_URL= os.getenv("SUPABASE_URL")
 SUPABASE_KEY= os.getenv("SUPABASE_KEY")
