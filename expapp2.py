@@ -4,7 +4,7 @@ from supabase import create_client, Client
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv   
 
 # Load environment variables from .env
 load_dotenv()
@@ -154,7 +154,7 @@ def delete_row(id):
     # Only delete if the row belongs to this user
     supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
 
-    return redirect(url_for("exptracker"))
+    return redirect(url_for("exptracker2"))
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
