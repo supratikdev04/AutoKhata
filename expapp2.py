@@ -156,7 +156,18 @@ def delete_row(id):
     supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
 
     return redirect(url_for("exptracker"))
+# ----------------------------- PROFILE & SETTINGS ------------------------------
+@app.route("/profile")
+def profile():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("profile.html")
 
+@app.route("/settings")
+def settings():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("settings.html")
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
