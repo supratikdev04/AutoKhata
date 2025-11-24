@@ -107,7 +107,7 @@ def logout():
 def exptracker2():
     user_id = session["user_id"]
     #defalut
-    selected_currency = "INR"
+    selected_currency = request.args.get("currency", "INR")
     
     if request.method == "POST":
         amount = request.form.get("amount")
@@ -115,8 +115,6 @@ def exptracker2():
         note = request.form.get("note", "")
         currency = request.form.get("currency", "INR")
 
-        selected_currency = currency
-        
         if not amount or not category:
             # simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
