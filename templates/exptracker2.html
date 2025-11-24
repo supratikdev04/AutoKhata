@@ -154,12 +154,12 @@
                         <td>{{ item.next_date }}</td>
                         <td>₹{{ item.amount }}</td>
                         <td>
-                            {% if row.currency == 'INR' %} ₹
-                            {% elif row.currency == 'USD' %} $
-                            {% elif row.currency == 'EUR' %} €
-                            {% elif row.currency == 'GBP' %} £
+                            {% if item.currency == 'INR' %} ₹
+                            {% elif item.currency == 'USD' %} $
+                            {% elif item.currency == 'EUR' %} €
+                            {% elif item.currency == 'GBP' %} £
                             {% endif %}
-                            {{ row.amount }}
+                            {{ item.amount }}
                         </td>
                          <td>
                             <i class="{{ icons[item.category] }}"></i>
