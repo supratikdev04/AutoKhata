@@ -8,7 +8,76 @@
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+    body.dark-mode {
+        background-color: #121212 !important;
+        color: white !important;
+    }
+
+    .card.dark-mode {
+        background-color: #1e1e1e !important;
+        color: white !important;
+        border-color: #333;
+    }
+
+    .table.dark-mode {
+        color: white !important;
+    }
+
+    .table.dark-mode tbody tr {
+        background-color: #1e1e1e !important;
+        color: white;
+    }
+
+    .dropdown-menu.dark-mode {
+        background-color: #1e1e1e;
+        color: white;
+    }
+</style>
 </head>
+<script>
+    const toggleBtn = document.getElementById("darkModeToggle");
+    const icon = document.getElementById("darkModeIcon");
+
+    // Load saved theme
+    if (localStorage.getItem("darkMode") === "enabled") {
+        enableDarkMode();
+    }
+
+    toggleBtn.addEventListener("click", function () {
+        if (document.body.classList.contains("dark-mode")) {
+            disableDarkMode();
+        } else {
+            enableDarkMode();
+        }
+    });
+
+    function enableDarkMode() {
+        document.body.classList.add("dark-mode");
+
+        document.querySelectorAll(".card").forEach(card => card.classList.add("dark-mode"));
+        document.querySelectorAll(".table").forEach(t => t.classList.add("dark-mode"));
+        document.querySelectorAll(".dropdown-menu").forEach(d => d.classList.add("dark-mode"));
+
+        icon.classList.remove("bi-moon-fill");
+        icon.classList.add("bi-brightness-high-fill");
+
+        localStorage.setItem("darkMode", "enabled");
+    }
+
+    function disableDarkMode() {
+        document.body.classList.remove("dark-mode");
+
+        document.querySelectorAll(".card").forEach(card => card.classList.remove("dark-mode"));
+        document.querySelectorAll(".table").forEach(t => t.classList.remove("dark-mode"));
+        document.querySelectorAll(".dropdown-menu").forEach(d => d.classList.remove("dark-mode"));
+
+        icon.classList.remove("bi-brightness-high-fill");
+        icon.classList.add("bi-moon-fill");
+
+        localStorage.setItem("darkMode", "disabled");
+    }
+</script>
 
 <body class="bg-light">
 
@@ -28,6 +97,11 @@
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                    <button class="dropdown-item d-flex justify-content-between align-items-center" id="darkModeToggle">
+                    Dark Mode 
+                    <i class="bi bi-moon-fill" id="darkModeIcon"></i>
+                    </button></li>
                     <li><a class="dropdown-item" href="/profile">My Profile</a></li>
                     <li><a class="dropdown-item" href="/settings">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
