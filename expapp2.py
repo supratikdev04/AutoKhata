@@ -144,7 +144,7 @@ def exptracker2():
 
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
-    return render_template("exptracker2.html", expense=expense, total=total)
+    return render_template("exptracker2.html", expense=expense, total=total,selected_currency=selected_currency)
 
 
 # ------------------------------- DELETE EXPENSE -------------------------------
