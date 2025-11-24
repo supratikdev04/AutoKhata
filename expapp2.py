@@ -1,5 +1,4 @@
-#https://expense-tracker-12-349v.onrender.com
-#https://expense-tracker-12-349v.onrender.com/login
+#https://expense-tracker-19.onrender.com
 from flask import Flask, request, redirect, render_template, session, url_for
 from supabase import create_client, Client
 from datetime import datetime
