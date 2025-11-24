@@ -33,6 +33,7 @@
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 
 
@@ -131,12 +132,23 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-
+               
                 <tbody>
+                    {% set icons = {
+                    "Food": "bi bi-egg-fried",
+                    "Transport": "bi bi-bus-front-fill",
+                    "Shopping": "bi bi-bag-fill",
+                    "Bills": "bi bi-receipt-cutoff",
+                    "Other": "bi bi-three-dots"
+                     } %}
                     {% for item in expense %}
                     <tr>
                         <td>{{ item.next_date }}</td>
                         <td>${{ item.amount }}</td>
+                         <td>
+                            <i class="{{ icons[item.category] }}"></i>
+                            {{ item.category }}
+                        </td>
                         <td>{{ item.category }}</td>
                         <td>{{ item.note }}</td>
                         <td>
