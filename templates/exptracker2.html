@@ -64,6 +64,7 @@
                     <li><a class="dropdown-item" href="/profile">My Profile</a></li>
                     <li><a class="dropdown-item" href="/settings">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
+                    
                     <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
                 </ul>
             </div>
@@ -83,12 +84,19 @@
         </div>
         <div class="card-body">
             <form method="POST" class="row g-3">
-
+                
                 <div class="col-md-3">
                     <label class="form-label">Amount</label>
                     <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: ₹1000" required>
+                    <label for="currency">Currency</label>
+                            <select name="currency" id="currency" class="input-field">
+                                <option value="INR">₹ (INR)</option>
+                                <option value="USD">$ (USD)</option>
+                                <option value="EUR">€ (EUR)</option>
+                                <option value="GBP">£ (GBP)</option>
+                            </select>
                 </div>
-
+                
                 <div class="col-md-3">
                     <label class="form-label">Category</label>
                     <select class="form-select" name="category" placeholder="------SELECT------" required>
@@ -145,6 +153,14 @@
                     <tr>
                         <td>{{ item.next_date }}</td>
                         <td>₹{{ item.amount }}</td>
+                        <td>
+                            {% if row.currency == 'INR' %} ₹
+                            {% elif row.currency == 'USD' %} $
+                            {% elif row.currency == 'EUR' %} €
+                            {% elif row.currency == 'GBP' %} £
+                            {% endif %}
+                            {{ row.amount }}
+                        </td>
                          <td>
                             <i class="{{ icons[item.category] }}"></i>
                             {{ item.category }}
