@@ -111,6 +111,7 @@ def exptracker2():
         amount = request.form.get("amount")
         category = request.form.get("category")
         note = request.form.get("note", "")
+        currency = request.form.get("currency", "INR")
 
         if not amount or not category:
             # simple validation, reload page with error if needed
