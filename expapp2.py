@@ -126,7 +126,7 @@ def exptracker2():
                 "exptracker2.html",
                 expense=expense,
                 total=total,
-                selected_currency=selected_currency 
+                selected_currency=selected_currency,
                 error="Amount and category are required"
             )
 
