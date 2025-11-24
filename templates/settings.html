@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+
+    <h2 class="mb-4">Settings</h2>
+
+    <div class="card p-4 shadow-lg">
+
+        <h5>Account Settings</h5>
+        <p>Email: <strong>{{ session.email }}</strong></p>
+
+        <a href="/logout" class="btn btn-danger mt-3">Logout</a>
+        <a href="/" class="btn btn-secondary mt-3">Back</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
