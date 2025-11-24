@@ -151,7 +151,6 @@
                     {% for item in expense %}
                     <tr>
                         <td>{{ item.next_date }}</td>
-                        <td>₹{{ item.amount }}</td>
                         <td>
                             {% if item.currency == 'INR' %} ₹
                             {% elif item.currency == 'USD' %} $
