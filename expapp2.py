@@ -131,6 +131,7 @@ def exptracker2():
             "amount": amount,
             "category": category,
             "note": note,
+            "currency": currency,
             "user_id": user_id
         }).execute()
 
