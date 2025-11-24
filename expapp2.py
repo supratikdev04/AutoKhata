@@ -90,7 +90,7 @@ def login():
         session["user_id"] = user_row["id"]
         session["email"] = user_row["email"]
 
-        return redirect(url_for("exptracker"))
+        return redirect(url_for("exptracker2"))
 
     return render_template("login.html")
 
@@ -105,7 +105,7 @@ def logout():
 # ------------------------------- MAIN EXPENSE PAGE -------------------------------
 @app.route("/", methods=["GET", "POST"])
 @login_required
-def exptracker():
+def exptracker2():
     user_id = session["user_id"]
 
     if request.method == "POST":
@@ -119,7 +119,7 @@ def exptracker():
             expense = response.data
             total = sum(float(item["amount"]) for item in expense) if expense else 0
             return render_template(
-                "exptracker.html",
+                "exptracker2.html",
                 expense=expense,
                 total=total,
                 error="Amount and category are required"
@@ -135,7 +135,7 @@ def exptracker():
             "user_id": user_id
         }).execute()
 
-        return redirect(url_for("exptracker"))
+        return redirect(url_for("exptracker2"))
 
     # GET: fetch current user's expenses
     response = supabase.table("expenses").select("*").eq("user_id", user_id).order("next_date").execute()
@@ -143,7 +143,7 @@ def exptracker():
 
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
-    return render_template("exptracker.html", expense=expense, total=total)
+    return render_template("exptracker2.html", expense=expense, total=total)
 
 
 # ------------------------------- DELETE EXPENSE -------------------------------
