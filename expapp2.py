@@ -106,13 +106,17 @@ def logout():
 @login_required
 def exptracker2():
     user_id = session["user_id"]
-
+    #defalut
+    selected_currency = "INR"
+    
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
         note = request.form.get("note", "")
         currency = request.form.get("currency", "INR")
 
+        selected_currency = currency
+        
         if not amount or not category:
             # simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
@@ -122,6 +126,7 @@ def exptracker2():
                 "exptracker2.html",
                 expense=expense,
                 total=total,
+                selected_currency=selected_currency 
                 error="Amount and category are required"
             )
 
