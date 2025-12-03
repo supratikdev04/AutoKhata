@@ -229,7 +229,7 @@
                         <td>{{ item.note }}</td>
                         <td>
                             <!--a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm">Delete</a-->
-                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm" onclick="comfirmDelete(event,'/delete/{{item.id}}')">Delete</a>
+                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm" onclick="confrimDelete(event,'/delete/{{ item.id }}')">Delete</a>
                         </td>
                         <td>
                             <a href="/modify/{{item.id}}" class="btn btn-success btn-sm">Modify</a>
@@ -292,9 +292,6 @@
 
         localStorage.setItem("darkMode", "disabled");
     }
-    
-    
-    overflow-x==disableDarkMode;
 </script>
 <script>
     function confrimDelete(event,url){
