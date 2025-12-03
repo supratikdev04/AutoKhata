@@ -139,17 +139,7 @@
     <div class="card-body">
         <form method="POST" class="row g-3">
         <div class="col-md-3 col-12">
-            <label class="form-label">Amount</label>
-                <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: ₹100/$100/€100/£100" required>
-                <label for="currency">Currency</label>
-                    <select name="currency" id="currency" class="form-select">
-                        <option value="INR">₹ (INR)</option>
-                        <option value="USD">$ (USD)</option>
-                        <option value="EUR">€ (EUR)</option>
-                        <option value="GBP">£ (GBP)</option>
-                    </select>
-            </div>
-            <div class="col-md-3 col-12">
+             <div class="col-md-3 col-12">
                 <label class="form-label">Category</label>
                 <select class="form-select" name="category" placeholder="------SELECT------" required>
                     <option value="SELECT">------SELECT------</option>
@@ -160,6 +150,18 @@
                     <option value="Other">Other</option>
                 </select>
             </div>
+            
+            <label class="form-label">Amount</label>
+                <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: ₹100/$100/€100/£100" required>
+                <!--<label for="currency">Currency</label>
+                    <select name="currency" id="currency" class="form-select">
+                        <option value="INR">₹ (INR)</option>
+                        <option value="USD">$ (USD)</option>
+                        <option value="EUR">€ (EUR)</option>
+                        <option value="GBP">£ (GBP)</option>
+                    </select>-->
+            </div>
+           
             <div class="col-md-4 col-12">
             <label class="form-label">Note</label>
                 <input type="text" class="form-control" name="note" placeholder="Write a note about your expense">
@@ -179,7 +181,7 @@
     <div class="card-header bg-secondary text-white">
         Your Expenses
     </div>
-        <div class="card-body table-responsive ">
+        <!--div class="card-body table-responsive ">
             <form method="GET" class="row g-3">
                 <div class="col-md-3 col-12">
                     <label class="form-label"></label>
@@ -190,14 +192,13 @@
                             <option value="EUR" {% if selected_currency=='EUR' %}selected{% endif %}>€ (EUR)</option>
                             <option value="GBP" {% if selected_currency=='GBP' %}selected{% endif %}>£ (GBP)</option>
                         </select>
-                </div>
-            </form>
+        </div-->
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Amount</th>
                         <th>Category</th>
+                        <th>Amount</th>
                         <th>Note</th>
                     </tr>
                 </thead>
@@ -213,17 +214,17 @@
                     {% for item in expense %}
                     <tr>
                         <td>{{ item.next_date }}</td>
+                         <td>
+                            <i class="{{ icons[item.category] }}"></i>
+                            {{ item.category }}
+                        </td>
                         <td>
-                            {% if item.currency == 'INR' %} ₹
+                            <!--{% if item.currency == 'INR' %} ₹
                             {% elif item.currency == 'USD' %} $
                             {% elif item.currency == 'EUR' %} €
                             {% elif item.currency == 'GBP' %} £
-                            {% endif %}
+                            {% endif %}-->
                             {{ item.amount }}
-                        </td>
-                        <td>
-                            <i class="{{ icons[item.category] }}"></i>
-                            {{ item.category }}
                         </td>
                         <td>{{ item.note }}</td>
                         <td>
@@ -235,12 +236,12 @@
             </table>
             <p>
                 <b>Total:</b>
-                {% if selected_currency == 'INR' %} ₹
+                <!--{% if selected_currency == 'INR' %} ₹
                 {% elif selected_currency == 'USD' %} $
                 {% elif selected_currency == 'EUR' %} €
                 {% elif selected_currency == 'GBP' %} £
                 {% endif %}
-                {{ total }}
+                {{ total }}-->
             </p>
     </div>
 </div>
