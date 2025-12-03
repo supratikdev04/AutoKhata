@@ -132,3 +132,42 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
     #git config --global user.name "supratikdev04" && git config --global user.email "supratik.dev04@gmail.com"
+
+
+# ------------------------------- MODIFY EXPENSE -------------------------------
+@app.route("/modify/<int:id>", methods=["GET", "POST"])
+@login_required
+def modify_expense(id):
+    user_id = session["user_id"]
+
+    # First retrieve the expense
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+
+    if not result.data:
+        return redirect(url_for("exptracker2"))  # not found or unauthorized
+
+    expense = result.data[0]
+
+    # If user submits the form → UPDATE
+    if request.method == "POST":
+        new_category  = request.form.get("category")
+        new_amount    = request.form.get("amount")
+        new_note      = request.form.get("note")
+
+        supabase.table("expenses").update({
+            "category": new_category,
+            "amount": new_amount,
+            "note": new_note,
+        }).eq("id", id).eq("user_id", user_id).execute()
+
+        return redirect(url_for("exptracker2"))
+
+    # GET → Show modify form
+    return render_template("modify.html", expense=expense)
+
