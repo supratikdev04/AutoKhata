@@ -91,6 +91,7 @@ def login():
         # Store in session
         session["user_id"] = user_row["id"]
         session["email"] = user_row["email"]
+        session["name"]=user_row["name"]
 
         return redirect(url_for("exptracker2"))
 
