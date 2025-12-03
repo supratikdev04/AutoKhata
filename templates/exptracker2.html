@@ -115,31 +115,27 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <button class="dropdown-item d-flex justify-content-between align-items-center" id="darkModeToggle">
-                            Dark Mode 
-                            <i class="bi bi-moon-fill" id="darkModeIcon"></i>
+                            Dark Mode <i class="bi bi-moon-fill" id="darkModeIcon"></i>
                         </button>
                     </li>
                     <li><a class="dropdown-item" href="/profile">My Profile</a></li>
                     <li><a class="dropdown-item" href="/settings">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    
                     <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
                 </ul>
             </div>
-
             <!-- Email ->
             <span class="fw-bold text-primary">{{ session.email }}</span>-->
         </div>
-
     </div>
-    </nav>
-    <!-- END TOP BAR -->
+</nav>
+<!-- END TOP BAR -->
     
-    <!-- Add Expense Form -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white">
-            Add Expense
-        </div>
+<!-- Add Expense Form -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        Add Expense
+    </div>
         <div class="card-body">
             <form method="POST" class="row g-3">
                 
@@ -154,7 +150,6 @@
                             <option value="GBP">£ (GBP)</option>
                         </select>
                 </div>
-                
                 <div class="col-md-3 col-12">
                     <label class="form-label">Category</label>
                     <select class="form-select" name="category" placeholder="------SELECT------" required>
@@ -166,7 +161,6 @@
                         <option value="Other">Other</option>
                     </select>
                 </div>
-
                 <div class="col-md-4 col-12">
                     <label class="form-label">Note</label>
                     <input type="text" class="form-control" name="note" placeholder="Write a note about your expense">
@@ -177,16 +171,16 @@
                 </div>
                 <div class="table responsive">
                     <table class="table table stripped">     
-            </form>
-        </div>
+            </form> 
     </div>
+</div>
 
 
-    <!-- Expenses Table -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            Your Expenses
-        </div>
+<!-- Expenses Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        Your Expenses
+    </div>
         <div class="card-body table-responsive">
             <form method="GET">
                 <select name="currency" onchange="this.form.submit()" class="form-select w-auto">
@@ -213,7 +207,7 @@
                     "Shopping": "bi bi-bag-fill",
                     "Bills": "bi bi-receipt-cutoff",
                     "Other": "bi bi-three-dots"
-                     } %}
+                    } %}
                     {% for item in expense %}
                     <tr>
                         <td>{{ item.next_date }}</td>
@@ -225,7 +219,7 @@
                             {% endif %}
                             {{ item.amount }}
                         </td>
-                         <td>
+                        <td>
                             <i class="{{ icons[item.category] }}"></i>
                             {{ item.category }}
                         </td>
@@ -237,7 +231,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <p class="mt-3">
+            <p class="mt-3 col-12">
                 <b>Total:</b>
                 {% if selected_currency == 'INR' %} ₹
                 {% elif selected_currency == 'USD' %} $
@@ -291,7 +285,7 @@
 
         localStorage.setItem("darkMode", "disabled");
     }
-    overflow-x: hidden;
+    overflow-x==disableDarkMode;
 </script>
 </body>
 </html>
