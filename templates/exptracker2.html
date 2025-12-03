@@ -182,6 +182,7 @@
         <div class="col-12 card-body table-responsive ">
             <form method="GET">
                 <label class="form-label"></label>
+                <label for="currency">Currency</label>
                 <select name="currency" onchange="this.form.submit()" class="form-select w-auto">
                     <option value="INR" {% if selected_currency=='INR' %}selected{% endif %}>₹ (INR)</option>
                     <option value="USD" {% if selected_currency=='USD' %}selected{% endif %}>$ (USD)</option>
