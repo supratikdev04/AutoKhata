@@ -43,8 +43,8 @@ def signup():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        name = request.form.get("name","").strip().lower()
-        phone_number = request.form.get("phone_number","").strip().lower()
+        name = request.form.get("name","").strip()
+        phone_number = request.form.get("phone_number","").strip()
 
         if not email or not password or not name or not phone_number :
             return render_template("signup.html", error="All field are required")
@@ -62,8 +62,16 @@ def signup():
             "name": name,
             "phone_number":phone_number
         }).execute()
-
-        return redirect(url_for("login"))
+        
+        return redirect(url_for("profile.html"))
+        
+        user = result.data[0]
+        
+        # Store in session IMMEDIATELY
+        session["user_id"] = user["id"]
+        session["email"] = user["email"]
+        session["name"] = user["name"]
+        session["phone_number"] = user["phone_number"]
 
     return render_template("signup.html")
 
