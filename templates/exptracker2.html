@@ -141,7 +141,7 @@
         <div class="col-md-3 col-12">
              <div class="col-md-3 col-12">
                 <label class="form-label">Category</label>
-                <select class="form-select" name="category" placeholder="--SELECT--" required>
+                <select class="form-select" name="category" id="category" placeholder="--SELECT--" required>
                     <option value="SELECT">------SELECT------</option>
                     <option value="Food">Food</option>
                     <option value="Transport">Transport</option>
@@ -149,6 +149,11 @@
                     <option value="Bills">Bills</option>
                     <option value="Other">Other</option>
                 </select>
+
+                 <label class ="form-label mt-3">Subcategory</label>
+                 <select class="form-select" name="subcategory" id ="subcategory "required>
+                     <option value="">--Select Category First--</option>
+                 </select>
             </div>
             
             <label class="form-label">Amount</label>
