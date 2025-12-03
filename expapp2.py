@@ -43,9 +43,11 @@ def signup():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
+        name = request.form.get("name","")
+        phone_number = request.form.get("phone_number","")
 
-        if not email or not password:
-            return render_template("signup.html", error="Email and password are required")
+        if not email or not password or not name or not phone_number :
+            return render_template("signup.html", error="All field are required")
 
         # Check if user already exists
         existing = supabase.table("users").select("*").eq("email", email).execute()
@@ -53,16 +55,17 @@ def signup():
             return render_template("signup.html", error="Email already registered")
 
         hashed_pass = generate_password_hash(password)
-
+        
         supabase.table("users").insert({
             "email": email,
-            "password": hashed_pass
+            "password": hashed_pass,
+            "name": name,
+            "phone_number":phone_number
         }).execute()
 
         return redirect(url_for("login"))
 
     return render_template("signup.html")
-
 
 # ------------------------------- LOGIN -------------------------------
 @app.route("/login", methods=["GET", "POST"])
