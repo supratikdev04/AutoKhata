@@ -153,6 +153,14 @@
                                 <option value="EUR">€ (EUR)</option>
                                 <option value="GBP">£ (GBP)</option>
                             </select>
+                    <form method="GET">
+                        <select name="currency" onchange="this.form.submit()" class="form-select w-auto">
+                            <option value="INR" {% if selected_currency=='INR' %}selected{% endif %}>₹ (INR)</option>
+                            <option value="USD" {% if selected_currency=='USD' %}selected{% endif %}>$ (USD)</option>
+                            <option value="EUR" {% if selected_currency=='EUR' %}selected{% endif %}>€ (EUR)</option>
+                            <option value="GBP" {% if selected_currency=='GBP' %}selected{% endif %}>£ (GBP)</option>
+                        </select>
+                    </form>
                 </div>
                 
                 <div class="col-md-3 col-12">
