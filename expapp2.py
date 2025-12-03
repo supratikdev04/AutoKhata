@@ -43,8 +43,8 @@ def signup():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-        name = request.form.get("name","")
-        phone_number = request.form.get("phone_number","")
+        name = request.form.get("name","").strip().lower()
+        phone_number = request.form.get("phone_number","").strip().lower()
 
         if not email or not password or not name or not phone_number :
             return render_template("signup.html", error="All field are required")
