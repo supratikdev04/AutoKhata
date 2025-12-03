@@ -184,8 +184,7 @@
                 <div class="col-md-3 col-12">
                     <label class="form-label"></label>
                         <label for="currency">Currency</label>
-                        <!--<select name="currency" onchange="this.form.submit()" class="form-select w-auto">-->
-                        <select name="currency" class="form-select w-auto">
+                        <select name="currency" onchange="this.form.submit()" class="form-select w-auto">
                             <option value="INR" {% if selected_currency=='INR' %}selected{% endif %}>₹ (INR)</option>
                             <option value="USD" {% if selected_currency=='USD' %}selected{% endif %}>$ (USD)</option>
                             <option value="EUR" {% if selected_currency=='EUR' %}selected{% endif %}>€ (EUR)</option>
