@@ -166,6 +166,7 @@ def delete_row(id):
     # Only delete if the row belongs to this user
     supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
 
+    #return redirect(url_for("exptracker2"))
     return redirect(url_for("expense_history"))
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
