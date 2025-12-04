@@ -166,8 +166,51 @@ def delete_row(id):
     # Only delete if the row belongs to this user
     supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
 
-    #return redirect(url_for("exptracker2"))
-    return redirect(url_for("expense_history"))
+    return redirect(url_for("exptracker2"))
+    #return redirect(url_for("expense_history"))
+# ----------------------------- Expense history ---------------------------------
+@app.route("add_expense")
+@login_required
+def add_expense():
+user_id = session["user_id"]
+    
+    if request.method == "POST":
+        amount = request.form.get("amount")
+        category = request.form.get("category")
+        note = request.form.get("note", "")
+        
+        if not amount or not category:
+            # simple validation, reload page with error if needed
+            response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
+            expense = response.data
+            total = sum(float(item["amount"]) for item in expense) if expense else 0
+            return render_template(
+                "exptracker2.html",
+                expense=expense,
+                total=total,
+                error="Amount and category are required"
+            )
+
+        next_date = datetime.now().strftime("%Y-%m-%d")
+
+        supabase.table("expenses").insert({
+            "next_date": next_date,
+            "amount": amount,
+            "category": category,
+            "note": note,
+            "user_id": user_id
+        }).execute()
+
+        #return redirect(url_for("exptracker2"))
+        return redirect(url_for("add_expense"))
+        
+    # GET: fetch current user's expenses
+    response = supabase.table("expenses").select("*").eq("user_id", user_id).order("next_date").execute()
+    expense = response.data or []
+
+    total = sum(float(item["amount"]) for item in expense) if expense else 0
+
+    return render_template("add_expense.html", expense=expense, total=total)
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
