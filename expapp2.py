@@ -186,7 +186,7 @@ def add_expense():
             total = sum(float(item["amount"]) for item in expense) if expense else 0
             return render_template(
                 #"exptracker2.html",
-                "add_expense.html"
+                "add_expense.html",
                 expense=expense,
                 total=total,
                 error="Amount and category are required"
