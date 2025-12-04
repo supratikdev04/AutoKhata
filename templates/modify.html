@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <titel>Modify Expense</titel>
+  </head>
+
+<body class="bg-light pt4">
+<div class = "container">
+    <div class="card show-sm">
+      <div class="card-header bg-success text-white ">
+        Modify Expense
+      </div> 
+
+      <div class="card-body">
+        <form method="POST">
+          <label class="form-label">Category</label>
+           <select class="form-select" name="category" required>
+                <option value="Food"{% if expense.category=='Food' %}selected{% endif %}>Food</option>
+                <option value="Food"{% if expense.category=='Transport' %}selected{% endif %}>Transport</option>
+                <option value="Food"{% if expense.category=='Shopping' %}selected{% endif %}>Shopping</option>
+                <option value="Food"{% if expense.category=='Bills' %}selected{% endif %}>Bills</option>
+                <option value="Food"{% if expense.category=='Others' %}selected{% endif %}>Others</option>
+           </select>
+          <label class="form-label mt-3">Amount</label>
+          <input type= "number" class="form-control" name="amount" value="{{expense.amount}}" required>
+          <lable class ="form-label mt-3">Note</lable>
+          <input type="text" class="form-control" name="note" value="{{expense.note}}">
+
+          <button class="btn btn-primary mt-4 w-100" type="submit" >Save Changes</button>
+          <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
+        </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
