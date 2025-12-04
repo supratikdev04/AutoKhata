@@ -125,7 +125,7 @@ def exptracker2():
         note = request.form.get("note", "")
         
         if not amount or not category :
-            simple validation, reload page with error if needed
+            #simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
             expense = response.data
             total = sum(float(item["amount"]) for item in expense) if expense else 0
