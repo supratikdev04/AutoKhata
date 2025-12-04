@@ -202,6 +202,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Category</th>
+                        <th>Subcategory</th>
                         <th>Amount</th>
                         <th>Note</th>
                     </tr>
@@ -222,6 +223,7 @@
                             <i class="{{ icons[item.category] }}"></i>
                             {{ item.category }}
                         </td>
+                        <td>{{item.subcategory}}</td>
                         <td>
                             <!--{% if item.currency == 'INR' %} ₹
                             {% elif item.currency == 'USD' %} $
