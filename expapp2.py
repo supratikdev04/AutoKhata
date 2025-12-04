@@ -184,7 +184,10 @@ def settings():
     if "user_id" not in session:
         return redirect("/login")
     return render_template("settings.html")
-
+# -------------------------------Modify----------------------------------
+@app.route("/modify")
+def modify():
+    
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
