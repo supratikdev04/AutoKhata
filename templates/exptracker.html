@@ -332,7 +332,30 @@
         </div>
     </div>
 </div>
+<script>
+const subcategories = {
+    "Food": ["Breakfast", "Lunch", "Dinner", "Snacks", "Drinks"],
+    "Transport": ["Bus", "Taxi", "Train", "Fuel", "Flight"],
+    "Shopping": ["Clothes", "Groceries", "Electronics", "Accessories"],
+    "Bills": ["Electricity", "Water", "Phone", "Internet", "Rent"],
+    "Other": ["Miscellaneous"]
+};
 
+document.getElementById("category").addEventListener("change", function () {
+    let cat = this.value;
+    let subcat = document.getElementById("subcategory");
+    subcat.innerHTML = "<option value=''>-- SELECT SUBCATEGORY --</option>";
+
+    if (subcategories[cat]) {
+        subcategories[cat].forEach(s => {
+            let opt = document.createElement("option");
+            opt.value = s;
+            opt.text = s;
+            subcat.appendChild(opt);
+        });
+    }
+});
+</script>
 </body>
 </html>
 
