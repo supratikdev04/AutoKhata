@@ -121,9 +121,22 @@ def exptracker2():
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
+        subcategory=request.form.get("subcategory")
         note = request.form.get("note", "")
-        
-        if not amount or not category:
+        '''
+        if not amount or not category :
+             simple validation, reload page with error if needed
+            response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
+            expense = response.data
+            total = sum(float(item["amount"]) for item in expense) if expense else 0
+            return render_template(
+                "exptracker2.html",
+                expense=expense,
+                total=total,
+                error="Amount and category are required"
+            )
+        '''
+        if not amount or not category or not subcategory :
             # simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
             expense = response.data
@@ -141,6 +154,7 @@ def exptracker2():
             "next_date": next_date,
             "amount": amount,
             "category": category,
+            "subcategory":subcategory,
             "note": note,
             "user_id": user_id
         }).execute()
