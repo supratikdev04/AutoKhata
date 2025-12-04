@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <h2>Expense History</h2>
+  </head>
+<body class="bg-light">
+<div class="container-fluid px-3 my-">  
+<div class="card mb-4 shadow-sm">
+<!-- Expenses Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        Your Expenses
+    </div>
+        <!--div class="card-body table-responsive ">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3 col-12">
+                    <label class="form-label"></label>
+                        <label for="currency">Currency</label>
+                        <select name="currency" onchange="this.form.submit()" class="form-select w-auto">
+                            <option value="INR" {% if selected_currency=='INR' %}selected{% endif %}>₹ (INR)</option>
+                            <option value="USD" {% if selected_currency=='USD' %}selected{% endif %}>$ (USD)</option>
+                            <option value="EUR" {% if selected_currency=='EUR' %}selected{% endif %}>€ (EUR)</option>
+                            <option value="GBP" {% if selected_currency=='GBP' %}selected{% endif %}>£ (GBP)</option>
+                        </select>
+        </div-->
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+               
+                <tbody>
+                    {% set icons = {
+                    "Food": "bi bi-egg-fried",
+                    "Transport": "bi bi-bus-front-fill",
+                    "Shopping": "bi bi-bag-fill",
+                    "Bills": "bi bi-receipt-cutoff",
+                    "Other": "bi bi-three-dots"
+                    } %}
+                    {% for item in expense %}
+                    <tr>
+                        <td>{{ item.next_date }}</td>
+                         <td>
+                            <i class="{{ icons[item.category] }}"></i>
+                            {{ item.category }}
+                        </td>
+                        <td>
+                            <!--{% if item.currency == 'INR' %} ₹
+                            {% elif item.currency == 'USD' %} $
+                            {% elif item.currency == 'EUR' %} €
+                            {% elif item.currency == 'GBP' %} £
+                            {% endif %}-->
+                            {{ item.amount }}
+                        </td>
+                        <td>{{ item.note }}</td>
+                        <td>
+                            <!--a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm">Delete</a-->
+                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm"onclick="confirmDelete(event,'/delete/{{ item.id }}')">Delete</a>
+                        </td>
+                        <td>
+                            <a href="/modify/{{item.id}}" class="btn btn-success btn-sm">Modify</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+                <b>Total:</b>
+                <!--{% if selected_currency == 'INR' %} ₹
+                {% elif selected_currency == 'USD' %} $
+                {% elif selected_currency == 'EUR' %} €
+                {% elif selected_currency == 'GBP' %} £
+                {% endif %}-->
+                {{ total }}
+            </p>
+    </div>
+</div>
+</body>
+</html>
