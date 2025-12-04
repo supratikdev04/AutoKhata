@@ -169,10 +169,10 @@ def delete_row(id):
     return redirect(url_for("exptracker2"))
     #return redirect(url_for("expense_history"))
 # ----------------------------- Expense history ---------------------------------
-@app.route("add_expense")
+@app.route("/add_expense" ,methods=["GET", "POST"])
 @login_required
 def add_expense():
-user_id = session["user_id"]
+    user_id = session["user_id"]
     
     if request.method == "POST":
         amount = request.form.get("amount")
@@ -185,7 +185,8 @@ user_id = session["user_id"]
             expense = response.data
             total = sum(float(item["amount"]) for item in expense) if expense else 0
             return render_template(
-                "exptracker2.html",
+                #"exptracker2.html",
+                "add_expense.html"
                 expense=expense,
                 total=total,
                 error="Amount and category are required"
