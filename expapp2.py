@@ -36,7 +36,6 @@ def login_required(func):
 
     return wrapper
 
-
 # ------------------------------- SIGNUP -------------------------------
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -118,15 +117,12 @@ def logout():
 @login_required
 def exptracker2():
     user_id = session["user_id"]
-    #defalut
-    selected_currency = request.args.get("currency", "INR")
     
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
         note = request.form.get("note", "")
-        currency = request.form.get("currency", "INR")
-
+        
         if not amount or not category:
             # simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
@@ -136,7 +132,6 @@ def exptracker2():
                 "exptracker2.html",
                 expense=expense,
                 total=total,
-                selected_currency=selected_currency,
                 error="Amount and category are required"
             )
 
@@ -147,7 +142,6 @@ def exptracker2():
             "amount": amount,
             "category": category,
             "note": note,
-            "currency": currency,
             "user_id": user_id
         }).execute()
 
@@ -159,7 +153,7 @@ def exptracker2():
 
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
-    return render_template("exptracker2.html", expense=expense, total=total,selected_currency=selected_currency)
+    return render_template("exptracker2.html", expense=expense, total=total)
 
 
 # ------------------------------- DELETE EXPENSE -------------------------------
@@ -185,9 +179,36 @@ def settings():
         return redirect("/login")
     return render_template("settings.html")
 # -------------------------------Modify----------------------------------
-@app.route("/modify")
-def modify():
-    
+@app.route("/modify/<int:id>",methods=["GET","POST"])
+@login_required
+def modify_expense(id):
+    user_id = session["user_id"]
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+
+    if not result.data:
+        return redirect(url_for("exptracker2"))
+
+    expense = result.data[0]
+    if request.method == "POST":
+        new_category = request.form.get("category")
+        new_amount = request.form.get("amount")
+        new_note = request.form.get("note")
+
+        supabase.table("expenses").update({
+            "category": new_category,
+            "amount": new_amount,
+            "note": new_note,
+        }).eq("id", id).eq("user_id", user_id).execute()
+
+        return redirect(url_for("exptracker2"))
+
+    return render_template("modify.html", expense=expense)
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
