@@ -145,8 +145,9 @@ def exptracker2():
             "user_id": user_id
         }).execute()
 
-        return redirect(url_for("exptracker2"))
-
+        #return redirect(url_for("exptracker2"))
+        return redirect(url_for("add_expense"))
+        
     # GET: fetch current user's expenses
     response = supabase.table("expenses").select("*").eq("user_id", user_id).order("next_date").execute()
     expense = response.data or []
