@@ -150,10 +150,10 @@
                     <option value="Other">Other</option>
                 </select>
 
-                 <!--<label class ="form-label mt-3">Subcategory</label>
+                 <label class ="form-label mt-3">Subcategory</label>
                  <select class="form-select" name="subcategory" id ="subcategory "required>
                      <option value="">--Select Category First--</option>
-                 </select>-->
+                 </select>
             
             <label class="form-label">Amount</label>
                 <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: ₹100" required>
@@ -304,7 +304,28 @@
             window.location.href = url;
         }
     }
-    document.getElementById.addEventListener()
+    const subcategories = {
+    "Food": ["Breakfast", "Lunch", "Dinner", "Snacks", "Drinks"],
+    "Transport": ["Bus", "Taxi", "Train", "Fuel", "Flight"],
+    "Shopping": ["Clothes", "Groceries", "Electronics", "Accessories"],
+    "Bills": ["Electricity", "Water", "Phone", "Internet", "Rent"],
+    "Other": ["Miscellaneous"]
+};
+
+document.getElementById("category").addEventListener("change", function () {
+    let cat = this.value;
+    let subcat = document.getElementById("subcategory");
+    subcat.innerHTML = "<option value=''>-- SELECT SUBCATEGORY --</option>";
+
+    if (subcategories[cat]) {
+        subcategories[cat].forEach(s => {
+            let opt = document.createElement("option");
+            opt.value = s;
+            opt.text = s;
+            subcat.appendChild(opt);
+        });
+    }
+});
 
 </script>
 </body>
