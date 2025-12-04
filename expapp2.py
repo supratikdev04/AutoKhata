@@ -121,9 +121,9 @@ def exptracker2():
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
-        subcategory=request.form.get("subcategory")
+        #subcategory=request.form.get("subcategory")
         note = request.form.get("note", "")
-        '''
+        
         if not amount or not category :
              simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
@@ -147,14 +147,14 @@ def exptracker2():
                 total=total,
                 error="Amount and category are required"
             )
-
+        '''
         next_date = datetime.now().strftime("%Y-%m-%d")
 
         supabase.table("expenses").insert({
             "next_date": next_date,
             "amount": amount,
             "category": category,
-            "subcategory":subcategory,
+            #"subcategory":subcategory,
             "note": note,
             "user_id": user_id
         }).execute()
