@@ -62,8 +62,6 @@ def signup():
             "phone_number":phone_number
         }).execute()
         
-        return redirect(url_for("profile.html"))
-        
         user = result.data[0]
         
         # Store in session IMMEDIATELY
@@ -72,6 +70,8 @@ def signup():
         session["name"] = user["name"]
         session["phone_number"] = user["phone_number"]
 
+        return redirect(url_for("profile"))
+        
     return render_template("signup.html")
 
 # ------------------------------- LOGIN -------------------------------
@@ -232,7 +232,7 @@ def add_expense():
 @app.route("/profile")
 def profile():
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect("login")
     return render_template("profile.html")
 
 @app.route("/settings")
