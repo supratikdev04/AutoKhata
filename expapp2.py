@@ -55,14 +55,14 @@ def signup():
 
         hashed_pass = generate_password_hash(password)
         
-        supabase.table("users").insert({
+        result = supabase.table("users").insert({
             "email": email,
             "password": hashed_pass,
             "name": name,
             "phone_number":phone_number
         }).execute()
         
-        return redirect(url_for("profile.html"))
+        return redirect(url_for("profile"))
         
         user = result.data[0]
         
