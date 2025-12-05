@@ -121,10 +121,10 @@ def exptracker2():
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
-        #subcategory=request.form.get("subcategory")
+        subcategory=request.form.get("subcategory")
         note = request.form.get("note", "")
         
-        if not amount or not category :
+        if not amount or not category or not subcategory :
             #simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
             expense = response.data
@@ -154,7 +154,7 @@ def exptracker2():
             "next_date": next_date,
             "amount": amount,
             "category": category,
-            #"subcategory":subcategory,
+            "subcategory":subcategory,
             "note": note,
             "user_id": user_id
         }).execute()
@@ -259,11 +259,13 @@ def modify_expense(id):
     expense = result.data[0]
     if request.method == "POST":
         new_category = request.form.get("category")
+        new_subcategory=request.form.get("subcategory")
         new_amount = request.form.get("amount")
         new_note = request.form.get("note")
 
         supabase.table("expenses").update({
             "category": new_category,
+            "subcategory":subcategory,
             "amount": new_amount,
             "note": new_note,
         }).eq("id", id).eq("user_id", user_id).execute()
