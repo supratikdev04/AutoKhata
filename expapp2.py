@@ -265,7 +265,7 @@ def modify_expense(id):
 
         supabase.table("expenses").update({
             "category": new_category,
-            "subcategory":subcategory,
+            "subcategory":new_subcategory,
             "amount": new_amount,
             "note": new_note,
         }).eq("id", id).eq("user_id", user_id).execute()
