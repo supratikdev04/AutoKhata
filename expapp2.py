@@ -62,7 +62,7 @@ def signup():
             "phone_number":phone_number
         }).execute()
         
-        return redirect(url_for("profile"))
+        return redirect(url_for("profile.html"))
         
         user = result.data[0]
         
