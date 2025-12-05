@@ -183,6 +183,7 @@ def delete_row(id):
     return redirect(url_for("exptracker2"))
     #return redirect(url_for("expense_history"))
 # ----------------------------- Add Expense ---------------------------------
+'''
 @app.route("/add_expense" ,methods=["GET", "POST"])
 @login_required
 def add_expense():
@@ -226,6 +227,7 @@ def add_expense():
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
     return render_template("add_expense.html", expense=expense, total=total)
+'''
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
