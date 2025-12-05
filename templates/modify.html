@@ -24,6 +24,7 @@
                 <option value="Others"{% if expense.category=='Others' %}selected{% endif %}>Others</option>
            </select>
           <label class ="form-label mt-3">Subcategory</label>
+          <input type="text" class="form-control" name="subcategory" value={{expense.subcategory}} required>
           <label class="form-label mt-3">Amount</label>
           <input type= "number" class="form-control" name="amount" value="{{expense.amount}}" required>
           <lable class ="form-label mt-3">Note</lable>
