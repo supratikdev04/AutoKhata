@@ -14,7 +14,7 @@
       </div> 
 
       <div class="card-body">
-        <form method="POST">
+        <form method="POST" id= "modifyForm">
           <label class="form-label">Category</label>
            <select class="form-select" name="category" required>
                 <option value="Food"{% if expense.category=='Food' %}selected{% endif %}>Food</option>
@@ -30,11 +30,27 @@
           <lable class ="form-label mt-3">Note</lable>
           <input type="text" class="form-control" name="note" value="{{expense.note}}">
 
-          <button class="btn btn-primary mt-4 w-100" type="submit" >Save Changes</button>
+          <button class="btn btn-primary mt-4 w-100" type="submit" id="saveBtn" disabled >Save Changes</button>
           <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
         </form>
     </div>
   </div>
 </div>
+<script>
+  const form = document.getElementById("modifyForm");
+  const saveBtn = document.getElementById("saveBtn");
+  const initialData = new FormData(form);
+  form.addEventListener("input", () => {
+    const currentData = new FormData(form);
+    let changed = false;
+    for (let [key, value] of currentData.entries()) {
+      if (value !== initialData.get(key)) {
+        changed = true;
+        break;
+      }
+    }
+    saveBtn.disabled = !changed;
+  });
+</script>
 </body>
 </html>
