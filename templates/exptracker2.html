@@ -369,16 +369,17 @@ function myFunction() {
 <!--script>
     function confirmDelete() {
        var popup = document.getElementById("mypopup");
-        popup.classlist.toggle("show");
+        popup.classlist.toggle("show");\
     =====================================================================
          if (confirm("Are you sure you want to delete this expense?")) { |
             window.location.href = url;                                  |
         }-->
  <script> 
+    let deleteUrl=" ";
     function confirmDelete(event, url) {
         event.preventDefault();
         deleteUrl= url;
-        var myModal= new bootstrap.Modal(document.getElementById('deleteconfrimModal'));
+        var myModal= new bootstrap.Modal(document.getElementById('deleteConfrimModal'));
         myModal.show();
         }
      function proceedDelete(){
