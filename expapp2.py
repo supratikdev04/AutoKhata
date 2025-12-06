@@ -183,8 +183,20 @@ def delete_row(id):
     return redirect(url_for("exptracker3"))
     #return redirect(url_for("expense_history"))
 # ----------------------------- Add Expense ---------------------------------
+@app.route("/add_expense")
+def add_expense():
+    return render_template("add_expense.html")
+
+@app.route("/expense_history")
+def history():
+    return render_template("expense_history.html")
+
+@app.route("/reports")
+def reports():
+    return render_template("reports.html")
+
 '''
-@app.route("/add_expense" ,methods=["GET", "POST"])
+@app.route("/add" ,methods=["GET", "POST"])
 @login_required
 def add_expense():
     user_id = session["user_id"]
