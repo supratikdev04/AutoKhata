@@ -100,7 +100,7 @@ def login():
         session["email"] = user_row["email"]
         session["name"]=user_row["name"]
 
-        return redirect(url_for("exptracker2"))
+        return redirect(url_for("exptracker3"))
 
     return render_template("login.html")
 
@@ -130,7 +130,7 @@ def exptracker2():
             expense = response.data
             total = sum(float(item["amount"]) for item in expense) if expense else 0
             return render_template(
-                "exptracker2.html",
+                "exptracker3.html",
                 expense=expense,
                 total=total,
                 error="Amount and category are required"
@@ -159,7 +159,7 @@ def exptracker2():
             "user_id": user_id
         }).execute()
 
-        return redirect(url_for("exptracker2"))
+        return redirect(url_for("exptracker3"))
         #return redirect(url_for("add_expense"))
         
     # GET: fetch current user's expenses
@@ -168,7 +168,7 @@ def exptracker2():
 
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
-    return render_template("exptracker2.html", expense=expense, total=total)
+    return render_template("exptracker3.html", expense=expense, total=total)
 
 
 # ------------------------------- DELETE EXPENSE -------------------------------
@@ -180,7 +180,7 @@ def delete_row(id):
     # Only delete if the row belongs to this user
     supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
 
-    return redirect(url_for("exptracker2"))
+    return redirect(url_for("exptracker3"))
     #return redirect(url_for("expense_history"))
 # ----------------------------- Add Expense ---------------------------------
 '''
@@ -270,7 +270,7 @@ def modify_expense(id):
             "note": new_note,
         }).eq("id", id).eq("user_id", user_id).execute()
 
-        return redirect(url_for("exptracker2"))
+        return redirect(url_for("exptracker3"))
 
     return render_template("modify.html", expense=expense)
 # ------------------------------- RUN APP -------------------------------
