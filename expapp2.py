@@ -115,7 +115,7 @@ def logout():
 # ------------------------------- MAIN EXPENSE PAGE -------------------------------
 @app.route("/", methods=["GET", "POST"])
 @login_required
-def exptracker2():
+def exptracker3():
     user_id = session["user_id"]
     
     if request.method == "POST":
