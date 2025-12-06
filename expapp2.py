@@ -254,7 +254,7 @@ def modify_expense(id):
     )
 
     if not result.data:
-        return redirect(url_for("exptracker2"))
+        return redirect(url_for("exptracker3"))
 
     expense = result.data[0]
     if request.method == "POST":
