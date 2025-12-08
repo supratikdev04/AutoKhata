@@ -264,6 +264,26 @@ def modify_expense(id):
         return redirect(url_for("exptracker3"))
 
     return render_template("modify.html", expense=expense)
+# ------------------------------- History Check -------------------------
+@app.route('/exptracker3', methods=['GET', 'POST'])
+@login_required
+def history():
+    user_id = session["user_id"]
+
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    query = supabase.table("expenses").select("*").eq("user_id", user_id)
+
+    if start_date and end_date:
+        query = query.gte("next_date", start_date).lte("next_date", end_date)
+
+    result = query.order("next_date", desc=False).execute()
+
+    expenses = result.data
+
+    return render_template("exptracker3.html", expenses=expenses)
+
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
