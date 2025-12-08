@@ -194,7 +194,7 @@ def add_expense():
         
         if not amount or not category  or not subcategory :
             # simple validation, reload page with error if needed
-        return render_template("add_expense.html", error="All fields required")
+            return render_template("add_expense.html", error="All fields required")
 
         next_date = datetime.now().strftime("%Y-%m-%d")
 
