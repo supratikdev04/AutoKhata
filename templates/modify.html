@@ -1,82 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <titel><h2 style="text-align:center;">Modify Expense</h2></titel>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <meta name ="viewport" content = "width=device-width, initial-scaled=1"> 
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Modify Expense</title>
 
-<body class="bg-light pt4">
-<div class = "container">
-    <div class="card show-sm">
-      <div class="card-header bg-success text-white ">
-        <!--Modify Expense-->
-      </div> 
+    <h2 style="text-align:center;">Modify Expense</h2>
 
-      <div class="card-body">
-        <form method="POST" id= "modifyForm">
-          <label class="form-label">Category</label>
-           <select class="form-select" name="category" required>
-                <option value="Food"{% if expense.category=='Food' %}selected{% endif %}>Food</option>
-                <option value="Transport"{% if expense.category=='Transport' %}selected{% endif %}>Transport</option>
-                <option value="Shopping"{% if expense.category=='Shopping' %}selected{% endif %}>Shopping</option>
-                <option value="Bills"{% if expense.category=='Bills' %}selected{% endif %}>Bills</option>
-                <option value="Others"{% if expense.category=='Others' %}selected{% endif %}>Others</option>
-           </select>
-          <label class ="form-label mt-3">Subcategory</label>
-          <input type="text" class="form-control" name="subcategory" value={{expense.subcategory}} required>
-          <label class="form-label mt-3">Amount</label>
-          <input type= "number" class="form-control" name="amount" value="{{expense.amount}}" required>
-          <lable class ="form-label mt-3">Note</lable>
-          <input type="text" class="form-control" name="note" value="{{expense.note}}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-          <button class="btn btn-primary mt-4 w-100" type="submit" id="saveBtn" disabled >Save Changes</button>
-          <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
-        </form>
+<body class="bg-light pt-4">
+
+<div class="container">
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-success text-white">
+            Modify Expense
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" id="modifyForm">
+
+                <!-- CATEGORY -->
+                <label class="form-label">Category</label>
+                <select class="form-select" name="category" id="category" required>
+                    <option value="Food" {% if expense.category=='Food' %}selected{% endif %}>Food</option>
+                    <option value="Transport" {% if expense.category=='Transport' %}selected{% endif %}>Transport</option>
+                    <option value="Shopping" {% if expense.category=='Shopping' %}selected{% endif %}>Shopping</option>
+                    <option value="Bills" {% if expense.category=='Bills' %}selected{% endif %}>Bills</option>
+                    <option value="Others" {% if expense.category=='Others' %}selected{% endif %}>Others</option>
+                </select>
+
+                <!-- SUBCATEGORY -->
+                <label class="form-label mt-3">Subcategory</label>
+                <select class="form-select" name="subcategory" id="subcategory" required></select>
+
+                <!-- AMOUNT -->
+                <label class="form-label mt-3">Amount</label>
+                <input type="number" class="form-control" name="amount" value="{{ expense.amount }}" required>
+
+                <!-- NOTE -->
+                <label class="form-label mt-3">Note</label>
+                <input type="text" class="form-control" name="note" value="{{ expense.note }}">
+
+                <button class="btn btn-primary mt-4 w-100" type="submit" id="saveBtn" disabled>Save Changes</button>
+                <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
+
+            </form>
+
+        </div>
     </div>
-  </div>
 </div>
-<script>
-  const subcategories = {
-      Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Other"],
-      Transport: ["Bus", "Taxi", "Train", "Fuel", "Maintenance"],
-      Shopping: ["Clothes", "Electronics", "Accessories", "Gifts"],
-      Bills: ["Electricity", "Water", "Internet", "Phone", "Rent"],
-  };
-  // Update subcategory dropdown
-  function updateSubcategories() {
-      const category = document.getElementById("category").value;
-      const subcatSelect = document.getElementById("subcategory");
-  
-      subcatSelect.innerHTML = ""; // Clear old options
-  
-      subcategories[category].forEach(sub => {
-          const option = document.createElement("option");
-          option.value = sub;
-          option.textContent = sub;
-          subcatSelect.appendChild(option);
-      });
-  }
-  
-  // Load first category subcategories on page load
-  updateSubcategories();
 
-// Update when category changes
+<script>
+const subcategories = {
+    Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Other"],
+    Transport: ["Bus", "Taxi", "Train", "Fuel", "Maintenance"],
+    Shopping: ["Clothes", "Electronics", "Accessories", "Gifts"],
+    Bills: ["Electricity", "Water", "Internet", "Phone", "Rent"],
+    Others: ["Misc", "Extra", "Other"]
+};
+
+// Update dropdown
+function updateSubcategories() {
+    const cat = document.getElementById("category").value;
+    const sub = document.getElementById("subcategory");
+
+    sub.innerHTML = "";
+
+    subcategories[cat].forEach(item => {
+        let opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+
+        // Preselect saved value
+        if (item === "{{ expense.subcategory }}") {
+            opt.selected = true;
+        }
+
+        sub.appendChild(opt);
+    });
+}
+
+// Load on start
+updateSubcategories();
+
+// Change event
 document.getElementById("category").addEventListener("change", updateSubcategories);
-  const form = document.getElementById("modifyForm");
-  const saveBtn = document.getElementById("saveBtn");
-  const initialData = new FormData(form);
-  form.addEventListener("input", () => {
+
+// Enable save button only if changed
+const form = document.getElementById("modifyForm");
+const saveBtn = document.getElementById("saveBtn");
+const initialData = new FormData(form);
+
+form.addEventListener("input", () => {
     const currentData = new FormData(form);
     let changed = false;
     for (let [key, value] of currentData.entries()) {
-      if (value !== initialData.get(key)) {
-        changed = true;
-        break;
-      }
+        if (value !== initialData.get(key)) {
+            changed = true;
+            break;
+        }
     }
     saveBtn.disabled = !changed;
-  });
+});
 </script>
+
 </body>
 </html>
