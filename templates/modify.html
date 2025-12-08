@@ -37,6 +37,32 @@
   </div>
 </div>
 <script>
+  const subcategories = {
+      Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Other"],
+      Transport: ["Bus", "Taxi", "Train", "Fuel", "Maintenance"],
+      Shopping: ["Clothes", "Electronics", "Accessories", "Gifts"],
+      Bills: ["Electricity", "Water", "Internet", "Phone", "Rent"],
+  };
+  // Update subcategory dropdown
+  function updateSubcategories() {
+      const category = document.getElementById("category").value;
+      const subcatSelect = document.getElementById("subcategory");
+  
+      subcatSelect.innerHTML = ""; // Clear old options
+  
+      subcategories[category].forEach(sub => {
+          const option = document.createElement("option");
+          option.value = sub;
+          option.textContent = sub;
+          subcatSelect.appendChild(option);
+      });
+  }
+  
+  // Load first category subcategories on page load
+  updateSubcategories();
+
+// Update when category changes
+document.getElementById("category").addEventListener("change", updateSubcategories);
   const form = document.getElementById("modifyForm");
   const saveBtn = document.getElementById("saveBtn");
   const initialData = new FormData(form);
