@@ -251,14 +251,19 @@ def filter_expenses():
         end_with_time = end_date + " 23:59:59"
         query = query.lte("next_date", end_with_time)
     # else: no dates → show all for this user
-
     result = query.order("next_date", desc=False).execute()
     expenses = result.data or []
 
     total = sum(float(item["amount"]) for item in expenses) if expenses else 0
 
     # IMPORTANT: template expects 'expense', not 'expenses'
-    return render_template("exptracker3.html", expense=expenses, total=total)
+    return render_template(
+    "exptracker3.html",
+    expense=expenses,
+    total=total,
+    start_date=start_date,
+    end_date=end_date
+)
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
