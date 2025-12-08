@@ -4,36 +4,36 @@
     <meta charset="UTF-8" />
     <title>Add Expense</title>
 
-    <h3 style="text-align:center;">Add Expense</h3>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body class="bg-light pt-4">
 
+<h3 class="text-center">Add Expense</h3>
+
 <div class="container">
     <div class="card mb-4 shadow-sm">
-        
-        <!-- FIX: Closing tag was broken -->
+
         <div class="card-header bg-primary text-white">Add Expense</div>
 
-        <!-- ADD EXPENSE FORM -->
         <form action="/add_expense" method="POST" class="row g-3 p-3">
 
             <div class="col-md-3 col-12">
+                <!-- Category -->
                 <label class="form-label">Category</label>
                 <select class="form-select" name="category" id="category" required>
                     <option value="Food">Food</option>
                     <option value="Transport">Transport</option>
                     <option value="Shopping">Shopping</option>
                     <option value="Bills">Bills</option>
-                    <option value="Other">Other</option>
                 </select>
 
+                <!-- Subcategory -->
                 <label class="form-label mt-3">Subcategory</label>
-                <input type="text" class="form-control" name="subcategory" id="subcategory" placeholder="Enter subcategory" required>
+                <select class="form-select" name="subcategory" id="subcategory" required></select>
 
+                <!-- Amount -->
                 <label class="form-label mt-3">Amount</label>
                 <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: 100" required>
             </div>
@@ -50,6 +50,7 @@
         </form>
     </div>
 </div>
+
 <script>
 // Subcategories List
 const subcategories = {
@@ -58,12 +59,13 @@ const subcategories = {
     Shopping: ["Clothes", "Electronics", "Accessories", "Gifts"],
     Bills: ["Electricity", "Water", "Internet", "Phone", "Rent"],
 };
+
 // Update subcategory dropdown
 function updateSubcategories() {
     const category = document.getElementById("category").value;
     const subcatSelect = document.getElementById("subcategory");
 
-    subcatSelect.innerHTML = "";
+    subcatSelect.innerHTML = ""; // Clear old options
 
     subcategories[category].forEach(sub => {
         const option = document.createElement("option");
@@ -72,9 +74,11 @@ function updateSubcategories() {
         subcatSelect.appendChild(option);
     });
 }
-// Initial load
+
+// Load first category subcategories on page load
 updateSubcategories();
-// Change event
+
+// Update when category changes
 document.getElementById("category").addEventListener("change", updateSubcategories);
 </script>
 
