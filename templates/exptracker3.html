@@ -156,6 +156,26 @@
         var modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
         modal.show();
     }
+    function sortTable(column) {
+        let table = document.getElementById("expenseTable");
+        let rows = Array.from(table.rows).slice(1); // skip header
+    
+        // Determine if column is numeric (like Amount) or not
+        let isNumeric = column === 3; // Amount column index
+    
+        rows.sort((a, b) => {
+            let aText = a.cells[column].innerText.trim();
+            let bText = b.cells[column].innerText.trim();
+    
+            if (isNumeric) {
+                return parseFloat(aText) - parseFloat(bText);
+            } else {
+                return aText.localeCompare(bText);
+            }
+        });
+        // Append sorted rows back
+        rows.forEach(row => table.appendChild(row));
+    }
 </script>
 </body>
 </html>
