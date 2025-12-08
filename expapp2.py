@@ -196,7 +196,7 @@ def add_expense():
             # simple validation, reload page with error if needed
             return render_template("add_expense.html", error="All fields required")
 
-        next_date = datetime.now().strftime("%Y-%m-%d")
+        next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         supabase.table("expenses").insert({
             "next_date": next_date,
