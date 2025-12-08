@@ -117,7 +117,7 @@ def logout():
 @login_required
 def exptracker3():
     user_id = session["user_id"]
-    
+    '''
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
@@ -135,7 +135,6 @@ def exptracker3():
                 total=total,
                 error="Amount and category are required"
             )
-        '''
         if not amount or not category or not subcategory :
             # simple validation, reload page with error if needed
             response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
@@ -147,7 +146,6 @@ def exptracker3():
                 total=total,
                 error="Amount and category are required"
             )
-        '''
         next_date = datetime.now().strftime("%Y-%m-%d")
 
         supabase.table("expenses").insert({
@@ -161,7 +159,7 @@ def exptracker3():
 
         return redirect(url_for("exptracker3"))
         #return redirect(url_for("add_expense"))
-        
+        '''
     # GET: fetch current user's expenses
     response = supabase.table("expenses").select("*").eq("user_id", user_id).order("next_date").execute()
     expense = response.data or []
@@ -184,6 +182,7 @@ def delete_row(id):
     #return redirect(url_for("expense_history"))
 # ----------------------------- Add Expense ---------------------------------
 @app.route("/add_expense",methods=["GET","POST"])
+@login_required
 def add_expense():
    user_id = session["user_id"]
     
