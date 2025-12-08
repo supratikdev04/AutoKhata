@@ -183,7 +183,7 @@ def delete_row(id):
     return redirect(url_for("exptracker3"))
     #return redirect(url_for("expense_history"))
 # ----------------------------- Add Expense ---------------------------------
-@app.route("/add_expense")
+@app.route("/add_expense",methods=["GET","POST")
 def add_expense():
     return render_template("add_expense.html")
 
