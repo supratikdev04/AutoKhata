@@ -184,7 +184,7 @@ def delete_row(id):
 @app.route("/add_expense",methods=["GET","POST"])
 @login_required
 def add_expense():
-   user_id = session["user_id"]
+    user_id = session["user_id"]
     
     if request.method == "POST":
         amount = request.form.get("amount")
