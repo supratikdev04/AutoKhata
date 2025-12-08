@@ -136,11 +136,11 @@ def exptracker3():
 @app.route("/delete/<int:id>")
 @login_required
 def delete_row(id):
+    print("Deleting ID:", id)
     user_id = session["user_id"]
-
-    # Only delete if the row belongs to this user
-    supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
-
+    print("User ID:", user_id)
+    result = supabase.table("expenses").delete().eq("id", id).eq("user_id", user_id).execute()
+    print(result.data)
     return redirect(url_for("exptracker3"))
 
 # ----------------------------- Add Expense ---------------------------------
