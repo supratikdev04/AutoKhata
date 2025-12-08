@@ -212,9 +212,9 @@ def add_expense():
     # GET → Show form only
     return render_template("add_expense.html")
 #------------------------- Expense history -------------------------
-@app.route("/expense_history")
+'''@app.route("/expense_history")
 def history():
-    return render_template("expense_history.html")
+    return render_template("expense_history.html")'''
 #------------------------ Reports ---------------------------------
 @app.route("/reports")
 def reports():
@@ -264,10 +264,10 @@ def modify_expense(id):
         return redirect(url_for("exptracker3"))
 
     return render_template("modify.html", expense=expense)
-# ------------------------------- History Check -------------------------
-@app.route('/exptracker3', methods=['GET', 'POST'])
+# ------------------------------- History Check / FILTER -------------------------
+@app.route('/exptracker_filter', methods=['POST'])
 @login_required
-def history():
+def filter_expenses():
     user_id = session["user_id"]
 
     start_date = request.form.get("start_date")
@@ -279,7 +279,6 @@ def history():
         query = query.gte("next_date", start_date).lte("next_date", end_date)
 
     result = query.order("next_date", desc=False).execute()
-
     expenses = result.data
 
     return render_template("exptracker3.html", expenses=expenses)
