@@ -185,40 +185,17 @@ def delete_row(id):
 # ----------------------------- Add Expense ---------------------------------
 @app.route("/add_expense",methods=["GET","POST"])
 def add_expense():
-    total = sum(float(item["amount"]) for item in expense) if expense else 0
-    return render_template("add_expense.html")
-
-@app.route("/expense_history")
-def history():
-    return render_template("expense_history.html")
-
-@app.route("/reports")
-def reports():
-    return render_template("reports.html")
-
-'''
-@app.route("/add" ,methods=["GET", "POST"])
-@login_required
-def add_expense():
-    user_id = session["user_id"]
+   user_id = session["user_id"]
     
     if request.method == "POST":
         amount = request.form.get("amount")
         category = request.form.get("category")
+        subcategory = request.form.get("subcategory")
         note = request.form.get("note", "")
         
-        if not amount or not category:
+        if not amount or not category  or not subcategory :
             # simple validation, reload page with error if needed
-            response = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
-            expense = response.data
-            total = sum(float(item["amount"]) for item in expense) if expense else 0
-            return render_template(
-                "exptracker2.html",
-                #"add_expense.html",
-                expense=expense,
-                total=total,
-                error="Amount and category are required"
-            )
+        return render_template("add_expense.html", error="All fields required")
 
         next_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -226,21 +203,23 @@ def add_expense():
             "next_date": next_date,
             "amount": amount,
             "category": category,
+            "subcategory": subcategory,
             "note": note,
             "user_id": user_id
         }).execute()
 
-        return redirect(url_for("exptracker2"))
-        #return redirect(url_for("add_expense"))
-        
-    # GET: fetch current user's expenses
-    response = supabase.table("expenses").select("*").eq("user_id", user_id).order("next_date").execute()
-    expense = response.data or []
+        return redirect(url_for("exptracker3"))
 
-    total = sum(float(item["amount"]) for item in expense) if expense else 0
-
-    return render_template("add_expense.html", expense=expense, total=total)
-'''
+    # GET → Show form only
+    return render_template("add_expense.html")
+#------------------------- Expense history -------------------------
+@app.route("/expense_history")
+def history():
+    return render_template("expense_history.html")
+#------------------------ Reports ---------------------------------
+@app.route("/reports")
+def reports():
+    return render_template("reports.html")
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
