@@ -99,10 +99,27 @@
     </div>
 
     <!-- EXPENSE TABLE -->
+    
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-secondary text-white">Your Expenses</div>
         <p><b>Total:</b> {{ total }}</p>
         <div class="card-body table-responsive">
+            <form method="POST" class="row g-2 mb-3">
+                <div class="col-md-3">
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" class="form-control">
+                </div>
+            
+                <div class="col-md-3">
+                    <label>End Date</label>
+                    <input type="date" name="end_date" class="form-control">
+                </div>
+            
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
