@@ -178,15 +178,18 @@
         // Append sorted rows back
         rows.forEach(row => table.appendChild(row));
     }
-    document.getElementById('searchExpense').addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll('.expense-row');
-  
-      rows.forEach(row => {
-        const rowText = row.innerText.toLowerCase();
-        row.style.display = rowText.includes(query) ? '' : 'none';
-      });
+    document.getElementById('searchExpense').addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        // Select all rows in tbody
+        const rows = document.querySelectorAll('#expenseTable tbody tr');
+    
+        rows.forEach(row => {
+            // Get all cell text in lowercase
+            const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(' ');
+            row.style.display = rowText.includes(query) ? '' : 'none';
+        });
     });
+
 </script>
 </body>
 </html>
