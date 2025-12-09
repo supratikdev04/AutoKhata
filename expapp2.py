@@ -43,8 +43,9 @@ def signup():
         password = request.form.get("password", "")
         name = request.form.get("name","").strip()
         phone_number = request.form.get("phone_number","").strip()
+        address = request.form.get("address","").strip()
 
-        if not email or not password or not name or not phone_number :
+        if not email or not password or not name or not phone_number or not address :
             return render_template("signup.html", error="All field are required")
 
         # Check if user already exists
@@ -58,7 +59,8 @@ def signup():
             "email": email,
             "password": hashed_pass,
             "name": name,
-            "phone_number":phone_number
+            "phone_number":phone_number,
+            "address":address
         }).execute()
         
         user = result.data[0]
@@ -68,6 +70,7 @@ def signup():
         session["email"] = user["email"]
         session["name"] = user["name"]
         session["phone_number"] = user["phone_number"]
+        session["address"] = user["address"]
 
         return redirect(url_for("profile"))
         
