@@ -109,6 +109,11 @@ form.addEventListener("input", () => {
     saveBtn.disabled = !changed;
 });
 </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/service-worker.js");
+  }
+</script>
 
 </body>
 </html>
