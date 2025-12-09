@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <title>Expense Tracker</title>
-
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" href="/static/icons/icon-192.png">
+    <meta name="theme-color" content="#0d6efd">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap CSS -->
@@ -29,8 +31,9 @@
             <li class="nav-item"><a class="nav-link" href="/add_expense">Add Expense</a></li>
             <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
         </ul>
+       
     </div>
-
+    <button id="installBtn" class="btn btn-success d-none">Install App</button>
     <!-- Profile Dropdown -->
     <div class="dropdown me-3">
         <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
@@ -194,10 +197,23 @@
 
 </script>
 <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/static/service-worker.js");
-  }
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/static/service-worker.js");
+      }
+    </script>
+    <script>
+    let deferredPrompt;
+    
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById("installBtn").classList.remove("d-none");
+    });
+    
+    document.getElementById("installBtn").addEventListener("click", () => {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+    });
 </script>
-
 </body>
 </html>
