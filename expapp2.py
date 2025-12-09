@@ -277,7 +277,7 @@ def filter_expenses():
 )
 # --------------------------- Dashboard ------------------------------------
 
-@app.route("/")
+@app.route("/dashboard")
 @login_required
 def dashboard():
     user_id = session["user_id"]
