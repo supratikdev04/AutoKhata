@@ -275,6 +275,59 @@ def filter_expenses():
     start_date=start_date,
     end_date=end_date
 )
+# --------------------------- Dashboard ------------------------------------
+@app.route("/dashboard")
+def dashboard():
+    user = session.get("user")
+
+    # Fetch expenses
+    expenses = supabase.table("expenses").select("*").eq("user_id", user["id"]).execute().data
+
+    # Total spent
+    total_expense = sum(float(e["amount"]) for item in expenses)
+
+    # Monthly Total
+    current_month = datetime.now().month
+    monthly_total = sum(float(e["amount"]) for item in expenses if int(e["next_date"][5:7]) == current_month)
+
+    # Category Breakdown
+    category_map = {}
+    for e in expenses:
+        category_map[e["category"]] = category_map.get(e["category"], 0) + float(e["amount"])
+
+    category_labels = list(category_map.keys())
+    category_values = list(category_map.values())
+
+    # Weekly (last 7 days)
+    today = datetime.now()
+    week_labels = []
+    week_values = []
+
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        date_str = day.strftime("%Y-%m-%d")
+        week_labels.append(day.strftime("%d %b"))
+
+        total = sum(float(e["amount"]) for e in expenses if e["next_date"] == date_str)
+        week_values.append(total)
+
+    # Recent expenses
+    recent = sorted(expenses, key=lambda x: x["next_date"], reverse=True)[:5]
+
+    # Highest category
+    top_category = max(category_map, key=category_map.get) if category_map else "None"
+
+    return render_template(
+        "dashboard.html",
+        total_expense=total_expense,
+        monthly_total=monthly_total,
+        top_category=top_category,
+        category_labels=category_labels,
+        category_values=category_values,
+        week_labels=week_labels,
+        week_values=week_values,
+        recent=recent
+    )
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
