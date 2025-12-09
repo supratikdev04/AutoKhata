@@ -86,12 +86,12 @@ def login():
         if not email or not password:
             return render_template("login.html", error="Email and password are required")
 
-        user = supabase.table("users").select("*").eq("email", email).execute()
+        result = supabase.table("users").select("*").eq("email", email).execute()
 
-        if not user.data:
+        if not result.data:
             return render_template("login.html", error="User not found")
 
-        user_row = user.data[0]
+        user_row = result.data[0]
         stored_hash = user_row["password"]
 
         if not check_password_hash(stored_hash, password):
