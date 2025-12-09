@@ -69,8 +69,8 @@ def signup():
         session["user_id"] = user["id"]
         session["email"] = user["email"]
         session["name"] = user["name"]
-        session["phone_number"] = user["phone_number"]
-        session["address"] = user["address"]
+        session["phone_number"] = user.get("phone_number", "")
+        session["address"] = user.get("address", "")
 
         return redirect(url_for("profile"))
         
@@ -101,6 +101,8 @@ def login():
         session["user_id"] = user_row["id"]
         session["email"] = user_row["email"]
         session["name"]=user_row["name"]
+        session["phone_number"] = user_row.get("phone_number", "")
+        session["address"] = user_row.get("address", "")
 
         return redirect(url_for("exptracker3"))
 
