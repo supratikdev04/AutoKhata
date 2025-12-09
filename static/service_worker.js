@@ -8,8 +8,8 @@ const ASSETS_TO_CACHE = [
     "/reports",
     "/static/css/styles.css",
     "/static/js/main.js",
-    "/static/icons/icon-192.png",
-    "/static/icons/icon-512.png"
+    "/static/exptracker_app_icon.png",
+    "/static/exptracker_app_icon.png"
 ];
 
 // Install Event - caching assets
