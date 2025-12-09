@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, url_for
 from supabase import create_client, Client
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv   
@@ -276,21 +276,28 @@ def filter_expenses():
     end_date=end_date
 )
 # --------------------------- Dashboard ------------------------------------
+
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    user = session.get("user")
+    user_id = session["user_id"]
 
-    # Fetch expenses
-    expenses = supabase.table("expenses").select("*").eq("user_id", user["id"]).execute().data
+    # Fetch expenses for logged-in user
+    result = supabase.table("expenses").select("*").eq("user_id", user_id).execute()
+    expenses = result.data or []
 
-    # Total spent
-    total_expense = sum(float(e["amount"]) for item in expenses)
+    # ----- TOTAL SPENT -----
+    total_expense = sum(float(e["amount"]) for e in expenses)
 
-    # Monthly Total
-    current_month = datetime.now().month
-    monthly_total = sum(float(e["amount"]) for item in expenses if int(e["next_date"][5:7]) == current_month)
+    # ----- MONTHLY TOTAL -----
+    current_month = datetime.now().strftime("%Y-%m")
+    monthly_total = sum(
+        float(e["amount"])
+        for e in expenses
+        if e["next_date"].startswith(current_month)
+    )
 
-    # Category Breakdown
+    # ----- CATEGORY BREAKDOWN -----
     category_map = {}
     for e in expenses:
         category_map[e["category"]] = category_map.get(e["category"], 0) + float(e["amount"])
@@ -298,23 +305,29 @@ def dashboard():
     category_labels = list(category_map.keys())
     category_values = list(category_map.values())
 
-    # Weekly (last 7 days)
+    # ----- WEEKLY SPENDING (LAST 7 DAYS) -----
     today = datetime.now()
     week_labels = []
     week_values = []
 
     for i in range(6, -1, -1):
         day = today - timedelta(days=i)
-        date_str = day.strftime("%Y-%m-%d")
+        date_only = day.strftime("%Y-%m-%d")
+
+        # Extract only date from stored timestamp
+        total_for_day = sum(
+            float(e["amount"])
+            for e in expenses
+            if e["next_date"][:10] == date_only
+        )
+
         week_labels.append(day.strftime("%d %b"))
+        week_values.append(total_for_day)
 
-        total = sum(float(e["amount"]) for e in expenses if e["next_date"] == date_str)
-        week_values.append(total)
-
-    # Recent expenses
+    # ----- RECENT EXPENSES -----
     recent = sorted(expenses, key=lambda x: x["next_date"], reverse=True)[:5]
 
-    # Highest category
+    # ----- TOP CATEGORY -----
     top_category = max(category_map, key=category_map.get) if category_map else "None"
 
     return render_template(
@@ -328,7 +341,6 @@ def dashboard():
         week_values=week_values,
         recent=recent
     )
-
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
