@@ -44,7 +44,9 @@
 </nav>
 
 <div class="container-fluid px-3">
-
+    <div>
+        <input type="text" id="searchExpense"  class="form-control" placeholder="Search by Amount,Category,Subcategory,etc....">
+    </div>
     <!-- EXPENSE TABLE -->
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-secondary text-white">
@@ -76,8 +78,8 @@
                 </div>
             </form>
             <div class="mb-3">
-                <button class="btn btn-outline-secondary me-2" onclick="sortTable(0)">Sort by Date</button>
-                <button class="btn btn-outline-secondary me-2" onclick="sortTable(3)">Sort by Amount</button>
+                <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(0)">Sort by Date</button-->
+                <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(3)">Sort by Amount</button-->
                 <button class="btn btn-outline-secondary" onclick="sortTable(1)">Sort by Category</button>
             </div>
             <!-- DELETE CONFIRMATION MODAL -->
@@ -176,6 +178,15 @@
         // Append sorted rows back
         rows.forEach(row => table.appendChild(row));
     }
+    document.getElementById('searchExpense').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('.expense-row');
+  
+      rows.forEach(row => {
+        const rowText = row.innerText.toLowerCase();
+        row.style.display = rowText.includes(query) ? '' : 'none';
+      });
+    });
 </script>
 </body>
 </html>
