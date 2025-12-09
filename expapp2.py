@@ -195,7 +195,7 @@ def profile():
         "profile.html",
         name=session.get("name"),
         email=session.get("email"),
-        phone=session.get("phone_number"),
+        phone_number=session.get("phone_number"),
         address=session.get("address")
     )
 
