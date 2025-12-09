@@ -191,7 +191,13 @@ def reports():
 def profile():
     if "user_id" not in session:
         return redirect("/login")
-    return render_template("profile.html")
+    return render_template(
+        "profile.html",
+        name=session.get("name"),
+        email=session.get("email"),
+        phone=session.get("phone_number"),
+        address=session.get("address")
+    )
 
 @app.route("/settings")
 def settings():
