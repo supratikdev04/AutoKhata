@@ -82,6 +82,10 @@ updateSubcategories();
 // Update when category changes
 document.getElementById("category").addEventListener("change", updateSubcategories);
 </script>
-
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/service-worker.js");
+  }
+</script>
 </body>
 </html>
