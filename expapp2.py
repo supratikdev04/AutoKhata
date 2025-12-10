@@ -362,16 +362,17 @@ def dashboard():
     top_category = max(category_map, key=category_map.get) if category_map else "None"
     
     return render_template(
-        "dashboard.html",
-        total_expense=total_expense,
-        monthly_total=monthly_total,
-        top_category=top_category,
-        category_labels=category_labels,
-        category_values=category_values,
-        week_labels=week_labels,
-        week_values=week_values,
-        recent=recent
-    )
+    "dashboard.html",
+    total_expense=total_expense,
+    monthly_total=monthly_total,
+    top_category=top_category,
+    category_labels=category_labels,
+    category_values=category_values,
+    week_labels=week_labels,
+    week_values=week_values,
+    recent=recent,
+    category_totals=category_totals
+)
 # ------------------------------- service worker ------------------------
 @app.route('/static/service-worker.js')
 def sw():
