@@ -122,21 +122,35 @@ def logout():
 def exptracker3():
     user_id = session["user_id"]
 
-    # SHOW ONLY RECENT 10 EXPENSES
+    # PAGE NUMBER
+    page = int(request.args.get("page", 1))
+    per_page = 10
+    start = (page - 1) * per_page
+    end = start + per_page - 1
+
+    # FETCH ONLY 10 EXPENSES FOR THIS PAGE
     result = (
         supabase.table("expenses")
         .select("*")
         .eq("user_id", user_id)
         .order("next_date", desc=True)
-        .range(0, 9)
+        .range(start, end)
         .execute()
     )
 
     expenses = result.data or []
 
-    total = sum(float(e["amount"]) for e in expenses) if expenses else 0
+    # ---------- TOTAL EXPENSES FROM ALL ROWS ----------
+    total_result = (
+        supabase.table("expenses")
+        .select("amount")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    all_expenses = total_result.data or []
+    total = sum(float(e["amount"]) for e in all_expenses)
 
-    # calculate total pages for button display
+    # ---------- TOTAL PAGES ----------
     count_result = (
         supabase.table("expenses")
         .select("id", count="exact")
@@ -144,14 +158,14 @@ def exptracker3():
         .execute()
     )
     total_expenses = count_result.count
-    total_pages = (total_expenses + 9) // 10
+    total_pages = (total_expenses + per_page - 1) // per_page
 
     return render_template(
         "exptracker3.html",
         expense=expenses,
         total=total,
         total_pages=total_pages,
-        current_page=1
+        current_page=page
     )
 
 # ------------------------------- DELETE EXPENSE -------------------------------
