@@ -18,9 +18,14 @@
 <body class="bg-light">
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 mb-3">
+<nav class="navbar navbar-expand-lg navbar-dark px-3 mb-3"
+     style="background: linear-gradient(90deg, #0d6efd, #0a5fdc, #0750bc, #05419d);">
+    
     <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+            style="background-color: #4CAF50; color: white;">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -30,13 +35,13 @@
             <li class="nav-item"><a class="nav-link" href="/add_expense">Add Expense</a></li>
             <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
         </ul>
-       
     </div>
+
     <button id="installBtn" class="btn btn-success d-none">Install App</button>
-    <!-- Profile Dropdown -->
+
     <div class="dropdown me-3">
         <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-           <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="/profile">My Profile</a></li>
@@ -45,7 +50,9 @@
             <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
         </ul>
     </div>
+
 </nav>
+
 
 <div class="container-fluid px-3">
     <div>
