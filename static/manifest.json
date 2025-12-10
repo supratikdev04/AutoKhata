@@ -3,7 +3,7 @@
   "short_name": "Expenses",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d6efd",
+  "background_color": "#FFBE98",
   "theme_color": "#0d6efd",
   "icons": [
     {
@@ -12,8 +12,21 @@
       "type": "image/png"
     },
     {
-      "src": "/static/icons/exptracker_app_icon2.png",
+      "src": "/static/icons/exptracker_app_2.png",
       "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/static/screenshots/mobile.png",
+      "sizes": "360x640",
       "type": "image/png"
     }
   ]
