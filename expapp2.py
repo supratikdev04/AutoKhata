@@ -122,20 +122,37 @@ def logout():
 def exptracker3():
     user_id = session["user_id"]
 
-    # GET: fetch recent 10 expenses
-    response = (
+    # SHOW ONLY RECENT 10 EXPENSES
+    result = (
         supabase.table("expenses")
         .select("*")
         .eq("user_id", user_id)
         .order("next_date", desc=True)
-        .limit(10)
+        .range(0, 9)
         .execute()
     )
-    expense = response.data or []
 
-    total = sum(float(item["amount"]) for item in expense) if expense else 0
+    expenses = result.data or []
 
-    return render_template("exptracker3.html", expense=expense, total=total)
+    total = sum(float(e["amount"]) for e in expenses) if expenses else 0
+
+    # calculate total pages for button display
+    count_result = (
+        supabase.table("expenses")
+        .select("id", count="exact")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    total_expenses = count_result.count
+    total_pages = (total_expenses + 9) // 10
+
+    return render_template(
+        "exptracker3.html",
+        expense=expenses,
+        total=total,
+        total_pages=total_pages,
+        current_page=1
+    )
 
 # ------------------------------- DELETE EXPENSE -------------------------------
 @app.route("/delete/<int:id>")
