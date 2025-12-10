@@ -362,6 +362,41 @@ def dashboard():
 @app.route('/static/service-worker.js')
 def sw():
     return app.send_static_file('service-worker.js')
+# ------------------------------ expense page ---------------------------
+@app.route("/expenses_page/<int:page>")
+@login_required
+def expenses_page(page):
+    user_id = session["user_id"]
+
+    LIMIT = 10
+    OFFSET = (page - 1) * LIMIT
+
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("user_id", user_id)
+        .order("next_date", desc=True)
+        .range(OFFSET, OFFSET + LIMIT - 1)
+        .execute()
+    )
+
+    expenses = result.data or []
+
+    count_result = (
+        supabase.table("expenses")
+        .select("id", count="exact")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    total_expenses = count_result.count
+    total_pages = (total_expenses + 9) // 10
+
+    return render_template(
+        "exptracker3.html",
+        expense=expenses,
+        total_pages=total_pages,
+        current_page=page
+    )
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
