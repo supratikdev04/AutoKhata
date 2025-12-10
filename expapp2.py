@@ -341,6 +341,11 @@ def dashboard():
         week_values=week_values,
         recent=recent
     )
+# ------------------------------- service worker ------------------------
+@app.route('/service-worker.js')
+def sw():
+    return app.send_static_file('service-worker.js')
+
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
