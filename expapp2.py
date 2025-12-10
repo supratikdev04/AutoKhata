@@ -347,6 +347,8 @@ def dashboard():
     # ----- TOP CATEGORY -----
     top_category = max(category_map, key=category_map.get) if category_map else "None"
 
+    return redirect(url_for("exptracker3"))
+    
     return render_template(
         "dashboard.html",
         total_expense=total_expense,
