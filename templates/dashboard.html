@@ -74,6 +74,21 @@
         </div>
 
     </div>
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-info text-white fw-bold">
+            Category-wise Spending
+        </div>
+    
+        <ul class="list-group list-group-flush">
+            {% for category, amount in category_totals.items() %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ category }}</span>
+                <span class="fw-bold text-primary">₹{{ amount }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
 
     <!-- RECENT EXPENSES -->
     <div class="card mt-4 shadow-sm">
