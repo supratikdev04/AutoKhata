@@ -122,12 +122,13 @@ def logout():
 def exptracker3():
     user_id = session["user_id"]
 
-    # GET: fetch current user's expenses
+    # GET: fetch recent 10 expenses
     response = (
         supabase.table("expenses")
         .select("*")
         .eq("user_id", user_id)
-        .order("next_date")
+        .order("next_date", desc=True)
+        .limit(10)
         .execute()
     )
     expense = response.data or []
@@ -135,7 +136,6 @@ def exptracker3():
     total = sum(float(item["amount"]) for item in expense) if expense else 0
 
     return render_template("exptracker3.html", expense=expense, total=total)
-
 
 # ------------------------------- DELETE EXPENSE -------------------------------
 @app.route("/delete/<int:id>")
