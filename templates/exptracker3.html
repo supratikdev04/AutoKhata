@@ -206,7 +206,7 @@
     });
 }
 </script>
-<script>
+<!--script>
     let deferredPrompt;
     
     window.addEventListener("beforeinstallprompt", (e) => {
@@ -218,7 +218,23 @@
     document.getElementById("installBtn").addEventListener("click", () => {
         deferredPrompt.prompt();
         deferredPrompt = null;
+    });-->
+<script>
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
     });
+    
+    installButton.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      console.log(choice.outcome);
+      deferredPrompt = null;
+    });
+
 </script>
 
 </body>
