@@ -199,8 +199,8 @@
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/static/service-worker.js");
       }
-    </script>
-    <script>
+</script>
+<script>
     let deferredPrompt;
     
     window.addEventListener("beforeinstallprompt", (e) => {
@@ -214,5 +214,6 @@
         deferredPrompt = null;
     });
 </script>
+
 </body>
 </html>
