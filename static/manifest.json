@@ -4,7 +4,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFBE98",
-  "theme_color": "#0d6efd",
+  "theme_color": "#0dfdc4",
   "icons": [
     {
       "src": "/static/icons/exptracker_app_icon1.png",
