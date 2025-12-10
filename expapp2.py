@@ -342,9 +342,9 @@ def dashboard():
         recent=recent
     )
 # ------------------------------- service worker ------------------------
-@app.route('/static/service_worker.js')
+@app.route('/static/service-worker.js')
 def sw():
-    return app.send_static_file('service_worker.js')
+    return app.send_static_file('service-worker.js')
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
