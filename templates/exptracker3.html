@@ -15,16 +15,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="manifest" href="/static/manifest.json">
     <style>
-    .navbar .dropdown-toggle {
-        padding: 6px 10px;
-    }
+        .navbar .dropdown-toggle {
+            padding: 6px 10px;
+        }
+    </style>
+    <style>
+        .profile-fixed {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+    
+        @media (min-width: 992px) {
+            .profile-fixed {
+                position: static !important;
+            }
+        }
     </style>
 
 </head>
 <body class="bg-light">
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg" style="background: linear-gradient(90deg,#007bff,#004ecb);">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,#007bff,#004ecb);">
   <div class="container">
 
     <!-- LOGO / TITLE -->
@@ -52,8 +65,13 @@
           <a class="nav-link text-white" href="/reports">Reports</a>
         </li>
 
+<!-- Add this BEFORE profile dropdown -->
+        <button id="installBtn" class="btn btn-light btn-sm me-2 d-none">
+            Install App
+        </button>
+          
         <!-- PROFILE DROPDOWN -->
-        <li class="nav-item dropdown ms-3">
+        <li class="nav-item dropdown ms-3 profile-fixed">
           <a class="nav-link dropdown-toggle bg-white px-2 py-1 rounded  align-items-right " href="#" id="profileDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
             <img src="/static/icons/user.jpg" width="22">
