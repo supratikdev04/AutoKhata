@@ -25,25 +25,18 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark px-3 mb-3"
      style="background: linear-gradient(90deg, #0d6efd, #0a5fdc, #0750bc, #05419d);">
-    
-        <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
-    
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-                style="background-color: #4CAF50; color: white;">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-    <div class="collapse navbar-collapse justify-content-between" id="navbarMenu">
-        <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="/add_expense">Add Expense</a></li>
-            <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
-        </ul>
+    <div class="d-flex align-items-center w-100 justify-content-between">
+
+        <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
+
         <div class="d-flex align-items-center">
-            <button id="installBtn" class="btn btn-success me-3 d-none">Install App</button>
-    
-            <div class="dropdown ">
+
+            <button id="installBtn" class="btn btn-success d-none me-2">
+                Install
+            </button>
+
+            <div class="dropdown me-2">
                 <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle"></i>
                 </button>
@@ -54,8 +47,23 @@
                     <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
                 </ul>
             </div>
+
+            <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
         </div>
-    </div>     
+
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/add_expense">Add Expense</a></li>
+            <li class="nav-item"><a class="nav-link" href="/reports">Reports</a></li>
+        </ul>
+    </div>
 </nav>
 
 
@@ -159,18 +167,20 @@
                 </tbody>
             </table>
            <div class="d-flex justify-content-between mt-3">
-
                 {% if current_page > 1 %}
-                <a href="/expenses_page/{{ current_page - 1 }}" class="btn btn-secondary">
+                <a href="/expenses_page/{{ current_page - 1 }}?start_date={{ start_date }}&end_date={{ end_date }}" 
+                   class="btn btn-secondary">
                     ⬅ Previous 10
                 </a>
                 {% endif %}
             
                 {% if current_page < total_pages %}
-                <a href="/expenses_page/{{ current_page + 1 }}" class="btn btn-primary ms-auto">
+                <a href="/expenses_page/{{ current_page + 1 }}?start_date={{ start_date }}&end_date={{ end_date }}"
+                   class="btn btn-primary ms-auto">
                     Next 10 ➡
                 </a>
                 {% endif %}
+            
             </div>
         </div>
     </div>
