@@ -280,33 +280,40 @@ def filter_expenses():
     start_date = request.form.get("start_date")
     end_date = request.form.get("end_date")
 
-    # base query
+    # Base query
     query = supabase.table("expenses").select("*").eq("user_id", user_id)
 
-    # handle different cases
+    # --- DATE FILTER LOGIC ---
     if start_date and end_date:
-        # include full end day
+        # RANGE FILTER
         end_with_time = end_date + " 23:59:59"
         query = query.gte("next_date", start_date).lte("next_date", end_with_time)
+
     elif start_date and not end_date:
-        query = query.gte("next_date", start_date)
+        # SPECIFIC-DATE FILTER (full 24 hours)
+        day_start = start_date + " 00:00:00"
+        day_end = start_date + " 23:59:59"
+        query = query.gte("next_date", day_start).lte("next_date", day_end)
+
     elif end_date and not start_date:
+        # ONLY END DATE FILTER
         end_with_time = end_date + " 23:59:59"
         query = query.lte("next_date", end_with_time)
-    # else: no dates → show all for this user
+
+    # Get results
     result = query.order("next_date", desc=False).execute()
     expenses = result.data or []
 
     total = sum(float(item["amount"]) for item in expenses) if expenses else 0
 
-    # IMPORTANT: template expects 'expense', not 'expenses'
     return render_template(
-    "exptracker3.html",
-    expense=expenses,
-    total=total,
-    start_date=start_date,
-    end_date=end_date
-)
+        "exptracker3.html",
+        expense=expenses,
+        total=total,
+        start_date=start_date,
+        end_date=end_date
+    )
+
 # --------------------------- Dashboard ------------------------------------
 
 @app.route("/dashboard")
