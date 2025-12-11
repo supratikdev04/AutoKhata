@@ -426,9 +426,29 @@ def expenses_page(page):
     )
 # ---------------------------- History ---------------------------------
 @app.route("/history")
-@login_required
 def history():
-    return render_template("exptracker3.html", ...)
+    selected_date = request.args.get("date")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if selected_date:
+        cursor.execute("""
+            SELECT * FROM expenses 
+            WHERE DATE(date) = ?
+            ORDER BY date DESC
+        """, (selected_date,))
+    else:
+        cursor.execute("""
+            SELECT * FROM expenses
+            ORDER BY date DESC
+        """)
+
+    expenses = cursor.fetchall()
+    conn.close()
+
+    return render_template("exptracker3.html", expenses=expenses)
+
 
 # ----------------------------- icon ------------------------------------
 @app.route('/favicon.ico')
