@@ -212,12 +212,12 @@ def add_expense():
 
     # GET → Show form only
     return render_template("add_expense.html")
-
+'''
 #------------------------ Reports ---------------------------------
 @app.route("/reports")
 def reports():
     return render_template("reports.html")
-
+'''
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
@@ -311,7 +311,9 @@ def filter_expenses():
         total=total,
         specific_date=specific_date,
         start_date=start_date,
-        end_date=end_date
+        end_date=end_date,
+        current_page=1,
+        total_pages=1   
     )
 
 # --------------------------- Dashboard ------------------------------------
