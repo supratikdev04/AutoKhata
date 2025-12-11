@@ -121,26 +121,33 @@
 
         <div class="card-body table-responsive">
             <!-- FILTER FORM -->
-            <form method="POST" action="/exptracker_filter" class="row g-2 mb-3">
+                <form method="POST" action="/exptracker_filter" class="row g-2 mb-3">
+                
+                    <div class="col-md-3">
+                        <label>Start Date</label>
+                        <input type="date" name="start_date" 
+                               value="{{ start_date if start_date else '' }}" 
+                               class="form-control">
+                    </div>
+                
+                    <div class="col-md-3">
+                        <label>End Date</label>
+                        <input type="date" name="end_date" 
+                               value="{{ end_date if end_date else '' }}" 
+                               class="form-control">
+                    </div>
+                
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                
+                    <!-- CLEAR FILTER BUTTON -->
+                    <div class="col-md-3 d-flex align-items-end">
+                        <a href="/history" class="btn btn-secondary w-100">Clear Filter</a>
+                    </div>
+                
+                </form>
 
-                <div class="col-md-3">
-                    <label>Start Date</label>
-                    <input type="date" name="start_date" 
-                           value="{{ start_date if start_date else '' }}" 
-                           class="form-control">
-                </div>
-            
-                <div class="col-md-3">
-                    <label>End Date</label>
-                    <input type="date" name="end_date" 
-                           value="{{ end_date if end_date else '' }}" 
-                           class="form-control">
-                </div>
-            
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                </div>
-            </form>
             <div class="mb-3">
                 <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(0)">Sort by Date</button-->
                 <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(3)">Sort by Amount</button-->
