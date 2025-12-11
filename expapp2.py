@@ -424,6 +424,12 @@ def expenses_page(page):
         total_pages=total_pages,
         current_page=page
     )
+# ---------------------------- History ---------------------------------
+@app.route("/history")
+@login_required
+def history():
+    return render_template("exptracker3.html", ...)
+
 # ----------------------------- icon ------------------------------------
 @app.route('/favicon.ico')
 def favicon():
