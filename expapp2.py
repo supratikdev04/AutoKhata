@@ -425,22 +425,6 @@ import os
 
 UPLOAD_FOLDER = "static/profile"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-# ---------------------------- Profile Picture upload --------------------
-@app.route("/upload_profile", methods=["POST"])
-def upload_profile():
-    file = request.files["profile_img"]
-
-    if file.filename == "":
-        return redirect(url_for("profile"))
-
-    path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(path)
-
-    # Save filename in DB for this user:
-    # user.profile_img = file.filename
-    # db.session.commit()
-
-    return redirect(url_for("profile"))
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
