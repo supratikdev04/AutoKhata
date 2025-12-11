@@ -420,6 +420,28 @@ def expenses_page(page):
 def favicon():
     return send_from_directory('static/icons', 'exptracker_app_icon1.png')
 
+from flask import request, redirect, url_for
+import os
+
+UPLOAD_FOLDER = "static/profile"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# ---------------------------- Profile Picture upload --------------------
+@app.route("/upload_profile", methods=["POST"])
+def upload_profile():
+    file = request.files["profile_img"]
+
+    if file.filename == "":
+        return redirect(url_for("profile"))
+
+    path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(path)
+
+    # Save filename in DB for this user:
+    # user.profile_img = file.filename
+    # db.session.commit()
+
+    return redirect(url_for("profile"))
+
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
