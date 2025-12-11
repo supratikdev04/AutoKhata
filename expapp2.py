@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv   
+from flask import send_from_directory
 
 # Load environment variables from .env
 load_dotenv()
@@ -405,12 +406,19 @@ def expenses_page(page):
     total_expenses = count_result.count
     total_pages = (total_expenses + 9) // 10
 
+    total = sum(float(e["amount"]) for e in expenses)
+
     return render_template(
         "exptracker3.html",
         expense=expenses,
+        total=total,
         total_pages=total_pages,
         current_page=page
     )
+# ----------------------------- icon ------------------------------------
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/icons', 'exptracker_app_icon1.png')
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
