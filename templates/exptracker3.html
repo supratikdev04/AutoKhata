@@ -36,22 +36,22 @@
 </head>
 <body class="bg-light">
 
-<!-- NAVBAR -->
+<!---NAV Bar-->
 <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,#007bff,#004ecb);">
   <div class="container">
 
-    <!-- LOGO / TITLE -->
+    <!-- LOGO -->
     <a class="navbar-brand text-white fw-bold" href="/">Expense Tracker</a>
 
-    <!-- TOGGLER (only visible on mobile) -->
+    <!-- TOGGLER -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- MENU ITEMS -->
+    <!-- MENU -->
     <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
 
-      <ul class="navbar-nav align-items-right">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
         <li class="nav-item">
           <a class="nav-link text-white" href="/dashboard">Dashboard</a>
@@ -65,18 +65,12 @@
           <a class="nav-link text-white" href="/reports">Reports</a>
         </li>
 
-<!-- Add this BEFORE profile dropdown -->
-        <button id="installBtn" class="btn btn-light btn-sm me-2 d-none">
-            Install App
-        </button>
-          
-        <!-- PROFILE DROPDOWN -->
-        <li class="nav-item dropdown ms-3 profile-fixed">
-          <a class="nav-link dropdown-toggle bg-white px-2 py-1 rounded  align-items-right " href="#" id="profileDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="/static/icons/user.jpg" width="22">
+        <!-- MOBILE PROFILE (INSIDE MENU) -->
+        <li class="nav-item dropdown d-block d-lg-none">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> Profile
           </a>
-          <ul class="dropdown-menu dropdown-menu-start">
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/profile">Profile</a></li>
             <li><a class="dropdown-item" href="/settings">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -86,12 +80,30 @@
 
       </ul>
 
+      <!-- INSTALL BUTTON (DESKTOP + MOBILE) -->
+      <button id="installBtn" class="btn btn-light btn-sm me-2 d-none">
+        Install App
+      </button>
+
+      <!-- DESKTOP PROFILE ICON (RIGHT SIDE) -->
+      <li class="nav-item dropdown ms-3 d-none d-lg-block">
+        <a class="nav-link dropdown-toggle bg-white px-2 py-1 rounded" href="#" id="profileDropdown"
+           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="/static/icons/user.jpg" width="22">
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="/profile">Profile</a></li>
+          <li><a class="dropdown-item" href="/settings">Settings</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+        </ul>
+      </li>
+
     </div>
 
   </div>
 </nav>
-
-
 
 <div class="container-fluid px-3">
     <div>
