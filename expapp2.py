@@ -425,7 +425,7 @@ def expenses_page(page):
         current_page=page
     )
 # ---------------------------- History ---------------------------------
-@app.route("/history")
+@app.route("/expense_history")
 def history():
     selected_date = request.args.get("date")
 
