@@ -277,30 +277,29 @@ def modify_expense(id):
 def filter_expenses():
     user_id = session["user_id"]
 
+    specific_date = request.form.get("specific_date")
     start_date = request.form.get("start_date")
     end_date = request.form.get("end_date")
 
-    # Base query
     query = supabase.table("expenses").select("*").eq("user_id", user_id)
 
-    # --- DATE FILTER LOGIC ---
-    if start_date and end_date:
-        # RANGE FILTER
-        end_with_time = end_date + " 23:59:59"
-        query = query.gte("next_date", start_date).lte("next_date", end_with_time)
+    # 1. Filter by specific date
+    if specific_date:
+        query = query.gte("next_date", specific_date + " 00:00:00") \
+                     .lte("next_date", specific_date + " 23:59:59")
+
+    # 2. Filter by range
+    elif start_date and end_date:
+        query = query.gte("next_date", start_date) \
+                     .lte("next_date", end_date + " 23:59:59")
 
     elif start_date and not end_date:
-        # SPECIFIC-DATE FILTER (full 24 hours)
-        day_start = start_date + " 00:00:00"
-        day_end = start_date + " 23:59:59"
-        query = query.gte("next_date", day_start).lte("next_date", day_end)
+        query = query.gte("next_date", start_date)
 
     elif end_date and not start_date:
-        # ONLY END DATE FILTER
-        end_with_time = end_date + " 23:59:59"
-        query = query.lte("next_date", end_with_time)
+        query = query.lte("next_date", end_date + " 23:59:59")
 
-    # Get results
+    # Execute
     result = query.order("next_date", desc=False).execute()
     expenses = result.data or []
 
@@ -310,6 +309,7 @@ def filter_expenses():
         "exptracker3.html",
         expense=expenses,
         total=total,
+        specific_date=specific_date,
         start_date=start_date,
         end_date=end_date
     )
