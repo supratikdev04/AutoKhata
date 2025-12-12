@@ -181,6 +181,7 @@ def delete_row(id):
     return redirect(url_for("exptracker3"))
 
 # ----------------------------- Add Expense ---------------------------------
+'''
 @app.route("/add_expense",methods=["GET","POST"])
 @login_required
 def add_expense():
@@ -212,6 +213,44 @@ def add_expense():
 
     # GET → Show form only
     return render_template("add_expense.html")
+'''
+@app.route("/add_expense", methods=["GET", "POST"])
+@login_required
+def add_expense():
+    user_id = session["user_id"]
+
+    if request.method == "POST":
+        amount = request.form.get("amount")
+        category = request.form.get("category")
+        subcategory = request.form.get("subcategory")
+        note = request.form.get("note", "")
+
+        if not amount:
+            return render_template("add_expense.html", error="Amount is required")
+
+        # 🔥 AUTO CATEGORIZE BASED ON NOTE
+        if (not category or category == "Auto") or (not subcategory):
+            auto_cat, auto_subcat = ai_auto_categorize(note)
+            category = auto_cat
+            subcategory = auto_subcat
+
+        # Full datetime
+        next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        supabase.table("expenses").insert({
+            "next_date": next_date,
+            "amount": amount,
+            "category": category,
+            "subcategory": subcategory,
+            "note": note,
+            "user_id": user_id
+        }).execute()
+
+        return redirect(url_for("exptracker3"))
+
+    return render_template("add_expense.html")
+
+
 #------------------------ Reports ---------------------------------
 @app.route("/reports", methods=["GET", "POST"])
 def reports():
@@ -485,6 +524,39 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route("/support_success")
 def support_success():
     return "<h2>Report submitted successfully! We will contact you soon.</h2>"
+# ---------------------------- Ai Auto Categorize ------------------------
+def ai_auto_categorize(text):
+    text = text.lower()
+
+    # FOOD
+    if any(w in text for w in ["kfc", "dominos", "pizza", "cafe", "restaurant", "burger", "lunch", "dinner"]):
+        return ("Food", "Restaurant")
+
+    if any(w in text for w in ["grocery", "supermarket", "milk", "rice", "vegetable"]):
+        return ("Food", "Grocery")
+
+    # TRAVEL
+    if any(w in text for w in ["uber", "ola", "bus", "train", "flight", "auto"]):
+        return ("Travel", "Transport")
+
+    if "petrol" in text or "diesel" in text:
+        return ("Travel", "Fuel")
+
+    # SHOPPING
+    if any(w in text for w in ["amazon", "flipkart", "myntra", "shopping", "clothes"]):
+        return ("Shopping", "Online")
+
+    # ENTERTAINMENT
+    if any(w in text for w in ["movie", "netflix", "hotstar", "spotify"]):
+        return ("Entertainment", "Subscription")
+
+    # BILLS
+    if any(w in text for w in ["electricity", "water bill", "gas bill", "recharge", "mobile bill"]):
+        return ("Bills", "Utility")
+
+    # Default fallback
+    return ("Other", "General")
+
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
