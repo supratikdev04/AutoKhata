@@ -36,6 +36,38 @@ def login_required(func):
 
     return wrapper
 
+# ---------------------------- Ai Auto Categorize ------------------------
+def ai_auto_categorize(text):
+    text = text.lower()
+
+    # FOOD
+    if any(w in text for w in ["kfc", "dominos", "pizza", "cafe", "restaurant", "burger", "lunch", "dinner"]):
+        return ("Food", "Restaurant")
+
+    if any(w in text for w in ["grocery", "supermarket", "milk", "rice", "vegetable"]):
+        return ("Food", "Grocery")
+
+    # TRAVEL
+    if any(w in text for w in ["uber", "ola", "bus", "train", "flight", "auto"]):
+        return ("Travel", "Transport")
+
+    if "petrol" in text or "diesel" in text:
+        return ("Travel", "Fuel")
+
+    # SHOPPING
+    if any(w in text for w in ["amazon", "flipkart", "myntra", "shopping", "clothes"]):
+        return ("Shopping", "Online")
+
+    # ENTERTAINMENT
+    if any(w in text for w in ["movie", "netflix", "hotstar", "spotify"]):
+        return ("Entertainment", "Subscription")
+
+    # BILLS
+    if any(w in text for w in ["electricity", "water bill", "gas bill", "recharge", "mobile bill"]):
+        return ("Bills", "Utility")
+
+    return ("Other", "General")
+
 # ------------------------------- SIGNUP -------------------------------
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -214,39 +246,6 @@ def add_expense():
     # GET → Show form only
     return render_template("add_expense.html")
 '''
-def ai_auto_categorize(text):
-    text = text.lower()
-
-    # FOOD
-    if any(w in text for w in ["kfc", "dominos", "pizza", "cafe", "restaurant", "burger", "lunch", "dinner"]):
-        return ("Food", "Restaurant")
-
-    if any(w in text for w in ["grocery", "supermarket", "milk", "rice", "vegetable"]):
-        return ("Food", "Grocery")
-
-    # TRAVEL
-    if any(w in text for w in ["uber", "ola", "bus", "train", "flight", "auto"]):
-        return ("Travel", "Transport")
-
-    if "petrol" in text or "diesel" in text:
-        return ("Travel", "Fuel")
-
-    # SHOPPING
-    if any(w in text for w in ["amazon", "flipkart", "myntra", "shopping", "clothes"]):
-        return ("Shopping", "Online")
-
-    # ENTERTAINMENT
-    if any(w in text for w in ["movie", "netflix", "hotstar", "spotify"]):
-        return ("Entertainment", "Subscription")
-
-    # BILLS
-    if any(w in text for w in ["electricity", "water bill", "gas bill", "recharge", "mobile bill"]):
-        return ("Bills", "Utility")
-
-    # Default fallback
-    return ("Other", "General")
-
-# ---------------------------add Expense ------------------------------
 @app.route("/add_expense", methods=["GET", "POST"])
 @login_required
 def add_expense():
@@ -261,7 +260,7 @@ def add_expense():
         if not amount:
             return render_template("add_expense.html", error="Amount is required")
 
-        # 🔥 AUTO CATEGORIZE BASED ON NOTE
+        # AUTO CATEGORIZE BASED ON NOTE
         if (not category or category == "Auto") or (not subcategory):
             auto_cat, auto_subcat = ai_auto_categorize(note)
             category = auto_cat
