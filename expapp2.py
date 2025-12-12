@@ -319,10 +319,10 @@ def add_expense():
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------
-@app.route("/reports", methods=["GET", "POST"])
-def reports():
+@app.route("/submit_report", methods=["GET", "POST"])
+def submit_report():
     if request.method == "GET":
-        return render_template("reports.html")  # your support page
+        return render_template("submit_report.html")  # your support page
 
     # POST = form submitted
     name = request.form.get("name")
