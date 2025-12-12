@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv   
 from flask import send_from_directory
+import re 
 
 # Load environment variables from .env
 load_dotenv()
@@ -38,6 +39,22 @@ def login_required(func):
 
 # ---------------------------- Ai Auto Categorize ------------------------
 def ai_auto_categorize(text):
+    """
+    Improved rule-based categorizer.
+    Returns (category, subcategory).
+    """
+    if not text:
+        return ("Other", "General")
+
+    s = text.lower()
+
+    # Normalize some punctuation / symbols
+    s = s.replace("₹", " ").replace("rs.", " ").replace("rs", " ")
+
+    # Use word boundary matching for safer detection
+    def has(*words):
+        return any(re.search(r'\b' + re.escape(w) + r'\b', s) for w in words)
+
     text = text.lower()
 
     # FOOD
@@ -252,26 +269,44 @@ def add_expense():
     user_id = session["user_id"]
 
     if request.method == "POST":
-        amount = request.form.get("amount")
-        category = request.form.get("category")
-        subcategory = request.form.get("subcategory")
-        note = request.form.get("note", "")
+        amount = request.form.get("amount", "").strip()
+        category = request.form.get("category", "").strip()
+        subcategory = request.form.get("subcategory", "").strip()
+        note = request.form.get("note", "").strip()
 
+        # If user typed a combined string like "KFC lunch ₹200" into note and left amount empty,
+        # try to extract amount from note (regex looks for numbers with optional decimal).
         if not amount:
-            return render_template("add_expense.html", error="Amount is required")
+            # look for ₹123, 123, 123.45 patterns
+            m = re.findall(r'([0-9]+(?:\.[0-9]{1,2})?)', note.replace(',', ''))
+            if m:
+                # usually last number is the price; safe fallback if user had numbers in note
+                amount = m[-1]
+                print(f"[add_expense] parsed amount from note: {amount}")
+            else:
+                return render_template("add_expense.html", error="Amount is required (or include amount in note)")
 
-        # AUTO CATEGORIZE BASED ON NOTE
-        if (not category or category == "Auto") or (not subcategory):
+        # If category/subcategory are empty or set to Auto, call the auto-categorizer
+        if (not category) or category.lower() == "auto" or (not subcategory):
             auto_cat, auto_subcat = ai_auto_categorize(note)
-            category = auto_cat
-            subcategory = auto_subcat
+            print(f"[add_expense] auto-categorized: '{note}' -> {auto_cat} / {auto_subcat}")
+            # Only override empty / auto fields. If user explicitly chose a category, keep it.
+            if not category or category.lower() == "auto":
+                category = auto_cat
+            if not subcategory:
+                subcategory = auto_subcat
 
-        # Full datetime
+        # Final validation: ensure amount is numeric
+        try:
+            amount_float = float(amount)
+        except ValueError:
+            return render_template("add_expense.html", error="Invalid amount format")
+
         next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         supabase.table("expenses").insert({
             "next_date": next_date,
-            "amount": amount,
+            "amount": amount_float,
             "category": category,
             "subcategory": subcategory,
             "note": note,
@@ -280,6 +315,7 @@ def add_expense():
 
         return redirect(url_for("exptracker3"))
 
+    # GET -> show form
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------
