@@ -345,14 +345,16 @@ def report():
     return redirect("/support_success")
 '''
 # Make sure folder exists
-UPLOAD_SUPPORT = "static/support_uploads"
-os.makedirs(UPLOAD_SUPPORT, exist_ok=True)
+SUPPORT_UPLOAD_FOLDER = "static/support_uploads"
+os.makedirs(SUPPORT_UPLOAD_FOLDER, exist_ok=True)
+
 
 @app.route("/report", methods=["GET", "POST"])
 def report():
     if request.method == "GET":
-        return render_template("report.html")
+        return render_template("report.html")   # display support form
 
+    # ---------------- POST (FORM SUBMITTED) ----------------
     name = request.form.get("name")
     email = request.form.get("email")
     issue_type = request.form.get("issue_type")
@@ -363,13 +365,21 @@ def report():
 
     if screenshot and screenshot.filename:
         filename = secure_filename(screenshot.filename)
-        file_path = os.path.join(UPLOAD_SUPPORT, filename)
-        screenshot.save(file_path)
+        save_path = os.path.join(SUPPORT_UPLOAD_FOLDER, filename)
+        screenshot.save(save_path)
         screenshot_url = f"/static/support_uploads/{filename}"
 
-    print("New support request:", name, email, issue_type, message, screenshot_url)
-    
-    return redirect("/support_success")
+    # (you may store it in DB or send email here)
+
+    print("\n--- NEW SUPPORT REQUEST ---")
+    print("Name:", name)
+    print("Email:", email)
+    print("Issue Type:", issue_type)
+    print("Message:", message)
+    print("Screenshot:", screenshot_url)
+    print("----------------------------\n")
+
+    return redirect(url_for("support_success"))
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
