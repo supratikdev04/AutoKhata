@@ -319,7 +319,6 @@ def add_expense():
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------.
-'''
 @app.route("/report", methods=["GET", "POST"])
 def report():
     if request.method == "GET":
@@ -357,6 +356,7 @@ def report():
     print("Report received:", name, email, issue_type, message)
 
     return "Thank you! Your report has been submitted."
+'''
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
