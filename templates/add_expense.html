@@ -23,12 +23,17 @@
             <div class="col-md-3 col-12">
                 <!-- Category -->
                 <label class="form-label">Category</label>
-                <select class="form-select" name="category" id="category" required>
+                <select class="form-select" name="category" id="category">
                     <option value="Auto" selected>Auto Detect</option>
                     <option value="Food">Food</option>
-                    <option value="Transport">Transport</option>
+                    <option value="Travel">Travel</option>
                     <option value="Shopping">Shopping</option>
                     <option value="Bills">Bills</option>
+                </select>
+                
+                <label class="form-label mt-3">Subcategory</label>
+                <select class="form-select" name="subcategory" id="subcategory">
+                    <option value="">Auto Detect</option>
                 </select>
 
                 <!-- Subcategory -->
@@ -56,10 +61,10 @@
 <script>
 // Subcategories List
 const subcategories = {
-    Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Other"],
-    Transport: ["Bus", "Taxi", "Train", "Fuel", "Maintenance"],
-    Shopping: ["Clothes", "Electronics", "Accessories", "Gifts"],
-    Bills: ["Electricity", "Water", "Internet", "Phone", "Rent"],
+    Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Restaurant"],
+    Travel: ["Bus", "Taxi", "Train", "Fuel", "Flight"],
+    Shopping: ["Clothes", "Electronics", "Accessories", "Online"],
+    Bills: ["Electricity", "Water", "Internet", "Phone"],
 };
 
 // Update subcategory dropdown
@@ -67,16 +72,23 @@ function updateSubcategories() {
     const category = document.getElementById("category").value;
     const subcatSelect = document.getElementById("subcategory");
 
-    subcatSelect.innerHTML = ""; // Clear old options
+    subcatSelect.innerHTML = "";
 
-    subcategories[category].forEach(sub => {
-        const option = document.createElement("option");
-        option.value = sub;
-        option.textContent = sub;
-        subcatSelect.appendChild(option);
-    });
+    // Add Auto Detect
+    const autoOption = document.createElement("option");
+    autoOption.value = "";
+    autoOption.textContent = "Auto Detect";
+    subcatSelect.appendChild(autoOption);
+
+    if (subcategories[category]) {
+        subcategories[category].forEach(sub => {
+            const option = document.createElement("option");
+            option.value = sub;
+            option.textContent = sub;
+            subcatSelect.appendChild(option);
+        });
+    }
 }
-
 // Load first category subcategories on page load
 updateSubcategories();
 
@@ -88,5 +100,6 @@ document.getElementById("category").addEventListener("change", updateSubcategori
     navigator.serviceWorker.register("/static/service-worker.js");
   }
 </script>
+    
 </body>
 </html>
