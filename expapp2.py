@@ -213,20 +213,28 @@ def add_expense():
     # GET → Show form only
     return render_template("add_expense.html")
 #------------------------ Reports ---------------------------------
-@app.post("/reports")
+@app.route("/reports", methods=["POST"])
 def reports():
-    name = request.form["name"]
-    email = request.form["email"]
-    issue_type = request.form["issue_type"]
-    message = request.form["message"]
-
-    # Optional screenshot
+    name = request.form.get("name")
+    email = request.form.get("email")
+    issue_type = request.form.get("issue_type")
+    message = request.form.get("message")
     screenshot = request.files.get("screenshot")
 
-    # Save to database or send email...
-    print("Report received:", name, email, issue_type, message)
+    # Save screenshot if uploaded
+    screenshot_url = None
+    if screenshot:
+        filename = secure_filename(screenshot.filename)
+        file_path = os.path.join("static/support_success", filename)
+        screenshot.save(file_path)
+        screenshot_url = f"/static/support_success/{filename}"
 
-    return "Thank you! Your report has been submitted."
+    # You can save this in Supabase if needed:
+    # supabase.table("support_reports").insert({...}).execute()
+
+    print("New support request received:", name, email, issue_type, message, screenshot_url)
+
+    return redirect("/support_success")
 
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
