@@ -213,8 +213,8 @@ def add_expense():
     # GET → Show form only
     return render_template("add_expense.html")
 #------------------------ Reports ---------------------------------
-@app.post("/report")
-def report():
+@app.post("/reports")
+def reports():
     name = request.form["name"]
     email = request.form["email"]
     issue_type = request.form["issue_type"]
