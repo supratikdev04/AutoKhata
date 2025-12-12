@@ -381,7 +381,8 @@ def dashboard():
         category_values=category_values,
         week_labels=week_labels,
         week_values=week_values,
-        recent=recent
+        recent=recent,
+        category_map=category_map
     )
 # ------------------------------- service worker ------------------------
 @app.route('/static/service-worker.js')
