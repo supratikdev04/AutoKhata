@@ -379,7 +379,7 @@ def report():
     print("Screenshot:", screenshot_url)
     print("----------------------------\n")
 
-    return redirect(url_for("support_success"))
+    return redirect(url_for("dashboard"))
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
@@ -628,7 +628,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # ------------------------------ Support Success ------------------------
 @app.route("/support_success")
 def support_success():
-    return "<h2>Report submitted successfully! We will contact you soon.</h2>"
+    return "Report submitted successfully !! "
 # ---------------------------- Ai Auto Categorize ------------------------
 
 
