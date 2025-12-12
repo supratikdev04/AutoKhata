@@ -213,24 +213,24 @@ def add_expense():
     # GET → Show form only
     return render_template("add_expense.html")
 #------------------------ Reports ---------------------------------
-@app.route("/reports", methods=["POST"])
+@app.route("/reports", methods=["GET", "POST"])
 def reports():
+    if request.method == "GET":
+        return render_template("reports.html")  # your support page
+
+    # POST = form submitted
     name = request.form.get("name")
     email = request.form.get("email")
     issue_type = request.form.get("issue_type")
     message = request.form.get("message")
     screenshot = request.files.get("screenshot")
 
-    # Save screenshot if uploaded
     screenshot_url = None
     if screenshot:
         filename = secure_filename(screenshot.filename)
-        file_path = os.path.join("static/support_success", filename)
+        file_path = os.path.join("static/support_uploads", filename)
         screenshot.save(file_path)
-        screenshot_url = f"/static/support_success/{filename}"
-
-    # You can save this in Supabase if needed:
-    # supabase.table("support_reports").insert({...}).execute()
+        screenshot_url = f"/static/support_uploads/{filename}"
 
     print("New support request received:", name, email, issue_type, message, screenshot_url)
 
