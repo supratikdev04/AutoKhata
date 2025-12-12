@@ -263,31 +263,25 @@ def modify_expense(id):
 
 
 # ------------------ Reports route (fixed single copy) ------------------
-@app.route("/report", methods=["GET", "POST"])
+@app.route('/report', methods=['GET', 'POST'])
 def report():
-    if request.method == "GET":
-        # ensure template exists: templates/report.html
-        return render_template("report.html")
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        issue_type = request.form.get("issue_type")
+        message = request.form.get("message")
+        screenshot = request.files.get("screenshot")
 
-    # POST
-    name = request.form.get("name")
-    email = request.form.get("email")
-    issue_type = request.form.get("issue_type")
-    message = request.form.get("message")
-    screenshot = request.files.get("screenshot")
+        # Save screenshot if exists
+        if screenshot and screenshot.filename:
+            file_path = os.path.join("uploads", screenshot.filename)
+            screenshot.save(file_path)
 
-    screenshot_url = None
-    if screenshot and screenshot.filename:
-        filename = secure_filename(screenshot.filename)
-        save_path = os.path.join(SUPPORT_UPLOAD_FOLDER, filename)
-        screenshot.save(save_path)
-        screenshot_url = f"/{save_path.replace(os.path.sep, '/')}"  # consistent URL
+        # You can store the data in DB if needed
 
-    app.logger.info("New support report: %s %s %s %s %s", name, email, issue_type, message, screenshot_url)
+        return redirect("/support_success")
 
-    # redirect to a success page
-    return redirect(url_for("support_success"))
-
+    return render_template("report.html")
 
 # ------------------ Support success page ------------------
 @app.route("/support_success")
