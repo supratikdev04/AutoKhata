@@ -212,12 +212,22 @@ def add_expense():
 
     # GET → Show form only
     return render_template("add_expense.html")
-'''
 #------------------------ Reports ---------------------------------
-@app.route("/reports")
-def reports():
-    return render_template("reports.html")
-'''
+@app.post("/report")
+def report():
+    name = request.form["name"]
+    email = request.form["email"]
+    issue_type = request.form["issue_type"]
+    message = request.form["message"]
+
+    # Optional screenshot
+    screenshot = request.files.get("screenshot")
+
+    # Save to database or send email...
+    print("Report received:", name, email, issue_type, message)
+
+    return "Thank you! Your report has been submitted."
+
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
