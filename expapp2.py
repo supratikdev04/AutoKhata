@@ -319,6 +319,7 @@ def add_expense():
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------
+'''
 @app.route("/submit_report", methods=["GET", "POST"])
 def submit_report():
     if request.method == "GET":
@@ -341,6 +342,21 @@ def submit_report():
     print("New support request received:", name, email, issue_type, message, screenshot_url)
 
     return redirect("/support_success")
+'''
+@app.post("/submit_report")
+def submit_report():
+    name = request.form["name"]
+    email = request.form["email"]
+    issue_type = request.form["issue_type"]
+    message = request.form["message"]
+
+    # Optional screenshot
+    screenshot = request.files.get("screenshot")
+
+    # Save to database or send email...
+    print("Report received:", name, email, issue_type, message)
+
+    return "Thank you! Your report has been submitted."
 
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
