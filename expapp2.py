@@ -473,6 +473,11 @@ import os
 UPLOAD_FOLDER = "static/profile"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# ------------------------------ Support Success ------------------------
+@app.route("/support_success")
+def support_success():
+    return "<h2>Report submitted successfully! We will contact you soon.</h2>"
+
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
     # debug=True for local dev, turn off in production
