@@ -343,7 +343,7 @@ def report():
 
     return redirect("/support_success")
 '''
-@app.post("/report", methods=["GET", "POST"])
+@app.post("/report")
 def report():
     name = request.form["name"]
     email = request.form["email"]
