@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv   
 from flask import send_from_directory
+from werkzeug.utils import secure_filename
 import re 
 
 # Load environment variables from .env
@@ -319,6 +320,7 @@ def add_expense():
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------.
+'''
 @app.route("/report", methods=["GET", "POST"])
 def report():
     if request.method == "GET":
@@ -342,21 +344,32 @@ def report():
 
     return redirect("/support_success")
 '''
-@app.post("/report")
-def report():
-    name = request.form["name"]
-    email = request.form["email"]
-    issue_type = request.form["issue_type"]
-    message = request.form["message"]
+# Make sure folder exists
+UPLOAD_SUPPORT = "static/support_uploads"
+os.makedirs(UPLOAD_SUPPORT, exist_ok=True)
 
-    # Optional screenshot
+@app.route("/report", methods=["GET", "POST"])
+def report():
+    if request.method == "GET":
+        return render_template("report.html")
+
+    name = request.form.get("name")
+    email = request.form.get("email")
+    issue_type = request.form.get("issue_type")
+    message = request.form.get("message")
     screenshot = request.files.get("screenshot")
 
-    # Save to database or send email...
-    print("Report received:", name, email, issue_type, message)
+    screenshot_url = None
 
-    return "Thank you! Your report has been submitted."
-'''
+    if screenshot and screenshot.filename:
+        filename = secure_filename(screenshot.filename)
+        file_path = os.path.join(UPLOAD_SUPPORT, filename)
+        screenshot.save(file_path)
+        screenshot_url = f"/static/support_uploads/{filename}"
+
+    print("New support request:", name, email, issue_type, message, screenshot_url)
+    
+    return redirect("/support_success")
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
