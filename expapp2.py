@@ -225,6 +225,7 @@ def profile():
         return redirect("/login")
     return render_template(
         "profile.html",
+        user_id=session.get("user_id")sw,
         name=session.get("name"),
         email=session.get("email"),
         phone_number=session.get("phone_number"),
