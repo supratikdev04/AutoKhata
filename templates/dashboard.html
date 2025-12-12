@@ -78,12 +78,13 @@
 
     <!-- RECENT EXPENSES -->
     <div class="card mt-4 shadow-sm">
-        <div class="card-header bg-secondary text-white">Recent Expenses</div>
+    <div class="card-header bg-secondary text-white">Category Totals</div>
+
         <ul class="list-group list-group-flush">
-            {% for item in recent %}
+            {% for category, total in category_map.items() %}
             <li class="list-group-item d-flex justify-content-between">
-                <span>{{ item.next_date }} - {{ item.category }}</span>
-                <span class="fw-bold">₹{{ item.amount }}</span>
+                <span>{{ category }}</span>
+                <span class="fw-bold">₹{{ total }}</span>
             </li>
             {% endfor %}
         </ul>
