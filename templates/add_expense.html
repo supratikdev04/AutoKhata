@@ -100,6 +100,17 @@ document.getElementById("category").addEventListener("change", updateSubcategori
     navigator.serviceWorker.register("/static/service-worker.js");
   }
 </script>
-    
+
+<script>
+document.querySelector("input[name='note']").addEventListener("input", function () {
+    const text = this.value;
+    const match = text.match(/\b\d+(\.\d+)?\b/); // detect numbers like 200 or 200.50
+
+    if (match) {
+        document.querySelector("input[name='amount']").value = match[0];
+    }
+});
+</script>
+
 </body>
 </html>
