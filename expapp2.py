@@ -320,13 +320,13 @@ def add_expense():
     return render_template("add_expense.html")
 
 #------------------------ Reports ---------------------------------.
-'''
 @app.route("/report", methods=["GET", "POST"])
 def report():
     if request.method == "GET":
-        return render_template("report.html")  # your support page
+        # ensure template exists: templates/report.html
+        return render_template("report.html")
 
-    # POST = form submitted
+    # POST
     name = request.form.get("name")
     email = request.form.get("email")
     issue_type = request.form.get("issue_type")
@@ -334,52 +334,24 @@ def report():
     screenshot = request.files.get("screenshot")
 
     screenshot_url = None
-    if screenshot:
-        filename = secure_filename(screenshot.filename)
-        file_path = os.path.join("static/support_uploads", filename)
-        screenshot.save(file_path)
-        screenshot_url = f"/static/support_uploads/{filename}"
-
-    print("New support request received:", name, email, issue_type, message, screenshot_url)
-
-    return redirect("/support_success")
-'''
-# Make sure folder exists
-SUPPORT_UPLOAD_FOLDER = "static/support_uploads"
-os.makedirs(SUPPORT_UPLOAD_FOLDER, exist_ok=True)
-
-
-@app.route("/report", methods=["GET", "POST"])
-def report():
-    if request.method == "GET":
-        return render_template("report.html")   # display support form
-
-    # ---------------- POST (FORM SUBMITTED) ----------------
-    name = request.form.get("name")
-    email = request.form.get("email")
-    issue_type = request.form.get("issue_type")
-    message = request.form.get("message")
-    screenshot = request.files.get("screenshot")
-
-    screenshot_url = None
-
     if screenshot and screenshot.filename:
         filename = secure_filename(screenshot.filename)
         save_path = os.path.join(SUPPORT_UPLOAD_FOLDER, filename)
         screenshot.save(save_path)
-        screenshot_url = f"/static/support_uploads/{filename}"
+        screenshot_url = f"/{save_path.replace(os.path.sep, '/')}"  # consistent URL
 
-    # (you may store it in DB or send email here)
+    app.logger.info("New support report: %s %s %s %s %s", name, email, issue_type, message, screenshot_url)
 
-    print("\n--- NEW SUPPORT REQUEST ---")
-    print("Name:", name)
-    print("Email:", email)
-    print("Issue Type:", issue_type)
-    print("Message:", message)
-    print("Screenshot:", screenshot_url)
-    print("----------------------------\n")
+    # redirect to a success page
+    return redirect(url_for("support_success"))
 
-    return redirect(url_for("dashboard"))
+
+# ------------------ Support success page ------------------
+@app.route("/support_success")
+def support_success():
+    # simple success page (you can replace with a template)
+    return render_template("support_success.html") if os.path.exists("templates/support_success.html") else "Report submitted successfully! We will contact you soon."
+
 # ----------------------------- PROFILE & SETTINGS ------------------------------
 @app.route("/profile")
 def profile():
@@ -624,14 +596,6 @@ import os
 
 UPLOAD_FOLDER = "static/profile"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# ------------------------------ Support Success ------------------------
-@app.route("/support_success")
-def support_success():
-    return "Report submitted successfully !! "
-# ---------------------------- Ai Auto Categorize ------------------------
-
-
 
 # ------------------------------- RUN APP -------------------------------
 if __name__ == "__main__":
