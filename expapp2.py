@@ -272,23 +272,27 @@ def report():
         message = request.form.get("message")
         screenshot = request.files.get("screenshot")
 
-        # Save screenshot if exists
         if screenshot and screenshot.filename:
-            file_path = os.path.join("uploads", screenshot.filename)
-            screenshot.save(file_path)
+            os.makedirs("uploads", exist_ok=True)
+            filename = secure_filename(screenshot.filename)
+            screenshot.save(os.path.join("uploads", filename))
 
-        # You can store the data in DB if needed
-
-        return redirect("/support_success")
+        return redirect(url_for("support_success"))
 
     return render_template("report.html")
 
+
+@app.route("/support_success")
+def support_success():
+    return render_template("support_success.html")
+
+'''
 # ------------------ Support success page ------------------
 @app.route("/support_success")
 def support_success():
     # simple success page (you can replace with a template)
     return render_template("support_success.html") if os.path.exists("templates/support_success.html") else "Report submitted successfully! We will contact you soon."
-
+'''
 
 # ------------------ Dashboard & other UI routes ------------------
 @app.route("/dashboard")
