@@ -343,7 +343,25 @@ def sw():
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory('static/icons', 'exptracker_app_icon1.png')
+# ----------------------------- Profile & Settings -------------------------
+@app.route("/profile")
+def profile():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template(
+        "profile.html",
+        user_id=session.get("user_id"),
+        name=session.get("name"),
+        email=session.get("email"),
+        phone_number=session.get("phone_number"),
+        address=session.get("address")
+    )
 
+@app.route("/settings")
+def settings():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("settings.html")
 
 # ------------------ Commented out history route that referenced undefined DB helper ------------------
 # If you want this route, implement get_db_connection() first
