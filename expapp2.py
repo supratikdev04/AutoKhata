@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 import os
 from dotenv import load_dotenv
 import re
+from utils import extract_amount
+
 
 # Load environment variables from .env
 load_dotenv()
@@ -183,6 +185,7 @@ def exptracker3():
 @login_required
 def add_expense():
     user_id = session["user_id"]
+
     if request.method == "POST":
         amount = request.form.get("amount", "").strip()
         category = request.form.get("category", "").strip()
@@ -190,13 +193,15 @@ def add_expense():
         note = request.form.get("note", "").strip()
 
         if not amount:
-            m = re.findall(r'([0-9]+(?:\.[0-9]{1,2})?)', note.replace(',', ''))
-            if m:
-                amount = m[-1]
-            else:
-                return render_template("add_expense.html", error="Amount is required (or include amount in note)")
+            extracted = extract_amount(note)
+            if extracted is None:
+                return render_template(
+                    "add_expense.html",
+                    error="Amount is required (or include amount like ₹1,200 / 2.5k in note)"
+                )
+            amount = extracted
 
-        if (not category) or category.lower() == "auto" or (not subcategory):
+        if not category or category.lower() == "auto" or not subcategory:
             auto_cat, auto_subcat = ai_auto_categorize(note)
             if not category or category.lower() == "auto":
                 category = auto_cat
@@ -205,10 +210,11 @@ def add_expense():
 
         try:
             amount_float = float(amount)
-        except ValueError:
+        except (TypeError, ValueError):
             return render_template("add_expense.html", error="Invalid amount format")
 
         next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         supabase.table("expenses").insert({
             "next_date": next_date,
             "amount": amount_float,
