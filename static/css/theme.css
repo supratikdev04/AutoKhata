@@ -1,11 +1,11 @@
 /* ------------------------- Variables ------------------------- */
 :root {
-  --primary-bg: #F1F1F1;
+  --primary-bg: #4A5C6A;
   --text-color: #333333;
   --accent: #FF6B6B;
-  --primary-blue: #00AEEF;
-  --white: #FFFFFF;
-  --input-bg: #FFFFFF;
+  --primary-blue: #4A7FA7;
+  --white: #F6FAFD;
+  --input-bg: #CCD0CF;
   --input-border: #ccc;
   --hover-blue: #0096c7;
 }
