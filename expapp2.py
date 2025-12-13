@@ -150,35 +150,52 @@ def logout():
 @login_required
 def exptracker3():
     user_id = session["user_id"]
+
+    # PAGE NUMBER
     page = int(request.args.get("page", 1))
     per_page = 10
     start = (page - 1) * per_page
     end = start + per_page - 1
 
-    result = (supabase.table("expenses")
-              .select("*")
-              .eq("user_id", user_id)
-              .order("next_date", desc=True)
-              .range(start, end)
-              .execute())
+    # FETCH ONLY 10 EXPENSES FOR THIS PAGE
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("user_id", user_id)
+        .order("next_date", desc=True)
+        .range(start, end)
+        .execute()
+    )
+
     expenses = result.data or []
 
-    total_result = (supabase.table("expenses")
-                    .select("amount")
-                    .eq("user_id", user_id)
-                    .execute())
+    # ---------- TOTAL EXPENSES FROM ALL ROWS ----------
+    total_result = (
+        supabase.table("expenses")
+        .select("amount")
+        .eq("user_id", user_id)
+        .execute()
+    )
     all_expenses = total_result.data or []
-    total = sum(float(e["amount"]) for e in all_expenses) if all_expenses else 0
+    total = sum(float(e["amount"]) for e in all_expenses)
 
-    count_result = (supabase.table("expenses")
-                    .select("id", count="exact")
-                    .eq("user_id", user_id)
-                    .execute())
-    total_expenses = count_result.count or 0
+    # ---------- TOTAL PAGES ----------
+    count_result = (
+        supabase.table("expenses")
+        .select("id", count="exact")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    total_expenses = count_result.count
     total_pages = (total_expenses + per_page - 1) // per_page
 
-    return render_template("exptracker3.html", expense=expenses, total=total, total_pages=total_pages, current_page=page)
-
+    return render_template(
+        "exptracker3.html",
+        expense=expenses,
+        total=total,
+        total_pages=total_pages,
+        current_page=page
+    )
 
 # ------------------ Add / Modify / Delete expenses (kept) ------------------
 @app.route("/add_expense", methods=["GET", "POST"])
