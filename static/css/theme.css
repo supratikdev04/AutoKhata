@@ -1,25 +1,104 @@
+/* ------------------------- Variables ------------------------- */
 :root {
   --primary-bg: #F1F1F1;
   --text-color: #333333;
   --accent: #FF6B6B;
   --primary-blue: #00AEEF;
   --white: #FFFFFF;
+  --input-bg: #FFFFFF;
+  --input-border: #ccc;
+  --hover-blue: #0096c7;
 }
 
+/* ------------------------- Body ------------------------- */
 body {
-  background: var(--primary-bg);
-  color: var(--text-color);
+  background-color: var(--primary-bg) !important;
+  color: var(--text-color) !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.navbar, .card {
-  background: var(--white);
+/* ------------------------- Navbar ------------------------- */
+.navbar, .navbar .dropdown-menu {
+  background-color: var(--white) !important;
 }
 
+.navbar a, .navbar .nav-link {
+  color: var(--text-color) !important;
+}
+
+.navbar a:hover, .navbar .nav-link:hover {
+  color: var(--primary-blue) !important;
+}
+
+/* ------------------------- Cards ------------------------- */
+.card {
+  background-color: var(--white) !important;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ------------------------- Buttons ------------------------- */
 .btn-primary {
-  background: var(--primary-blue);
-  border: none;
+  background-color: var(--primary-blue) !important;
+  border-color: var(--primary-blue) !important;
+  color: var(--white) !important;
+  border-radius: 10px;
 }
 
 .btn-primary:hover {
-  background: #0096c7;
+  background-color: var(--hover-blue) !important;
+  border-color: var(--hover-blue) !important;
+}
+
+/* Outline secondary button */
+.btn-outline-secondary {
+  border-radius: 10px;
+}
+
+/* ------------------------- Forms ------------------------- */
+.form-control, .form-select {
+  border-radius: 10px;
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--text-color) !important;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 174, 239, 0.25);
+  outline: none;
+}
+
+/* ------------------------- Tables ------------------------- */
+table {
+  background-color: var(--white) !important;
+}
+
+table th, table td {
+  color: var(--text-color) !important;
+}
+
+/* ------------------------- Links ------------------------- */
+a {
+  color: var(--primary-blue) !important;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--hover-blue) !important;
+  text-decoration: underline;
+}
+
+/* ------------------------- Alerts ------------------------- */
+.alert {
+  border-radius: 10px;
+}
+
+/* ------------------------- Misc ------------------------- */
+.text-muted {
+  color: #666666 !important;
+}
+
+hr {
+  border-color: #ddd !important;
 }
