@@ -1,0 +1,25 @@
+:root {
+  --primary-bg: #F1F1F1;
+  --text-color: #333333;
+  --accent: #FF6B6B;
+  --primary-blue: #00AEEF;
+  --white: #FFFFFF;
+}
+
+body {
+  background: var(--primary-bg);
+  color: var(--text-color);
+}
+
+.navbar, .card {
+  background: var(--white);
+}
+
+.btn-primary {
+  background: var(--primary-blue);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #0096c7;
+}
