@@ -46,8 +46,8 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: var(--white) !important;
-  border-color: var(--hover-blue) !important;
+  background-color: var(--hover-blue) !important;
+  border-color: var(--white) !important;
 }
 
 /* Outline secondary button */
