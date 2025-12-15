@@ -46,7 +46,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: var(--hover-blue) !important;
+  background-color: var(--white) !important;
   border-color: var(--hover-blue) !important;
 }
 
