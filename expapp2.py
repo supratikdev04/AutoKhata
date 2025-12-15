@@ -232,13 +232,29 @@ def add_expense():
 
         next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        attachment = request.files.get("attachment")
+        attachment_url = None
+
+        if attachment and attachment.filename and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+
+            supabase.storage.from_("expense-attachments").upload(
+                unique_path,
+                attachment.read(),
+                {"content-type": attachment.content_type}
+            )
+
+            attachment_url = supabase.storage.from_("expense-attachments").get_public_url(unique_path)
+
         supabase.table("expenses").insert({
-            "next_date": next_date,
-            "amount": amount_float,
+            "user_id": user_id,
             "category": category,
             "subcategory": subcategory,
+            "amount": amount_float,
             "note": note,
-            "user_id": user_id
+            "attachment_url": attachment_url,
+            "next_date": next_date
         }).execute()
 
         return redirect(url_for("exptracker3"))
