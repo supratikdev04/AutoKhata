@@ -25,7 +25,7 @@
 
         <div class="card-body">
 
-            <form method="POST" id="modifyForm">
+            <form method="POST" id="modifyForm" enctype="multipart/form-data" >
 
                 <!-- CATEGORY -->
                 <label class="form-label">Category</label>
@@ -48,12 +48,31 @@
                 <!-- NOTE -->
                 <label class="form-label mt-3">Note</label>
                 <input type="text" class="form-control" name="note" value="{{ expense.note }}">
-
+                <!-- ATTACHMENT -->
+                <label class="form-label mt-3">Attachment</label>
+                {% if expense.attachment_url %}
+                    <div class="mb-2">
+                        <a href="{{ expense.attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-paperclip"></i> View current attachment
+                        </a>
+                    </div>
+                
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="remove_attachment" id="remove_attachment">
+                        <label class="form-check-label" for="remove_attachment">
+                            Remove existing attachment
+                        </label>
+                    </div>
+                {% endif %}
+                
+                <input type="file"
+                       class="form-control"
+                       name="attachment"
+                       accept=".jpg,.jpeg,.png,.pdf">
                 <button class="btn btn-primary mt-4 w-100" type="submit" id="saveBtn" disabled>Save Changes</button>
                 <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
 
             </form>
-
         </div>
     </div>
 </div>
