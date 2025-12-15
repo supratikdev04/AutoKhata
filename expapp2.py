@@ -275,6 +275,7 @@ def delete_row(id):
 def modify_expense(id):
     user_id = session["user_id"]
 
+    # Fetch the expense for this user
     result = (
         supabase.table("expenses")
         .select("*")
@@ -284,55 +285,62 @@ def modify_expense(id):
     )
 
     if not result.data:
+        flash("Expense not found.", "warning")
         return redirect(url_for("exptracker3"))
 
     expense = result.data[0]
 
     if request.method == "POST":
-        new_category = request.form.get("category")
-        new_subcategory = request.form.get("subcategory")
-        new_amount = request.form.get("amount")
-        new_note = request.form.get("note")
+        try:
+            # --- Get form data ---
+            new_category = request.form.get("category")
+            new_subcategory = request.form.get("subcategory")
+            new_amount = request.form.get("amount")
+            new_note = request.form.get("note")
 
-        attachment = request.files.get("attachment")
-        remove_attachment = request.form.get("remove_attachment")
+            attachment = request.files.get("attachment")
+            remove_attachment = request.form.get("remove_attachment")
+            attachment_url = expense.get("attachment_url")
 
-        attachment_url = expense.get("attachment_url")
+            # --- Replace attachment if new file uploaded ---
+            if attachment and attachment.filename and allowed_file(attachment.filename):
+                filename = secure_filename(attachment.filename)
+                unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+                
+                file_bytes = attachment.read()  # read file safely
 
-        # Replace attachment
-        if attachment and attachment.filename and allowed_file(attachment.filename):
-            filename = secure_filename(attachment.filename)
-            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+                supabase.storage.from_("expense-attachments").upload(
+                    unique_path,
+                    file_bytes,
+                    {"content-type": attachment.content_type or "application/octet-stream"}
+                )
 
-            supabase.storage.from_("expense-attachments").upload(
-                unique_path,
-                attachment.read(),
-                {"content-type": attachment.content_type}
-            )
+                attachment_url = supabase.storage.from_("expense-attachments").get_public_url(unique_path)
 
-            attachment_url = (
-                supabase.storage
-                .from_("expense-attachments")
-                .get_public_url(unique_path)
-            )
+            # --- Remove attachment if checkbox checked ---
+            elif remove_attachment:
+                attachment_url = None
 
-        # Remove attachment
-        elif remove_attachment:
-            attachment_url = None
+            # --- Update expense in Supabase ---
+            supabase.table("expenses").update({
+                "category": new_category,
+                "subcategory": new_subcategory,
+                "amount": new_amount,
+                "note": new_note,
+                "attachment_url": attachment_url
+            }).eq("id", id).eq("user_id", user_id).execute()
 
-        supabase.table("expenses").update({
-            "category": new_category,
-            "subcategory": new_subcategory,
-            "amount": new_amount,
-            "note": new_note,
-            "attachment_url": attachment_url
-        }).eq("id", id).eq("user_id", user_id).execute()
+            flash("Expense updated successfully!", "success")
+            return redirect(url_for("exptracker3"))
 
-        return redirect(url_for("exptracker3"))
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())  # Render logs
+            flash(f"Failed to update expense: {e}", "danger")
+            return redirect(request.url)
 
+    # --- Render modify form ---
     return render_template("modify.html", expense=expense)
-
-
 
 # ------------------ Reports route (fixed single copy) ------------------
 @app.route('/report', methods=['GET', 'POST'])
@@ -456,6 +464,10 @@ def history():
     return render_template("exptracker3.html", expenses=expenses)
 """
 
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ------------------ Run App ------------------
 if __name__ == "__main__":
