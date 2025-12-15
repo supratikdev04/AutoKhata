@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 import re
 from utils import extract_amount
+import uuid
+from flask import flash
 
 
 # Load environment variables from .env
@@ -275,7 +277,7 @@ def delete_row(id):
 def modify_expense(id):
     user_id = session["user_id"]
 
-    # Fetch the expense for this user
+    # Fetch the expense
     result = (
         supabase.table("expenses")
         .select("*")
@@ -289,39 +291,48 @@ def modify_expense(id):
         return redirect(url_for("exptracker3"))
 
     expense = result.data[0]
+    attachment_url = expense.get("attachment_url")
 
     if request.method == "POST":
         try:
-            # --- Get form data ---
+            # --- Form data ---
             new_category = request.form.get("category")
             new_subcategory = request.form.get("subcategory")
             new_amount = request.form.get("amount")
             new_note = request.form.get("note")
-
-            attachment = request.files.get("attachment")
             remove_attachment = request.form.get("remove_attachment")
-            attachment_url = expense.get("attachment_url")
+            new_attachment = request.files.get("attachment")
 
             # --- Replace attachment if new file uploaded ---
-            if attachment and attachment.filename and allowed_file(attachment.filename):
-                filename = secure_filename(attachment.filename)
-                unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
-                
-                file_bytes = attachment.read()  # read file safely
+            if new_attachment and new_attachment.filename and allowed_file(new_attachment.filename):
+                # Remove old attachment
+                if attachment_url:
+                    try:
+                        old_path = attachment_url.split("/storage/v1/object/public/expense-attachments/")[-1]
+                        supabase.storage.from_("expense-attachments").remove([old_path])
+                    except Exception as e:
+                        print(f"Failed to delete old attachment: {e}")
 
+                filename = secure_filename(new_attachment.filename)
+                unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
                 supabase.storage.from_("expense-attachments").upload(
                     unique_path,
-                    file_bytes,
-                    {"content-type": attachment.content_type or "application/octet-stream"}
+                    new_attachment.read(),
+                    {"content-type": new_attachment.content_type or "application/octet-stream"}
                 )
-
                 attachment_url = supabase.storage.from_("expense-attachments").get_public_url(unique_path)
 
             # --- Remove attachment if checkbox checked ---
             elif remove_attachment:
+                if attachment_url:
+                    try:
+                        old_path = attachment_url.split("/storage/v1/object/public/expense-attachments/")[-1]
+                        supabase.storage.from_("expense-attachments").remove([old_path])
+                    except Exception as e:
+                        print(f"Failed to delete attachment: {e}")
                 attachment_url = None
 
-            # --- Update expense in Supabase ---
+            # --- Update expense ---
             supabase.table("expenses").update({
                 "category": new_category,
                 "subcategory": new_subcategory,
@@ -335,11 +346,10 @@ def modify_expense(id):
 
         except Exception as e:
             import traceback
-            print(traceback.format_exc())  # Render logs
+            print(traceback.format_exc())
             flash(f"Failed to update expense: {e}", "danger")
             return redirect(request.url)
 
-    # --- Render modify form ---
     return render_template("modify.html", expense=expense)
 
 # ------------------ Reports route (fixed single copy) ------------------
