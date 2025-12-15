@@ -1,91 +1,123 @@
 /* ------------------------- Variables ------------------------- */
 :root {
-  --primary-bg: #4A5C6A;
-  --text-color: #333333;
-  --accent: #FF6B6B;
-  --primary-blue: #F0E7D5;
-  --white: #FFFFF0;
-  --input-bg: #CCD0CF;
-  --input-border: #ccc;
-  --hover-blue: #0ABAB5;
+  /* Backgrounds */
+  --primary-bg: #001D39;        /* Main app background */
+  --secondary-bg: #0A4174;      /* Navbar / header */
+  --card-bg: #BDD8E9;           /* Cards / tables */
+  --input-bg: #EAF3F9;          /* Inputs */
+
+  /* Text */
+  --text-color: #001D39;        /* Primary text */
+  --text-muted: #49769F;        /* Secondary text */
+  --text-light: #FFFFFF;        /* Text on dark bg */
+
+  /* Accent / Actions */
+  --accent: #4E8EA2;            /* Buttons, highlights */
+  --accent-hover: #6EA2B3;      /* Hover states */
+  --primary-blue: #7BBDE8;      /* Links / focus */
+
+  /* Borders */
+  --input-border: #6EA2B3;
+  --card-border: #49769F;
+
+  /* Utility */
+  --white: #FFFFFF;
 }
 
 /* ------------------------- Body ------------------------- */
 body {
-  background-color: var(--primary-bg) !important;
-  color: var(--text-color) !important;
+  background-color: var(--primary-bg) !important; /* #001D39 */
+  color: var(--text-light) !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* ------------------------- Navbar ------------------------- */
-.navbar, .navbar .dropdown-menu {
-  background-color: var(--white) !important;
+.navbar,
+.navbar .dropdown-menu {
+  background-color: var(--secondary-bg) !important; /* #0A4174 */
 }
 
-.navbar a, .navbar .nav-link {
-  color: var(--text-color) !important;
+.navbar a,
+.navbar .nav-link {
+  color: var(--text-light) !important;
 }
 
-.navbar a:hover, .navbar .nav-link:hover {
-  color: var(--primary-blue) !important;
+.navbar a:hover,
+.navbar .nav-link:hover {
+  color: var(--primary-blue) !important; /* #7BBDE8 */
 }
 
 /* ------------------------- Cards ------------------------- */
 .card {
-  background-color: var(--white) !important;
+  background-color: var(--card-bg) !important; /* #BDD8E9 */
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid var(--card-border); /* #49769F */
+  box-shadow: 0 6px 16px rgba(0, 29, 57, 0.15);
 }
 
 /* ------------------------- Buttons ------------------------- */
 .btn-primary {
-  background-color: var(--primary-blue) !important;
-  border-color: var(--primary-blue) !important;
+  background-color: var(--accent) !important; /* #4E8EA2 */
+  border-color: var(--accent) !important;
   color: var(--white) !important;
   border-radius: 10px;
 }
 
 .btn-primary:hover {
-  background-color: var(--hover-blue) !important;
-  border-color: var(--white) !important;
+  background-color: var(--accent-hover) !important; /* #6EA2B3 */
+  border-color: var(--accent-hover) !important;
 }
 
 /* Outline secondary button */
 .btn-outline-secondary {
   border-radius: 10px;
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--primary-blue);
+  color: var(--white);
 }
 
 /* ------------------------- Forms ------------------------- */
-.form-control, .form-select {
+.form-control,
+.form-select {
   border-radius: 10px;
-  background-color: var(--input-bg) !important;
-  border: 1px solid var(--input-border) !important;
+  background-color: var(--input-bg) !important; /* light */
+  border: 1px solid var(--input-border) !important; /* #6EA2B3 */
   color: var(--text-color) !important;
 }
 
-.form-control:focus, .form-select:focus {
-  border-color: var(--primary-blue) !important;
-  box-shadow: 0 0 0 0.2rem rgba(0, 174, 239, 0.25);
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-blue) !important; /* #7BBDE8 */
+  box-shadow: 0 0 0 0.2rem rgba(123, 189, 232, 0.35);
   outline: none;
 }
 
 /* ------------------------- Tables ------------------------- */
 table {
-  background-color: var(--white) !important;
+  background-color: var(--card-bg) !important;
 }
 
-table th, table td {
+table th {
+  color: var(--text-color) !important;
+  background-color: #7BBDE8;
+}
+
+table td {
   color: var(--text-color) !important;
 }
 
 /* ------------------------- Links ------------------------- */
 a {
-  color: var(--primary-blue) !important;
+  color: var(--accent) !important;
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--hover-blue) !important;
+  color: var(--accent-hover) !important;
   text-decoration: underline;
 }
 
@@ -96,9 +128,10 @@ a:hover {
 
 /* ------------------------- Misc ------------------------- */
 .text-muted {
-  color: #666666 !important;
+  color: var(--text-muted) !important; /* #49769F */
 }
 
 hr {
-  border-color: #ddd !important;
+  border-color: var(--card-border) !important;
 }
+
