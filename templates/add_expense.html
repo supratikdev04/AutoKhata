@@ -20,7 +20,7 @@
 
         <div class="card-header bg-primary text-white">Add All Of Your Expense</div>
 
-        <form action="/add_expense" method="POST" class="row g-3 p-3">
+        <form action="/add_expense" method="POST" enctype="multipart/form-data" class="row g-3 p-3">
 
             <div class="col-md-3 col-12">
                 <!-- Category -->
@@ -54,7 +54,13 @@
                 <label class="form-label">Note</label>
                 <input type="text" class="form-control" name="note" placeholder="Write a note about your expense">
             </div>
-
+            <div class="col-md-3 col-12">
+                <label class="form-label">Attachment (Receipt)</label>
+                <input type="file"
+                       name="attachment"
+                       class="form-control"
+                       accept=".jpg,.jpeg,.png,.pdf">
+            </div>
             <div class="col-md-3 col-12 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">Add</button>
             </div>
