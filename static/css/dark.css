@@ -1,0 +1,58 @@
+/* ===== DARK MODE ===== */
+body.dark-mode {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+    background: #1f1f1f !important;
+}
+
+/* Cards */
+body.dark-mode .card {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0;
+    border: 1px solid #333;
+}
+
+/* Tables */
+body.dark-mode .table {
+    color: #e0e0e0;
+}
+
+body.dark-mode .table thead {
+    background-color: #222;
+}
+
+body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #1a1a1a;
+}
+
+/* Inputs */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #1e1e1e;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+/* Buttons */
+body.dark-mode .btn {
+    border-color: #555;
+}
+
+/* Dropdown */
+body.dark-mode .dropdown-menu {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+}
+
+body.dark-mode .dropdown-item {
+    color: #ddd;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #333;
+}
