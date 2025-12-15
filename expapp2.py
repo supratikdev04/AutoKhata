@@ -426,8 +426,50 @@ def dashboard():
                            week_values=week_values,
                            recent=recent,
                            category_map=category_map)
+# --------------------- Filter Expense ------------------------
+@app.route('/exptracker_filter', methods=['POST'])
+@login_required
+def filter_expenses():
+    user_id = session["user_id"]
 
+    specific_date = request.form.get("specific_date")
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
 
+    query = supabase.table("expenses").select("*").eq("user_id", user_id)
+
+    # 1. Filter by specific date
+    if specific_date:
+        query = query.gte("next_date", specific_date + " 00:00:00") \
+                     .lte("next_date", specific_date + " 23:59:59")
+
+    # 2. Filter by range
+    elif start_date and end_date:
+        query = query.gte("next_date", start_date) \
+                     .lte("next_date", end_date + " 23:59:59")
+
+    elif start_date and not end_date:
+        query = query.gte("next_date", start_date)
+
+    elif end_date and not start_date:
+        query = query.lte("next_date", end_date + " 23:59:59")
+
+    # Execute
+    result = query.order("next_date", desc=False).execute()
+    expenses = result.data or []
+
+    total = sum(float(item["amount"]) for item in expenses) if expenses else 0
+
+    return render_template(
+        "exptracker3.html",
+        expense=expenses,
+        total=total,
+        specific_date=specific_date,
+        start_date=start_date,
+        end_date=end_date,
+        current_page=1,
+        total_pages=1   
+    )
 # ------------------ service-worker and favicon ------------------
 @app.route('/static/service-worker.js')
 def sw():
