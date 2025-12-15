@@ -274,13 +274,18 @@ def delete_row(id):
 @login_required
 def modify_expense(id):
     user_id = session["user_id"]
-    result = (supabase.table("expenses")
-              .select("*")
-              .eq("id", id)
-              .eq("user_id", user_id)
-              .execute())
+
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+
     if not result.data:
         return redirect(url_for("exptracker3"))
+
     expense = result.data[0]
 
     if request.method == "POST":
@@ -289,16 +294,44 @@ def modify_expense(id):
         new_amount = request.form.get("amount")
         new_note = request.form.get("note")
 
+        attachment = request.files.get("attachment")
+        remove_attachment = request.form.get("remove_attachment")
+
+        attachment_url = expense.get("attachment_url")
+
+        # Replace attachment
+        if attachment and attachment.filename and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+
+            supabase.storage.from_("expense-attachments").upload(
+                unique_path,
+                attachment.read(),
+                {"content-type": attachment.content_type}
+            )
+
+            attachment_url = (
+                supabase.storage
+                .from_("expense-attachments")
+                .get_public_url(unique_path)
+            )
+
+        # Remove attachment
+        elif remove_attachment:
+            attachment_url = None
+
         supabase.table("expenses").update({
             "category": new_category,
             "subcategory": new_subcategory,
             "amount": new_amount,
             "note": new_note,
+            "attachment_url": attachment_url
         }).eq("id", id).eq("user_id", user_id).execute()
 
         return redirect(url_for("exptracker3"))
 
     return render_template("modify.html", expense=expense)
+
 
 
 # ------------------ Reports route (fixed single copy) ------------------
