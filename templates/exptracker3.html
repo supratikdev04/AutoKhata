@@ -199,14 +199,19 @@
             <!-- PAGINATION -->
             <div class="d-flex justify-content-between mt-3">
                 {% if current_page > 1 %}
-                <a href="/expenses_page/{{ current_page - 1 }}" class="btn btn-secondary">⬅ Previous 10</a>
+                <a href="{{ url_for('exptracker3', page=current_page-1) }}"
+                   class="btn btn-secondary">
+                    ⬅ Previous 10
+                </a>
                 {% endif %}
-
+            
                 {% if current_page < total_pages %}
-                <a href="/expenses_page/{{ current_page + 1 }}" class="btn btn-primary ms-auto">Next 10 ➡</a>
+                <a href="{{ url_for('exptracker3', page=current_page+1) }}"
+                   class="btn btn-primary ms-auto">
+                    Next 10 ➡
+                </a>
                 {% endif %}
             </div>
-
         </div>
     </div>
 </div>
