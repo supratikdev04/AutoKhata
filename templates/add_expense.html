@@ -161,6 +161,7 @@ function extractAmount(text) {
         .map(l => l.trim())
         .filter(Boolean);
 
+    // STRONG TOTAL KEYWORDS
     const TOTAL_KEYWORDS = [
         'GRAND TOTAL',
         'TOTAL AMOUNT',
@@ -168,35 +169,57 @@ function extractAmount(text) {
         'NET TOTAL',
         'FINAL TOTAL',
         'TOTAL DUE',
+        'PAYABLE AMOUNT',
         'TOTAL'
     ];
 
+    //Lines to ignore completely
+    const IGNORE_PATTERN = /CGST|SGST|GST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|ADDRESS|QTY|RATE/i;
+
+    // PASS 1: keyword-based detection
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        // Skip tax & irrelevant lines
-        if (/CGST|SGST|GST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|ADDRESS/.test(line)) {
-            continue;
-        }
+        if (IGNORE_PATTERN.test(line)) continue;
 
-        //  Match TOTAL keywords only
         if (TOTAL_KEYWORDS.some(k => line.includes(k))) {
-
-            //  Same line amount
-            let match = line.match(/\d+(\.\d{1,2})?/);
+            const match = line.match(/\d+(\.\d{1,2})?/);
             if (match) return Number(match[0]).toFixed(2);
 
-            //  Next 2 lines amount
-            for (let j = 1; j <= 2; j++) {
-                if (lines[i + j]) {
-                    match = lines[i + j].match(/\d+(\.\d{1,2})?/);
-                    if (match) return Number(match[0]).toFixed(2);
-                }
+            // check next line
+            if (lines[i + 1]) {
+                const nextMatch = lines[i + 1].match(/\d+(\.\d{1,2})?/);
+                if (nextMatch) return Number(nextMatch[0]).toFixed(2);
             }
         }
     }
 
-    // No fallback → prevents random numbers
+    // PASS 2: bottom-most reasonable amount
+    const candidates = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        if (IGNORE_PATTERN.test(lines[i])) continue;
+
+        const nums = lines[i].match(/\d+(\.\d{1,2})?/g);
+        if (!nums) continue;
+
+        nums.forEach(n => {
+            const value = Number(n);
+            if (value > 1 && value < 1000000) {
+                candidates.push({
+                    value,
+                    lineIndex: i
+                });
+            }
+        });
+    }
+
+    if (candidates.length) {
+        // pick the number closest to the bottom
+        candidates.sort((a, b) => b.lineIndex - a.lineIndex);
+        return candidates[0].value.toFixed(2);
+    }
+
     return null;
 }
 </script>
