@@ -187,14 +187,11 @@
 
                         <td>
                             {% if item.attachment_url %}
-                                <a href="{{ item.attachment_url }}"
-                                   target="_blank"
-                                   class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-paperclip"></i>
-                                </a>
-                            {% else %}
-                                -
-                            {% endif %}
+                            <button class="btn btn-sm btn-outline-primary"
+                                    onclick="openAttachment('{{ item.attachment_url }}')">
+                                <i class="bi bi-paperclip"></i>
+                            </button>
+                            {% else %}-{% endif %}
                         </td>
                         <td>    
                             <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm" onclick="confirmDelete(event, '/delete/{{ item.id }}')">
@@ -209,6 +206,31 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <!-- Universal Attachment Preview Modal -->
+            <div class="modal fade" id="attachmentModal" tabindex="-1">
+              <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Attachment Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+            
+                  <div class="modal-body text-center">
+                    <!-- Image Preview -->
+                    <img id="previewImage" class="img-fluid d-none" />
+            
+                    <!-- PDF / Docs Preview -->
+                    <iframe id="previewFrame" class="w-100 d-none" height="600"></iframe>
+            
+                    <!-- Fallback -->
+                    <div id="previewFallback" class="d-none">
+                      <p>Preview not available for this file type.</p>
+                      <a id="downloadLink" class="btn btn-primary" target="_blank">Download File</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- PAGINATION -->
             <div class="d-flex justify-content-between mt-3">
@@ -290,6 +312,37 @@
         deferredPrompt = null;
     });
 </script>
+  <!-- Preview JS -->
+<script>
+    function openAttachment(url) {
+      const img = document.getElementById("previewImage");
+      const frame = document.getElementById("previewFrame");
+      const fallback = document.getElementById("previewFallback");
+      const download = document.getElementById("downloadLink");
+
+      [img, frame, fallback].forEach(el => el.classList.add("d-none"));
+      img.src = "";
+      frame.src = "";
+
+      const ext = url.split('.').pop().toLowerCase();
+
+      if (["png","jpg","jpeg","gif","webp"].includes(ext)) {
+        img.src = url;
+        img.classList.remove("d-none");
+      } else if (["pdf","txt","html"].includes(ext)) {
+        frame.src = url;
+        frame.classList.remove("d-none");
+      } else {
+        download.href = url;
+        fallback.classList.remove("d-none");
+      }
+
+      new bootstrap.Modal(
+        document.getElementById("attachmentModal")
+      ).show();
+    }
+</script>
+
 </body>
 </html>
 
