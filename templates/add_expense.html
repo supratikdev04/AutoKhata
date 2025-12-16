@@ -151,41 +151,41 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     
 <script>
 // MOBILE-FRIENDLY AMOUNT EXTRACTION
+// EXTRACT TOTAL AMOUNT (UPPERCASE SAFE)
 function extractAmount(text) {
     if (!text) return null;
 
     const lines = text
         .replace(/,/g, '')               // remove commas
         .replace(/[₹Rs]/gi, '')          // remove currency symbols
-        .replace(/[^\w.\n ]/g, ' ')      // remove noise except numbers and words
-        .toLowerCase()
+        .replace(/[^\w.\n:= ]/g, ' ')    // keep letters, numbers, dots, =, :, spaces
+        .toUpperCase()                    // convert everything to uppercase
         .split("\n")
         .map(l => l.trim())
         .filter(Boolean);
 
     const keywords = [
-        "total",
-        "grand total",
-        "amount payable",
-        "net total",
-        "final total",
         "TOTAL",
-        "TOTAL=",
-        "Amount Due",
-        "Total Amount",
-        "Grand Total",
-        "Balance Due",
-        "Amount Owed",
-        "Final Total",
-        "Invoice Amount" 
+        "GRAND TOTAL",
+        "AMOUNT PAYABLE",
+        "NET TOTAL",
+        "FINAL TOTAL",
+        "AMOUNT DUE",
+        "TOTAL AMOUNT",
+        "BALANCE DUE",
+        "AMOUNT OWED",
+        "INVOICE AMOUNT"
     ];
 
     for (let i = 0; i < lines.length; i++) {
+        // Skip tax lines
+        if (/CGST|SGST|GST/i.test(lines[i])) continue;
+
         for (let key of keywords) {
-            if (lines[i].toLowerCase().includes(key.toLowerCase())) {
+            if (lines[i].includes(key)) {
                 let match = lines[i].match(/\d+(\.\d{1,2})?/g);
                 if (match && match.length) return parseFloat(match[match.length - 1]).toFixed(2);
-            
+
                 for (let j = 1; j <= 2; j++) {
                     if (lines[i + j]) {
                         match = lines[i + j].match(/\d+(\.\d{1,2})?/g);
@@ -196,54 +196,48 @@ function extractAmount(text) {
         }
     }
 
-    // Fallback: largest number under 1,000,000
+    // fallback: largest number < 1,000,000
     const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
     if (allNumbers) {
         const filtered = allNumbers.map(Number).filter(n => n < 1000000);
-        if (filtered.length) {
-            return Math.max(...filtered).toFixed(2);
-        }
+        if (filtered.length) return Math.max(...filtered).toFixed(2);
     }
 
     return null;
 }
 
-// SMART ITEM EXTRACTION FOR NOTE
+// EXTRACT ITEMS / PARTICULARS (UPPERCASE SAFE)
 function extractItems(text) {
     if (!text) return "";
 
     const lines = text
-        .replace(/[₹]/g, '')             // remove currency symbol
-        .replace(/[^\w\s:.-]/g, ' ')     // remove special chars but keep : . -
+        .replace(/[₹]/g, '')                 // remove currency symbols
+        .replace(/[^\w\s:.-]/g, ' ')         // remove special chars except : . -
+        .toUpperCase()                        // convert everything to uppercase
         .split("\n")
         .map(l => l.trim())
         .filter(Boolean);
 
-    const keywords = [
-       "total",
-        "grand total",
-        "amount payable",
-        "net total",
-        "final total",
+    const stopKeywords = [
         "TOTAL",
-        "TOTAL=",
-        "Amount Due",
-        "Total Amount",
-        "Grand Total",
-        "Balance Due",
-        "Amount Owed",
-        "Final Total",
-        "Invoice Amount" 
+        "GRAND TOTAL",
+        "AMOUNT PAYABLE",
+        "NET TOTAL",
+        "FINAL TOTAL",
+        "AMOUNT DUE",
+        "INVOICE AMOUNT"
     ];
-    
+
     let items = [];
 
     for (let line of lines) {
-        // Stop at total keywords
-        if (keywords.some(key => line.toLowerCase().includes(key))) break;
+        // Skip irrelevant lines
+        if (/GSTIN|GST NO|CGST|SGST|TAX|INVOICE NO|MOBILE|PHONE|ADDR|ADDRESS|BILL NO/i.test(line)) continue;
 
-        // Skip header or numeric-only lines
-        if (/^(k\.m|particulars|rate|amount|rs|p)$/i.test(line)) continue;
+        // Stop at total keywords
+        if (stopKeywords.some(key => line.includes(key))) break;
+
+        // Skip numeric-only lines
         if (/^\d+(\.\d{1,2})?$/.test(line)) continue;
 
         items.push(line);
