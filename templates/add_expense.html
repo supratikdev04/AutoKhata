@@ -141,20 +141,20 @@ document.getElementById("category").addEventListener("change", updateSubcategori
 <script>
 document.querySelector("input[name='note']").addEventListener("input", function () {
     const text = this.value;
-    const match = text.match(/\b\d+(\.\d+)?\b/); // detect numbers like 200 or 200.50
+    const match = text.match(/\d+(\.\d{1,2})?/); // better mobile regex
 
     if (match) {
         document.querySelector("input[name='amount']").value = match[0];
     }
 });
-</script>
-<script>
+// MOBILE-FRIENDLY AMOUNT EXTRACTION
 function extractAmount(text) {
     if (!text) return null;
 
     // Normalize OCR text
     const lines = text
         .replace(/,/g, '')              // remove commas
+        .replace(/[₹Rs]/gi, '')
         .replace(/[^\w.\n ]/g, ' ')     // remove noise
         .toLowerCase()
         .split("\n")
@@ -170,21 +170,28 @@ function extractAmount(text) {
         "final total"
     ];
 
-    for (let line of lines) {
+    for (let i = 0; i < lines.length; i++) {
         for (let key of keywords) {
-            if (line.includes(key)) {
-                // Extract numbers AFTER keyword
-                const afterKey = line.split(key)[1];
+            if (lines[i].includes(key)) {
+                // same line
+                let match = lines[i].match(/\d+(\.\d{1,2})?/);
+                if (match) return parseFloat(match[0]).toFixed(2);
 
-                if (!afterKey) continue;
-
-                const match = afterKey.match(/\d+(\.\d{1,2})?/);
-                if (match) {
-                    return parseFloat(match[0]).toFixed(2);
+                // next line (mobile fix)
+                if (lines[i + 1]) {
+                    match = lines[i + 1].match(/\d+(\.\d{1,2})?/);
+                    if (match) return parseFloat(match[0]).toFixed(2);
                 }
             }
         }
     }
+
+    // fallback: largest number
+    const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
+    if (allNumbers) {
+        return Math.max(...allNumbers.map(Number)).toFixed(2);
+    }
+
     return null;
 }
 </script>
@@ -208,7 +215,8 @@ async function scanReceipt() {
         "eng",
         {
             logger: m => console.log(m),
-            tessedit_char_whitelist: "0123456789₹Rs.INR.-/"
+            tessedit_pageseg_mode: 6,
+            preserve_interword_spaces: 1
         }
     );
 
