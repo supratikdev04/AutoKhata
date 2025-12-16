@@ -150,99 +150,93 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-// --- EXTRACT TOTAL AMOUNT ---
 function extractAmount(text) {
     if (!text) return null;
 
     const lines = text
         .replace(/,/g, '')
-        .replace(/[₹Rs$]/gi, '')
-        .replace(/[^\w.\n:= ]/g, ' ')
+        .replace(/[₹$Rs]/gi, '')
+        .replace(/[^\w.\n ]/g, ' ')
         .toUpperCase()
         .split('\n')
         .map(l => l.trim())
         .filter(Boolean);
 
-    const TOTAL_KEYS = [
+    const TOTAL_KEYWORDS = [
         'TOTAL AMOUNT DUE',
         'TOTAL AMOUNT',
         'GRAND TOTAL',
-        'AMOUNT DUE',
+        'AMOUNT PAYABLE',
         'NET TOTAL',
         'FINAL TOTAL',
-        'TOTAL'
+        'TOTAL DUE'
     ];
-
-    let candidates = [];
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        // Skip tax / address / phone lines
-        if (
-            /GST|CGST|SGST|PHONE|MOBILE|ADDRESS|ZIP|INVOICE DATE|DUE DATE/i.test(line)
-        ) continue;
+        // Skip GST / TAX lines
+        if (/CGST|SGST|GST|TAX/.test(line)) continue;
 
-        for (const key of TOTAL_KEYS) {
-            if (line.includes(key)) {
+        // Match TOTAL keywords
+        if (TOTAL_KEYWORDS.some(k => line.includes(k))) {
 
-                // Try same line
-                let nums = line.match(/\d+\.\d{2}/g);
-                if (nums) {
-                    candidates.push(...nums);
-                }
+            // 1️⃣ Same line amount
+            let match = line.match(/\d+(\.\d{1,2})?/);
+            if (match) return Number(match[0]).toFixed(2);
 
-                // Try next 2 lines
-                for (let j = 1; j <= 2; j++) {
-                    if (lines[i + j]) {
-                        nums = lines[i + j].match(/\d+\.\d{2}/g);
-                        if (nums) {
-                            candidates.push(...nums);
-                        }
-                    }
+            // 2️⃣ Next 2 lines amount
+            for (let j = 1; j <= 2; j++) {
+                if (lines[i + j]) {
+                    match = lines[i + j].match(/\d+(\.\d{1,2})?/);
+                    if (match) return Number(match[0]).toFixed(2);
                 }
             }
         }
     }
 
-    // Pick LAST valid total (most reliable)
-    if (candidates.length) {
-        return parseFloat(candidates[candidates.length - 1]).toFixed(2);
-    }
-
-    return null; // NEVER guess
+    // NO fallback (prevents ZIP / phone numbers)
+    return null;
 }
-
-// --- SCAN RECEIPT FUNCTION ---
+</script>
+<script>
+    // --- SCAN RECEIPT FUNCTION ---
 async function scanReceipt() {
-    const fileInput = document.getElementById("receipt");
-    if (!fileInput.files.length) {
-        alert("Please upload a receipt");
+    const fileInput = document.getElementById("receiptInput");
+
+    if (!fileInput || !fileInput.files || !fileInput.files.length) {
+        alert("Please upload a receipt image");
         return;
     }
 
     const file = fileInput.files[0];
 
-    const result = await Tesseract.recognize(file, 'eng');
-    const text = result.data.text;
+    console.log("Scanning:", file.name);
 
-    console.log("OCR TEXT:", text);
+    try {
+        const result = await Tesseract.recognize(
+            file,
+            "eng",
+            {
+                logger: m => console.log(m) // progress logs
+            }
+        );
 
-    // 🔹 Extract total
-    const amount = extractAmount(text);
-    if (amount) {
-        document.getElementById("amount").value = amount;
-    }
+        const text = result.data.text;
+        console.log("OCR TEXT ↓↓↓");
+        console.log(text);
 
-    // 🔹 Detect category
-    const category = detectCategory(text);
-    const categorySelect = document.getElementById("category");
-
-    for (const option of categorySelect.options) {
-        if (option.value === category) {
-            option.selected = true;
-            break;
+        // extract TOTAL only
+        const amount = extractAmount(text);
+        if (amount) {
+            document.getElementById("amount").value = amount;
+        } else {
+            alert("Total amount not detected");
         }
+
+    } catch (err) {
+        console.error("OCR FAILED:", err);
+        alert("OCR failed. Check console.");
     }
 }
 </script>
