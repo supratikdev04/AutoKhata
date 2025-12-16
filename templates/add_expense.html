@@ -178,29 +178,39 @@ function extractAmount(text) {
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        if (/GST|CGST|SGST|PHONE|MOBILE|ADDRESS|ZIP|INVOICE DATE|DUE DATE/i.test(line)) continue;
+        // Skip tax / address / phone lines
+        if (
+            /GST|CGST|SGST|PHONE|MOBILE|ADDRESS|ZIP|INVOICE DATE|DUE DATE/i.test(line)
+        ) continue;
 
         for (const key of TOTAL_KEYS) {
             if (line.includes(key)) {
 
+                // Try same line
                 let nums = line.match(/\d+\.\d{2}/g);
-                if (nums) candidates.push(...nums);
+                if (nums) {
+                    candidates.push(...nums);
+                }
 
+                // Try next 2 lines
                 for (let j = 1; j <= 2; j++) {
                     if (lines[i + j]) {
                         nums = lines[i + j].match(/\d+\.\d{2}/g);
-                        if (nums) candidates.push(...nums);
+                        if (nums) {
+                            candidates.push(...nums);
+                        }
                     }
                 }
             }
         }
     }
 
+    // Pick LAST valid total (most reliable)
     if (candidates.length) {
         return parseFloat(candidates[candidates.length - 1]).toFixed(2);
     }
 
-    return null;
+    return null; // NEVER guess
 }
 
 // --- SCAN RECEIPT FUNCTION ---
