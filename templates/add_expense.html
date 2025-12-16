@@ -154,7 +154,7 @@ function extractAmount(text) {
     // Normalize OCR text
     const lines = text
         .replace(/,/g, '')              // remove commas
-        .replace(/[₹Rs]/gi, '')
+        .replace(/[₹Rs]/gi, '')         // remove currency symbols
         .replace(/[^\w.\n ]/g, ' ')     // remove noise
         .toLowerCase()
         .split("\n")
@@ -170,28 +170,32 @@ function extractAmount(text) {
         "final total"
     ];
 
+    // Step 1: Look for numbers after keywords
     for (let i = 0; i < lines.length; i++) {
         for (let key of keywords) {
             if (lines[i].includes(key)) {
                 // same line
                 let match = lines[i].match(/\d+(\.\d{1,2})?/);
-                if (match) return parseFloat(match[0]).toFixed(2);
+                if (match && match[0].length <= 8) return parseFloat(match[0]).toFixed(2);
 
-                // next line (mobile fix)
+                // next line
                 if (lines[i + 1]) {
                     match = lines[i + 1].match(/\d+(\.\d{1,2})?/);
-                    if (match) return parseFloat(match[0]).toFixed(2);
+                    if (match && match[0].length <= 8) return parseFloat(match[0]).toFixed(2);
                 }
             }
         }
     }
-
-    // fallback: largest number
+    // Step 2: Fallback - reasonable numbers only (< 1,000,000)
     const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
     if (allNumbers) {
-        return Math.max(...allNumbers.map(Number)).toFixed(2);
+        const filtered = allNumbers
+            .map(Number)
+            .filter(n => n < 1000000); // ignore phone numbers / huge numbers
+        if (filtered.length) {
+            return Math.max(...filtered).toFixed(2);
+        }
     }
-
     return null;
 }
 </script>
