@@ -168,7 +168,7 @@ function extractAmount(text) {
         "grand total",
         "amount payable",
         "net total",
-        "final total"
+        "final total",
         "TOTAL",
         "TOTAL=",
         "Amount Due",
@@ -182,12 +182,10 @@ function extractAmount(text) {
 
     for (let i = 0; i < lines.length; i++) {
         for (let key of keywords) {
-            if (lines[i].includes(key)) {
-                // Extract all numbers in the line
+            if (lines[i].toLowerCase().includes(key.toLowerCase())) {
                 let match = lines[i].match(/\d+(\.\d{1,2})?/g);
                 if (match && match.length) return parseFloat(match[match.length - 1]).toFixed(2);
-
-                // Check next 1-2 lines if no number found
+            
                 for (let j = 1; j <= 2; j++) {
                     if (lines[i + j]) {
                         match = lines[i + j].match(/\d+(\.\d{1,2})?/g);
@@ -222,13 +220,22 @@ function extractItems(text) {
         .filter(Boolean);
 
     const keywords = [
-        "total",
+       "total",
         "grand total",
         "amount payable",
         "net total",
-        "final total"
+        "final total",
+        "TOTAL",
+        "TOTAL=",
+        "Amount Due",
+        "Total Amount",
+        "Grand Total",
+        "Balance Due",
+        "Amount Owed",
+        "Final Total",
+        "Invoice Amount" 
     ];
-
+    
     let items = [];
 
     for (let line of lines) {
