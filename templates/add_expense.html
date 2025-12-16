@@ -149,39 +149,42 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 });
 </script>
 <script>
-    function extractAmountFromText(text) {
-        if (!text) return null;
-    
-        text = text.toLowerCase()
-            .replace(/,/g, '')
-            .replace('₹', '')
-            .trim();
-    
-        const match = text.match(/(\d+(?:\.\d+)?)(k)?/);
-    
-        if (!match) return null;
-    
-        let amount = parseFloat(match[1]);
-    
-        if (match[2]) {
-            amount *= 1000;
+function extractAmount(text) {
+    if (!text) return null;
+
+    text = text
+        .replace(/[,]/g, '')        // remove commas
+        .replace(/[^\d.\n ]/g, ' ') // remove noise
+        .toLowerCase();
+
+    const lines = text.split("\n");
+
+    let candidates = [];
+
+    for (let line of lines) {
+        // Prefer TOTAL lines
+        if (line.includes("total") || line.includes("amount")) {
+            const nums = line.match(/\d+(\.\d{1,2})?/g);
+            if (nums) {
+                candidates.push(...nums);
+            }
         }
-    
-        return amount.toFixed(2);
     }
-    
-    const noteInput = document.getElementById("note");
-    const amountInput = document.getElementById("amount");
-    
-    noteInput.addEventListener("input", () => {
-        // Only auto-fill if amount is empty
-        if (amountInput.value.trim() !== "") return;
-    
-        const extracted = extractAmountFromText(noteInput.value);
-        if (extracted) {
-            amountInput.value = extracted;
-        }
-    });
+
+    // Fallback: collect all numbers
+    if (candidates.length === 0) {
+        candidates = text.match(/\d+(\.\d{1,2})?/g) || [];
+    }
+
+    if (candidates.length === 0) return null;
+
+    // Convert & return largest value
+    const amounts = candidates
+        .map(n => parseFloat(n))
+        .filter(n => n > 1 && n < 100000);
+
+    return amounts.length ? Math.max(...amounts).toFixed(2) : null;
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
@@ -203,7 +206,7 @@ async function scanReceipt() {
         "eng",
         {
             logger: m => console.log(m),
-            tessedit_char_whitelist: "0123456789₹Rs.INR$.-/"
+            tessedit_char_whitelist: "0123456789₹Rs.INR.-/"
         }
     );
 
@@ -212,10 +215,10 @@ async function scanReceipt() {
     // Fill note with raw OCR
     noteInput.value = text.slice(0, 200);
 
-    // Extract amount
-    const amountMatch = text.match(/(₹|rs\.?|inr|\$)?\s?\d+(\.\d{1,2})?/i);
-    if (amountMatch) {
-        amountInput.value = amountMatch[0].replace(/[^\d.]/g, "");
+    // SMART AMOUNT EXTRACTION (THIS IS THE FIX)
+    const amount = extractAmount(text);
+    if (amount) {
+        amountInput.value = amount;
     }
 }
 </script>
