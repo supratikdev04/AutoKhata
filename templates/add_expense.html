@@ -148,18 +148,17 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     }
 });
 </script>
-    
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-// MOBILE-FRIENDLY AMOUNT EXTRACTION
-// EXTRACT TOTAL AMOUNT (UPPERCASE SAFE)
+// --- EXTRACT TOTAL AMOUNT ---
 function extractAmount(text) {
     if (!text) return null;
 
     const lines = text
-        .replace(/,/g, '')               // remove commas
-        .replace(/[₹Rs]/gi, '')          // remove currency symbols
-        .replace(/[^\w.\n:= ]/g, ' ')    // keep letters, numbers, dots, =, :, spaces
-        .toUpperCase()                    // convert everything to uppercase
+        .replace(/,/g, '')               
+        .replace(/[₹Rs]/gi, '')          
+        .replace(/[^\w.\n:= ]/g, ' ')    
+        .toUpperCase()                    
         .split("\n")
         .map(l => l.trim())
         .filter(Boolean);
@@ -185,9 +184,11 @@ function extractAmount(text) {
 
         for (let key of keywords) {
             if (lines[i].includes(key)) {
+                // Extract numbers from current line
                 let match = lines[i].match(/\d+(\.\d{1,2})?/g);
                 if (match && match.length) return parseFloat(match[match.length - 1]).toFixed(2);
 
+                // Check next 1-2 lines if no number found
                 for (let j = 1; j <= 2; j++) {
                     if (lines[i + j]) {
                         match = lines[i + j].match(/\d+(\.\d{1,2})?/g);
@@ -198,25 +199,18 @@ function extractAmount(text) {
         }
     }
 
-    // fallback: largest number < 1,000,000
-    const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
-    if (allNumbers) {
-        const filtered = allNumbers.map(Number).filter(n => n < 1000000);
-        if (filtered.length) return Math.max(...filtered).toFixed(2);
-    }
-
+    // If total not found, return null (do not pick random numbers)
     return null;
 }
 
-// EXTRACT ITEMS / PARTICULARS (UPPERCASE SAFE)
+// --- EXTRACT ITEM NAMES / PARTICULARS ---
 function extractItems(text) {
     if (!text) return "";
 
     const lines = text
         .replace(/[₹]/g, '')                 // remove currency symbols
         .replace(/[^\w\s:.-]/g, ' ')         // remove special chars except : . -
-        .toUpperCase()                        // convert everything to uppercase
-        .toLowerCase()
+        .toUpperCase()                        // uppercase for matching
         .split("\n")
         .map(l => l.trim())
         .filter(Boolean);
@@ -239,7 +233,7 @@ function extractItems(text) {
         // Skip irrelevant lines
         if (/GSTIN|GST NO|CGST|SGST|TAX|INVOICE NO|MOBILE|PHONE|ADDR|ADDRESS|BILL NO/i.test(line)) continue;
 
-        // Stop at total keywords
+        // Stop scanning items at total keywords
         if (stopKeywords.some(key => line.includes(key))) break;
 
         // Skip numeric-only lines
@@ -251,7 +245,7 @@ function extractItems(text) {
     return items.slice(0, 20).join(", "); // first 20 items
 }
 
-// OVERRIDE scanReceipt FUNCTION
+// --- SCAN RECEIPT FUNCTION ---
 async function scanReceipt() {
     const file = document.getElementById("receiptInput").files[0];
     if (!file) {
@@ -265,25 +259,33 @@ async function scanReceipt() {
     noteInput.value = "Scanning receipt...";
     amountInput.value = "";
 
-    const { data: { text } } = await Tesseract.recognize(
-        file,
-        "eng",
-        {
-            logger: m => console.log(m),
-            tessedit_pageseg_mode: 6,
-            preserve_interword_spaces: 1
+    try {
+        const { data: { text } } = await Tesseract.recognize(
+            file,
+            "eng",
+            {
+                logger: m => console.log(m),
+                tessedit_pageseg_mode: 6,
+                preserve_interword_spaces: 1
+            }
+        );
+
+        console.log("OCR TEXT:", text);
+
+        // Fill note with items
+        noteInput.value = extractItems(text);
+
+        // Extract total amount
+        const amount = extractAmount(text);
+        if (amount) {
+            amountInput.value = amount;
+        } else {
+            amountInput.placeholder = "Could not detect total";
         }
-    );
 
-    console.log(text);
-
-    // Fill note with smart items
-    noteInput.value = extractItems(text);
-
-    // Extract total amount
-    const amount = extractAmount(text);
-    if (amount) {
-        amountInput.value = amount;
+    } catch (err) {
+        console.error("OCR Error:", err);
+        alert("Failed to scan receipt. Please try again.");
     }
 }
 </script>
