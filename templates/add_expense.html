@@ -137,7 +137,7 @@ document.getElementById("category").addEventListener("change", updateSubcategori
     navigator.serviceWorker.register("/static/service-worker.js");
   }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 document.querySelector("input[name='note']").addEventListener("input", function () {
     const text = this.value;
@@ -147,10 +147,12 @@ document.querySelector("input[name='note']").addEventListener("input", function 
         document.querySelector("input[name='amount']").value = match[0];
     }
 });
-// MOBILE-FRIENDLY AMOUNT EXTRACTION
+</script>
+    
+<script>
+// MOBILE-FRIENDLY AMOUNT EXTRACTION & ITEM EXTRACTION
 function extractAmount(text) {
     if (!text) return null;
-
     // Normalize OCR text
     const lines = text
         .replace(/,/g, '')              // remove commas
@@ -161,7 +163,6 @@ function extractAmount(text) {
         .map(l => l.trim())
         .filter(Boolean);
 
-    // Keywords to match
     const keywords = [
         "total",
         "grand total",
@@ -186,6 +187,7 @@ function extractAmount(text) {
             }
         }
     }
+
     // Step 2: Fallback - reasonable numbers only (< 1,000,000)
     const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
     if (allNumbers) {
@@ -196,11 +198,46 @@ function extractAmount(text) {
             return Math.max(...filtered).toFixed(2);
         }
     }
+
     return null;
 }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script>
+
+// EXTRACT ITEMS FOR NOTE FIELD
+function extractItems(text) {
+    if (!text) return "";
+
+    const lines = text
+        .replace(/[₹]/g, '')       // remove currency
+        .replace(/[^\w.\s]/g, ' ') // remove symbols
+        .split("\n")
+        .map(l => l.trim())
+        .filter(Boolean);
+
+    const keywords = [
+        "total",
+        "grand total",
+        "amount payable",
+        "net total",
+        "final total"
+    ];
+
+    let items = [];
+
+    for (let line of lines) {
+        // Stop at total keywords
+        if (keywords.some(key => line.toLowerCase().includes(key))) break;
+
+        // Exclude lines that are just numbers
+        if (!/^\d+(\.\d{1,2})?$/.test(line)) {
+            items.push(line);
+        }
+    }
+
+    // Join first few items if too long
+    return items.slice(0, 20).join(", ");
+}
+
+// OVERRIDE scanReceipt FUNCTION
 async function scanReceipt() {
     const file = document.getElementById("receiptInput").files[0];
     if (!file) {
@@ -226,15 +263,16 @@ async function scanReceipt() {
 
     console.log(text);
 
-    // Fill note with raw OCR
-    noteInput.value = text.slice(0, 200);
+    // Extract items for note field
+    noteInput.value = extractItems(text);
 
-    // SMART AMOUNT EXTRACTION (THIS IS THE FIX)
+    // Extract total amount
     const amount = extractAmount(text);
     if (amount) {
         amountInput.value = amount;
     }
 }
 </script>
+
 </body>
 </html>
