@@ -152,38 +152,40 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 function extractAmount(text) {
     if (!text) return null;
 
-    text = text
-        .replace(/[,]/g, '')        // remove commas
-        .replace(/[^\d.\n ]/g, ' ') // remove noise
-        .toLowerCase();
+    // Normalize OCR text
+    const lines = text
+        .replace(/,/g, '')              // remove commas
+        .replace(/[^\w.\n ]/g, ' ')     // remove noise
+        .toLowerCase()
+        .split("\n")
+        .map(l => l.trim())
+        .filter(Boolean);
 
-    const lines = text.split("\n");
-
-    let candidates = [];
+    // Keywords to match
+    const keywords = [
+        "total",
+        "grand total",
+        "amount payable",
+        "net total",
+        "final total"
+    ];
 
     for (let line of lines) {
-        // Prefer TOTAL lines
-        if (line.includes("total") || line.includes("amount")) {
-            const nums = line.match(/\d+(\.\d{1,2})?/g);
-            if (nums) {
-                candidates.push(...nums);
+        for (let key of keywords) {
+            if (line.includes(key)) {
+                // Extract numbers AFTER keyword
+                const afterKey = line.split(key)[1];
+
+                if (!afterKey) continue;
+
+                const match = afterKey.match(/\d+(\.\d{1,2})?/);
+                if (match) {
+                    return parseFloat(match[0]).toFixed(2);
+                }
             }
         }
     }
-
-    // Fallback: collect all numbers
-    if (candidates.length === 0) {
-        candidates = text.match(/\d+(\.\d{1,2})?/g) || [];
-    }
-
-    if (candidates.length === 0) return null;
-
-    // Convert & return largest value
-    const amounts = candidates
-        .map(n => parseFloat(n))
-        .filter(n => n > 1 && n < 100000);
-
-    return amounts.length ? Math.max(...amounts).toFixed(2) : null;
+    return null;
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
