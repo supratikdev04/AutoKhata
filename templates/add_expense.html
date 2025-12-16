@@ -148,7 +148,6 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     }
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 function extractAmount(text) {
     if (!text) return null;
@@ -163,29 +162,31 @@ function extractAmount(text) {
         .filter(Boolean);
 
     const TOTAL_KEYWORDS = [
-        'TOTAL AMOUNT DUE',
-        'TOTAL AMOUNT',
         'GRAND TOTAL',
+        'TOTAL AMOUNT',
         'AMOUNT PAYABLE',
         'NET TOTAL',
         'FINAL TOTAL',
-        'TOTAL DUE'
+        'TOTAL DUE',
+        'TOTAL'
     ];
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        // Skip GST / TAX lines
-        if (/CGST|SGST|GST|TAX/.test(line)) continue;
+        // Skip tax & irrelevant lines
+        if (/CGST|SGST|GST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|ADDRESS/.test(line)) {
+            continue;
+        }
 
-        // Match TOTAL keywords
+        //  Match TOTAL keywords only
         if (TOTAL_KEYWORDS.some(k => line.includes(k))) {
 
-            // 1️⃣ Same line amount
+            //  Same line amount
             let match = line.match(/\d+(\.\d{1,2})?/);
             if (match) return Number(match[0]).toFixed(2);
 
-            // 2️⃣ Next 2 lines amount
+            //  Next 2 lines amount
             for (let j = 1; j <= 2; j++) {
                 if (lines[i + j]) {
                     match = lines[i + j].match(/\d+(\.\d{1,2})?/);
@@ -195,50 +196,79 @@ function extractAmount(text) {
         }
     }
 
-    // NO fallback (prevents ZIP / phone numbers)
+    // No fallback → prevents random numbers
     return null;
 }
 </script>
 <script>
-    // --- SCAN RECEIPT FUNCTION ---
 async function scanReceipt() {
     const fileInput = document.getElementById("receiptInput");
 
-    if (!fileInput || !fileInput.files || !fileInput.files.length) {
-        alert("Please upload a receipt image");
+    if (!fileInput || !fileInput.files.length) {
+        alert("Please upload or capture a receipt");
         return;
     }
 
     const file = fileInput.files[0];
+    const amountInput = document.getElementById("amount");
+    const noteInput = document.getElementById("note");
 
-    console.log("Scanning:", file.name);
+    noteInput.value = "Scanning receipt...";
+    amountInput.value = "";
 
     try {
         const result = await Tesseract.recognize(
             file,
             "eng",
-            {
-                logger: m => console.log(m) // progress logs
-            }
+            { logger: m => console.log(m) }
         );
 
         const text = result.data.text;
         console.log("OCR TEXT ↓↓↓");
         console.log(text);
-
-        // extract TOTAL only
+        autoDetectCategory(text);
         const amount = extractAmount(text);
         if (amount) {
-            document.getElementById("amount").value = amount;
+            amountInput.value = amount;
+            noteInput.value = "Scanned from receipt";
         } else {
-            alert("Total amount not detected");
+            noteInput.value = "Total not detected";
+            alert("Could not detect TOTAL amount");
         }
 
-    } catch (err) {
-        console.error("OCR FAILED:", err);
-        alert("OCR failed. Check console.");
+    } catch (error) {
+        console.error("OCR ERROR:", error);
+        alert("Receipt scan failed");
     }
 }
 </script>
+<script>
+function autoDetectCategory(text) {
+    if (!text) return;
+
+    const content = text.toUpperCase();
+
+    let detected = null;
+
+    if (/ELECTRICITY|POWER|EB|WATER|INTERNET|BROADBAND|WIFI|MOBILE|RECHARGE/.test(content)) {
+        detected = "Bills";
+    }
+    else if (/RESTAURANT|HOTEL|FOOD|CAFE|MEAL|DINNER|LUNCH/.test(content)) {
+        detected = "Food";
+    }
+    else if (/PETROL|DIESEL|FUEL|CAB|TAXI|UBER|OLA|BUS|TRAIN|FLIGHT/.test(content)) {
+        detected = "Travel";
+    }
+    else if (/AMAZON|FLIPKART|SHOPPING|STORE|MALL/.test(content)) {
+        detected = "Shopping";
+    }
+
+    if (detected) {
+        document.getElementById("category").value = detected;
+        updateSubcategories(); // keep subcategory in sync
+    }
+}
+</script>
+
 </body>
 </html>
