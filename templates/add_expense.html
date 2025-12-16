@@ -152,71 +152,65 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 function extractAmount(text) {
     if (!text) return null;
 
+    // Normalize OCR mistakes
+    text = text
+        .replace(/0TAL/g, 'TOTAL')
+        .replace(/T0TAL/g, 'TOTAL')
+        .replace(/AM0UNT/g, 'AMOUNT')
+        .replace(/[,]/g, '')
+        .replace(/[₹$Rs]/gi, '');
+
     const lines = text
-        .replace(/,/g, '')
-        .replace(/[₹$Rs]/gi, '')
-        .replace(/[^\w.\n ]/g, ' ')
         .toUpperCase()
         .split('\n')
         .map(l => l.trim())
         .filter(Boolean);
 
-    // STRONG TOTAL KEYWORDS
-    const TOTAL_KEYWORDS = [
-        'GRAND TOTAL',
-        'TOTAL AMOUNT',
-        'AMOUNT PAYABLE',
-        'NET TOTAL',
-        'FINAL TOTAL',
-        'TOTAL DUE',
-        'PAYABLE AMOUNT',
-        'TOTAL'
+    const TOTAL_WORDS = [
+        'TOTAL',
+        'GRAND',
+        'NET',
+        'PAYABLE',
+        'AMOUNT',
+        'CASH'
     ];
 
-    //Lines to ignore completely
-    const IGNORE_PATTERN = /CGST|SGST|GST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|ADDRESS|QTY|RATE/i;
+    const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|QTY|RATE|PRICE/;
 
-    // PASS 1: keyword-based detection
+    let candidates = [];
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        if (IGNORE_PATTERN.test(line)) continue;
+        if (IGNORE.test(line)) continue;
 
-        if (TOTAL_KEYWORDS.some(k => line.includes(k))) {
-            const match = line.match(/\d+(\.\d{1,2})?/);
-            if (match) return Number(match[0]).toFixed(2);
+        const numbers = line.match(/\d+(\.\d{1,2})?/g);
+        if (!numbers) continue;
 
-            // check next line
-            if (lines[i + 1]) {
-                const nextMatch = lines[i + 1].match(/\d+(\.\d{1,2})?/);
-                if (nextMatch) return Number(nextMatch[0]).toFixed(2);
-            }
-        }
-    }
+        const hasTotalWord = TOTAL_WORDS.some(w => line.includes(w));
 
-    // PASS 2: bottom-most reasonable amount
-    const candidates = [];
-
-    for (let i = 0; i < lines.length; i++) {
-        if (IGNORE_PATTERN.test(lines[i])) continue;
-
-        const nums = lines[i].match(/\d+(\.\d{1,2})?/g);
-        if (!nums) continue;
-
-        nums.forEach(n => {
+        numbers.forEach(n => {
             const value = Number(n);
             if (value > 1 && value < 1000000) {
                 candidates.push({
                     value,
-                    lineIndex: i
+                    index: i,
+                    strong: hasTotalWord
                 });
             }
         });
     }
 
+    // 1️⃣ Prefer strong TOTAL lines
+    const strong = candidates.filter(c => c.strong);
+    if (strong.length) {
+        strong.sort((a, b) => b.index - a.index);
+        return strong[0].value.toFixed(2);
+    }
+
+    // 2️⃣ Fallback: bottom-most amount
     if (candidates.length) {
-        // pick the number closest to the bottom
-        candidates.sort((a, b) => b.lineIndex - a.lineIndex);
+        candidates.sort((a, b) => b.index - a.index);
         return candidates[0].value.toFixed(2);
     }
 
