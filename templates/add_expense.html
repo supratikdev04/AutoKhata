@@ -150,14 +150,14 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 </script>
     
 <script>
-// MOBILE-FRIENDLY AMOUNT EXTRACTION & ITEM EXTRACTION
+// MOBILE-FRIENDLY AMOUNT EXTRACTION
 function extractAmount(text) {
     if (!text) return null;
-    // Normalize OCR text
+
     const lines = text
-        .replace(/,/g, '')              // remove commas
-        .replace(/[₹Rs]/gi, '')         // remove currency symbols
-        .replace(/[^\w.\n ]/g, ' ')     // remove noise
+        .replace(/,/g, '')               // remove commas
+        .replace(/[₹Rs]/gi, '')          // remove currency symbols
+        .replace(/[^\w.\n ]/g, ' ')      // remove noise except numbers and words
         .toLowerCase()
         .split("\n")
         .map(l => l.trim())
@@ -171,29 +171,28 @@ function extractAmount(text) {
         "final total"
     ];
 
-    // Step 1: Look for numbers after keywords
     for (let i = 0; i < lines.length; i++) {
         for (let key of keywords) {
             if (lines[i].includes(key)) {
-                // same line
-                let match = lines[i].match(/\d+(\.\d{1,2})?/);
-                if (match && match[0].length <= 8) return parseFloat(match[0]).toFixed(2);
+                // Extract all numbers in the line
+                let match = lines[i].match(/\d+(\.\d{1,2})?/g);
+                if (match && match.length) return parseFloat(match[match.length - 1]).toFixed(2);
 
-                // next line
-                if (lines[i + 1]) {
-                    match = lines[i + 1].match(/\d+(\.\d{1,2})?/);
-                    if (match && match[0].length <= 8) return parseFloat(match[0]).toFixed(2);
+                // Check next 1-2 lines if no number found
+                for (let j = 1; j <= 2; j++) {
+                    if (lines[i + j]) {
+                        match = lines[i + j].match(/\d+(\.\d{1,2})?/g);
+                        if (match && match.length) return parseFloat(match[match.length - 1]).toFixed(2);
+                    }
                 }
             }
         }
     }
 
-    // Step 2: Fallback - reasonable numbers only (< 1,000,000)
+    // Fallback: largest number under 1,000,000
     const allNumbers = lines.join(" ").match(/\d+(\.\d{1,2})?/g);
     if (allNumbers) {
-        const filtered = allNumbers
-            .map(Number)
-            .filter(n => n < 1000000); // ignore phone numbers / huge numbers
+        const filtered = allNumbers.map(Number).filter(n => n < 1000000);
         if (filtered.length) {
             return Math.max(...filtered).toFixed(2);
         }
@@ -202,13 +201,13 @@ function extractAmount(text) {
     return null;
 }
 
-// EXTRACT ITEMS FOR NOTE FIELD
+// SMART ITEM EXTRACTION FOR NOTE
 function extractItems(text) {
     if (!text) return "";
 
     const lines = text
-        .replace(/[₹]/g, '')       // remove currency
-        .replace(/[^\w.\s]/g, ' ') // remove symbols
+        .replace(/[₹]/g, '')             // remove currency symbol
+        .replace(/[^\w\s:.-]/g, ' ')     // remove special chars but keep : . -
         .split("\n")
         .map(l => l.trim())
         .filter(Boolean);
@@ -227,14 +226,14 @@ function extractItems(text) {
         // Stop at total keywords
         if (keywords.some(key => line.toLowerCase().includes(key))) break;
 
-        // Exclude lines that are just numbers
-        if (!/^\d+(\.\d{1,2})?$/.test(line)) {
-            items.push(line);
-        }
+        // Skip header or numeric-only lines
+        if (/^(k\.m|particulars|rate|amount|rs|p)$/i.test(line)) continue;
+        if (/^\d+(\.\d{1,2})?$/.test(line)) continue;
+
+        items.push(line);
     }
 
-    // Join first few items if too long
-    return items.slice(0, 20).join(", ");
+    return items.slice(0, 20).join(", "); // first 20 items
 }
 
 // OVERRIDE scanReceipt FUNCTION
@@ -263,7 +262,7 @@ async function scanReceipt() {
 
     console.log(text);
 
-    // Extract items for note field
+    // Fill note with smart items
     noteInput.value = extractItems(text);
 
     // Extract total amount
