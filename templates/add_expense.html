@@ -169,6 +169,15 @@ function extractAmount(text) {
         "amount payable",
         "net total",
         "final total"
+        "TOTAL",
+        "TOTAL=",
+        "Amount Due",
+        "Total Amount",
+        "Grand Total",
+        "Balance Due",
+        "Amount Owed",
+        "Final Total",
+        "Invoice Amount" 
     ];
 
     for (let i = 0; i < lines.length; i++) {
@@ -272,6 +281,5 @@ async function scanReceipt() {
     }
 }
 </script>
-
 </body>
 </html>
