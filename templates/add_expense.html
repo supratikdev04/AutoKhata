@@ -44,22 +44,44 @@
 
                 <!-- Amount -->
                 <label class="form-label mt-3">Amount</label>
-                <input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: 100" required>
-                <!--input type="number" step="0.01" class="form-control" id="amount" name="amount">
+                <!--input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: 100" required>
+                <!-input type="number" step="0.01" class="form-control" id="amount" name="amount">
                 <textarea class="form-control" id="note" name="note" rows="3"placeholder="e.g. Paid ₹2.5k for groceries"></textarea-->
-
+                <input type="number" step="0.01"
+                   class="form-control"
+                   name="amount"
+                   id="amount"
+                   placeholder="ex: 100"
+                   required>
             </div>
 
             <div class="col-md-3 col-12">
                 <label class="form-label">Note</label>
-                <input type="text" class="form-control" name="note" placeholder="Write a note about your expense">
+                <!--input type="text" class="form-control" name="note" placeholder="Write a note about your expense"-->
+                <input type="text"
+                   class="form-control"
+                   name="note"
+                   id="note"
+                   placeholder="Write a note about your expense">
             </div>
             <div class="col-md-3 col-12">
                 <label class="form-label">Attachment (Receipt)</label>
-                <input type="file"
+                <!--input type="file"
                        name="attachment"
                        class="form-control"
-                       accept=".jpg,.jpeg,.png,.pdf">
+                       accept=".jpg,.jpeg,.png,.pdf"-->
+                <input type="file"
+                   name="attachment"
+                   id="receiptInput"
+                   class="form-control"
+                   accept="image/*"
+                   capture="environment">
+                <button type="button"
+                    class="btn btn-outline-primary mt-2 w-100"
+                    onclick="scanReceipt()">
+                    📸 Scan Receipt
+                </button>
+
             </div>
             <div class="col-md-3 col-12 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">Add</button>
@@ -160,6 +182,42 @@ document.querySelector("input[name='note']").addEventListener("input", function 
             amountInput.value = extracted;
         }
     });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+async function scanReceipt() {
+    const file = document.getElementById("receiptInput").files[0];
+    if (!file) {
+        alert("Please capture or upload a receipt");
+        return;
+    }
+
+    const amountInput = document.getElementById("amount");
+    const noteInput = document.getElementById("note");
+
+    noteInput.value = "Scanning receipt...";
+    amountInput.value = "";
+
+    const { data: { text } } = await Tesseract.recognize(
+        file,
+        "eng",
+        {
+            logger: m => console.log(m),
+            tessedit_char_whitelist: "0123456789₹Rs.INR$.-/"
+        }
+    );
+
+    console.log(text);
+
+    // Fill note with raw OCR
+    noteInput.value = text.slice(0, 200);
+
+    // Extract amount
+    const amountMatch = text.match(/(₹|rs\.?|inr|\$)?\s?\d+(\.\d{1,2})?/i);
+    if (amountMatch) {
+        amountInput.value = amountMatch[0].replace(/[^\d.]/g, "");
+    }
+}
 </script>
 </body>
 </html>
