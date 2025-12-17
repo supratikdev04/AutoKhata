@@ -10,6 +10,9 @@ import re
 from utils import extract_amount
 import uuid
 from flask import flash
+import csv
+import io
+from flask import Response
 
 
 # Load environment variables from .env
@@ -446,7 +449,87 @@ def settings():
     if "user_id" not in session:
         return redirect("/login")
     return render_template("settings.html")
+#-----------------------------------------------------------------------------------
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf"}
 
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+#------------------------- Download Expense -----------------------------------------
+@app.route("/download", methods=["GET"])
+@login_required
+def download_page():
+    return render_template("download.html")
+#---------------------------- Core Part For Download --------------------------------
+@app.route("/download-expenses", methods=["POST"])
+@login_required
+def download_expenses():
+    user_id = session["user_id"]
+
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    if not start_date or not end_date:
+        flash("Please select both dates", "warning")
+        return redirect(url_for("download_page"))
+
+    # Convert to full datetime range
+    start_dt = f"{start_date} 00:00:00"
+    end_dt = f"{end_date} 23:59:59"
+
+    result = (
+        supabase.table("expenses")
+        .select("*")
+        .eq("user_id", user_id)
+        .gte("next_date", start_dt)
+        .lte("next_date", end_dt)
+        .order("next_date")
+        .execute()
+    )
+
+    expenses = result.data or []
+
+    if not expenses:
+        flash("No expenses found for selected date range", "info")
+        return redirect(url_for("download_page"))
+
+    # Create CSV
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Date",
+        "Category",
+        "Subcategory",
+        "Amount",
+        "Note"
+    ])
+
+    for e in expenses:
+        writer.writerow([
+            e["next_date"],
+            e["category"],
+            e["subcategory"],
+            e["amount"],
+            e.get("note", "")
+        ])
+
+    output.seek(0)
+
+    filename = f"expenses_{start_date}_to_{end_date}.csv"
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+# ------------------ Run App ------------------
+if __name__ == "__main__":
+    # debug True for local dev. Turn off in production.
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+#------------------------------------------------------------------------------------------------------------------------------------
 # ------------------ Commented out history route that referenced undefined DB helper ------------------
 # If you want this route, implement get_db_connection() first
 """
@@ -463,17 +546,6 @@ def history():
     conn.close()
     return render_template("exptracker3.html", expenses=expenses)
 """
-
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "pdf"}
-
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# ------------------ Run App ------------------
-if __name__ == "__main__":
-    # debug True for local dev. Turn off in production.
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
 '''
 from flask import Flask, request, redirect, render_template, session, url_for
 from supabase import create_client, Client
