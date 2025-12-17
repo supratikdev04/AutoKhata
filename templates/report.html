@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 
 
-    <style>
+    <!--style>
         body {
             background: #f5f6fa;
         }
@@ -29,9 +29,19 @@
         .form-control, .form-select {
             border-radius: 10px;
         }
+    </style-->
+    <style>
+        .form-header {
+            background-color: var(--secondary-bg);
+            color: var(--text-light);
+            font-weight: bold;
+            padding: 0.75rem 1rem;
+            border-radius: 12px 12px 0 0;
+            margin: -1rem -1rem 1rem -1rem;
+        }
     </style>
 </head>
-<body>
+<body class="d-flex align-items-center" style="min-height:100vh;">
 
 <div class="container py-5">
 
