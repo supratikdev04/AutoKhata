@@ -151,6 +151,7 @@ def logout():
 
 
 # ------------------ Main page and expenses (kept as-is) ------------------
+'''
 @app.route("/", methods=["GET"])
 @login_required
 def exptracker3():
@@ -191,6 +192,71 @@ def exptracker3():
         total_pages=total_pages,
         current_page=page,
         specific_date=specific_date
+    )
+'''
+@app.route("/", methods=["GET"])
+@login_required
+def exptracker3():
+    user_id = session["user_id"]
+
+    # Pagination
+    page = int(request.args.get("page", 1))
+    per_page = 10
+    start = (page - 1) * per_page
+    end = start + per_page - 1
+
+    # Date range filter
+    from_date = request.args.get("from_date")
+    to_date = request.args.get("to_date")
+
+    query = supabase.table("expenses").select("*").eq("user_id", user_id)
+
+    if from_date:
+        query = query.gte("next_date", f"{from_date} 00:00:00")
+
+    if to_date:
+        query = query.lte("next_date", f"{to_date} 23:59:59")
+
+    # Fetch paginated expenses
+    result = (
+        query
+        .order("next_date", desc=True)
+        .range(start, end)
+        .execute()
+    )
+    expenses = result.data or []
+
+    # ---- TOTAL (RESPECT FILTER) ----
+    total_query = supabase.table("expenses").select("amount").eq("user_id", user_id)
+
+    if from_date:
+        total_query = total_query.gte("next_date", f"{from_date} 00:00:00")
+
+    if to_date:
+        total_query = total_query.lte("next_date", f"{to_date} 23:59:59")
+
+    total_result = total_query.execute()
+    total = sum(float(e["amount"]) for e in (total_result.data or []))
+
+    # ---- TOTAL PAGES (RESPECT FILTER) ----
+    count_query = supabase.table("expenses").select("id", count="exact").eq("user_id", user_id)
+
+    if from_date:
+        count_query = count_query.gte("next_date", f"{from_date} 00:00:00")
+
+    if to_date:
+        count_query = count_query.lte("next_date", f"{to_date} 23:59:59")
+
+    count_result = count_query.execute()
+    total_expenses = count_result.count or 0
+    total_pages = (total_expenses + per_page - 1) // per_page
+
+    return render_template(
+        "exptracker3.html",
+        expense=expenses,
+        total=total,
+        total_pages=total_pages,
+        current_page=page
     )
 
 # ------------------ Add / Modify / Delete expenses (kept) ------------------
