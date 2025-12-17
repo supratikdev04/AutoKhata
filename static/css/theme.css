@@ -53,6 +53,19 @@ body {
   border: 1px solid var(--card-border); /* #49769F */
   box-shadow: 0 6px 16px rgba(0, 29, 57, 0.15);
 }
+/* Card Header */
+.card-header {
+    background-color: var(--secondary-bg) !important; /* Navbar / Header color */
+    color: var(--text-light) !important;
+    font-weight: 600;
+    border-bottom: 1px solid var(--card-border);
+}
+
+/* Card Body */
+.card-body {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
 
 /* ------------------------- Buttons ------------------------- */
 .btn-primary {
@@ -60,21 +73,24 @@ body {
   border-color: var(--accent) !important;
   color: var(--white) !important;
   border-radius: 10px;
+  font-weight: 500;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-success:hover{
   background-color: var(--accent-hover) !important; /* #6EA2B3 */
   border-color: var(--accent-hover) !important;
 }
 
 /* Outline secondary button */
-.btn-outline-secondary {
+.btn-outline-secondary, .btn-back{
   border-radius: 10px;
   border-color: var(--text-muted);
   color: var(--text-muted);
+  border: 1px solid var(--accent);
 }
 
-.btn-outline-secondary:hover {
+.btn-outline-secondary:hover , .btn-back:hover {
   background-color: var(--primary-blue);
   color: var(--white);
 }
@@ -133,4 +149,15 @@ a:hover {
 hr {
   border-color: var(--card-border) !important;
 }
+/*-----------------------------------------------------*/
+.card, .form-control, .form-select, .btn {
+    border-radius: 10px;
+}
 
+.card-body {
+    padding: 1.5rem;
+}
+
+input, select, textarea, button {
+    margin-bottom: 1rem;
+}
