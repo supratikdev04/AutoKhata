@@ -1,29 +1,28 @@
 /* ------------------------- Variables ------------------------- */
 :root {
   /* Backgrounds */
-  --primary-bg: #001D39;        /* Main app background */
-  --secondary-bg: #0A4174;      /* Navbar / header */
-  --card-bg: #BDD8E9;           /* Cards / tables */
-  --input-bg: #EAF3F9;          /* Inputs */
+  --primary-bg: #3A1F0B;        /* Main app background - dark brown */
+  --secondary-bg: #7B3F00;      /* Navbar / header - deep orange */
+  --card-bg: #FFDAB3;           /* Cards / tables - soft peach */
+  --input-bg: #FFE6CC;          /* Inputs - light cream */
 
   /* Text */
-  --text-color: #001D39;        /* Primary text */
-  --text-muted: #49769F;        /* Secondary text */
+  --text-color: #3A1F0B;        /* Primary text - dark brown */
+  --text-muted: #A65A3D;        /* Secondary text - muted orange */
   --text-light: #FFFFFF;        /* Text on dark bg */
 
   /* Accent / Actions */
-  --accent: #4E8EA2;            /* Buttons, highlights */
-  --accent-hover: #6EA2B3;      /* Hover states */
-  --primary-blue: #7BBDE8;      /* Links / focus */
+  --accent: #FF8C42;            /* Buttons, highlights - vivid orange */
+  --accent-hover: #FFA86B;      /* Hover states - lighter orange */
+  --primary-gold: #FFC857;      /* Links / focus - golden yellow */
 
   /* Borders */
-  --input-border: #6EA2B3;
-  --card-border: #49769F;
+  --input-border: #FFA86B;      /* Input borders - soft orange */
+  --card-border: #FFB066;       /* Card borders - subtle highlight */
 
   /* Utility */
   --white: #FFFFFF;
 }
-
 /* ------------------------- Body ------------------------- */
 body {
   background-color: var(--primary-bg) !important; /* #001D39 */
