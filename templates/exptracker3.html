@@ -130,29 +130,26 @@
         <div class="card-body table-responsive">
 
             <!-- FILTER BAR -->
-            <form method="GET" action="/" class="row gx-2 gy-2 align-items-end mb-3">
+            <form method="GET" action="/" class="filter-bar">
                 <!-- From -->
                 <div class="col-auto">
                     <label class="form-label mb-1">From</label>
                     <input type="date"
                            name="from_date"
-                           value="{{ request.args.get('from_date','') }}"
-                           class="form-control form-control-sm">
+                           value="{{ request.args.get('from_date','') }}">
                 </div>
                 <!-- To -->
                 <div class="col-auto">
                     <label class="form-label mb-1">To</label>
                     <input type="date"
                            name="to_date"
-                           value="{{ request.args.get('to_date','') }}"
-                           class="form-control form-control-sm">
+                           value="{{ request.args.get('to_date','') }}">
                 </div>
             
                 <!-- Category -->
-                <div class="col-auto">
-                    <label class="form-label mb-1">Category</label>
-                    <select name="category"
-                            class="form-select form-select-sm">
+                <div class="filter-item">
+                    <label >Category</label>
+                    <select name="category">
                         <option value="">All</option>
                         {% for cat in ["Food","Transport","Shopping","Bills","Other"] %}
                         <option value="{{ cat }}"
@@ -164,35 +161,32 @@
                 </div>
             
                 <!-- Filter Button -->
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary btn-sm mt-3">
+                <div class="filter-actions">
+                    <button type="submit" class="btn-apply">
                         <i class="bi bi-funnel"></i> Apply
                     </button>
                 </div>
             
                 <!-- Clear Category -->
                 {% if request.args.get('category') %}
-                <div class="col-auto">
                     <a href="{{ url_for('exptracker3',
                         from_date=request.args.get('from_date'),
                         to_date=request.args.get('to_date'),
                         page=current_page
                     ) }}"
-                    class="btn btn-outline-danger btn-sm mt-3">
+                    class="btn-clear">
                         Clear Category
                     </a>
-                </div>
                 {% endif %}
             
                 <!-- Clear All -->
                 {% if request.args %}
-                <div class="col-auto">
                     <a href="/" class="btn btn-outline-secondary btn-sm mt-3">
                         Reset
                     </a>
-                </div>
                 {% endif %}
-            </form>
+            </div>
+        </form>
 
              <!--DELETE CONFIRMATION MODAL-->
             <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
