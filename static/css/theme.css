@@ -183,6 +183,7 @@ input, select, textarea, button {
     border: 1px solid var(--card-border);
 }
 */
+/* ================= FILTER BAR ================= */
 .filter-bar {
     display: flex;
     align-items: flex-end;
@@ -191,6 +192,7 @@ input, select, textarea, button {
     margin-bottom: 12px;
 }
 
+/* Filter items */
 .filter-item {
     display: flex;
     flex-direction: column;
@@ -208,7 +210,7 @@ input, select, textarea, button {
 .filter-item select {
     height: 34px;
     padding: 4px 10px;
-    border-radius: 10px; /* 👈 rounded edges */
+    border-radius: 16px; /* 👈 more rounded edges */
     border: 1px solid var(--input-border);
     background: var(--input-bg);
     color: var(--text-color);
@@ -223,7 +225,7 @@ input, select, textarea, button {
 .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--accent);
     padding: 4px;
-    border-radius: 50%;      /* 👈 round icon */
+    border-radius: 50%;      /* 👈 perfectly round */
     cursor: pointer;
 }
 
@@ -233,7 +235,6 @@ input, select, textarea, button {
 }
 
 /* ================= ACTION BUTTONS ================= */
-
 .filter-actions {
     display: flex;
     gap: 8px;
@@ -244,7 +245,7 @@ input, select, textarea, button {
     height: 34px;
     padding: 0 14px;
     font-size: 13px;
-    border-radius: 10px;
+    border-radius: 16px; /* 👈 more rounded */
     display: flex;
     align-items: center;
     gap: 6px;
