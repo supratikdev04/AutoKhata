@@ -597,50 +597,55 @@ def download_expenses():
         )
 
     # ---------- PDF using ReportLab ----------
-    elif file_type == "pdf":
-        buffer = io.BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=A4)
-        width, height = A4
-        pdf.setTitle(f"Expenses {start_date} to {end_date}")
+   elif file_type == "pdf":
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+    pdf.setTitle(f"Expenses {start_date} to {end_date}")
 
-        # Title
-        pdf.setFont("Helvetica-Bold", 16)
-        pdf.drawCentredString(width / 2, height - 50, f"Expenses Report ({start_date} to {end_date})")
+    # Title
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawCentredString(width / 2, height - 50, f"Expenses Report ({start_date} to {end_date})")
 
-        # Table headers
-        pdf.setFont("Helvetica-Bold", 12)
-        y = height - 100
-        x_list = [50, 150, 300, 400, 500]  # column positions
-        headers = ["Date", "Category", "Subcategory", "Amount", "Note"]
-        for i, header in enumerate(headers):
-            pdf.drawString(x_list[i], y, header)
+    # Table headers
+    pdf.setFont("Helvetica-Bold", 12)
+    y = height - 100
+    x_list = [50, 150, 270, 370, 470]  # adjust column positions for better spacing
+    headers = ["Date", "Category", "Subcategory", "Amount", "Note"]
+    for i, header in enumerate(headers):
+        pdf.drawString(x_list[i], y, header)
 
-       # Table rows
-        pdf.setFont("Helvetica", 12)
-        y -= 20
-        for e in expenses:
-            row = [
-                str(e.get("next_date", "")),
-                str(e.get("category", "")),
-                str(e.get("subcategory", "")),
-                str(e.get("amount", "")),
-                str(e.get("note", ""))
-            ]
-            for i, cell in enumerate(row):
+    # Table rows
+    pdf.setFont("Helvetica", 12)
+    y -= 20
+    for e in expenses:
+        row = [
+            str(e.get("next_date", "")),
+            str(e.get("category", "")),
+            str(e.get("subcategory", "")),
+            str(e.get("amount", "")),
+            str(e.get("note", ""))
+        ]
+        for i, cell in enumerate(row):
+            # Align amount to the right
+            if headers[i] == "Amount":
+                pdf.drawRightString(x_list[i] + 50, y, cell)  # +50 adjusts to column width
+            else:
                 pdf.drawString(x_list[i], y, cell)
-            y -= 20
-            if y < 50:
-                pdf.showPage()
-                y = height - 50
+        y -= 20
+        if y < 50:
+            pdf.showPage()
+            pdf.setFont("Helvetica", 12)
+            y = height - 50
 
-        pdf.save()
-        buffer.seek(0)
+    pdf.save()
+    buffer.seek(0)
 
-        filename = f"expenses_{start_date}_to_{end_date}.pdf"
-        response = make_response(buffer.read())
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename={filename}'
-        return response
+    filename = f"expenses_{start_date}_to_{end_date}.pdf"
+    response = make_response(buffer.read())
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+    return response
 # ------------------ Run App ------------------
 if __name__ == "__main__":
     # debug True for local dev. Turn off in production.
