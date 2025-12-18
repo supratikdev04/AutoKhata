@@ -615,16 +615,16 @@ def download_expenses():
         for i, header in enumerate(headers):
             pdf.drawString(x_list[i], y, header)
 
-        # Table rows
+       # Table rows
         pdf.setFont("Helvetica", 12)
         y -= 20
         for e in expenses:
             row = [
-                e["next_date"],
-                e["category"],
-                e["subcategory"],
-                str(e["amount"]),
-                e.get("note", "")
+                str(e.get("next_date", "")),
+                str(e.get("category", "")),
+                str(e.get("subcategory", "")),
+                str(e.get("amount", "")),
+                str(e.get("note", ""))
             ]
             for i, cell in enumerate(row):
                 pdf.drawString(x_list[i], y, cell)
