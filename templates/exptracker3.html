@@ -124,61 +124,35 @@
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-secondary text-white">Your Expenses</div>
 
-        <p class="mt-2 ms-3"><b>Total:</b> {{ total }}</p>
-
+        <div class="px-3 pt-2 pb-1 fw-semibold">
+            Total: ₹ {{ total }}
+        </div>
         <div class="card-body table-responsive">
 
-            <!-- FILTER (DATE RANGE) -->
-            <form method="GET" action="/" class="row g-1 align-items-end mb-3">
+            <!-- FILTER BAR -->
+            <form method="GET" action="/" class="row gx-2 gy-2 align-items-end mb-3">
+                <!-- From -->
                 <div class="col-auto">
-                    <label class="form-label">From</label>
+                    <label class="form-label mb-1">From</label>
                     <input type="date"
                            name="from_date"
-                           class="form-control form-control-sm"
-                           value="{{ request.args.get('from_date', '') }}"
-                           style="width: 150px;">
+                           value="{{ request.args.get('from_date','') }}"
+                           class="form-control form-control-sm">
                 </div>
-            
+                <!-- To -->
                 <div class="col-auto">
-                    <label class="form-label">To</label>
+                    <label class="form-label mb-1">To</label>
                     <input type="date"
                            name="to_date"
-                           class="form-control form-control-sm"
-                           value="{{ request.args.get('to_date', '') }}"
-                           style="width: 150px;">
+                           value="{{ request.args.get('to_date','') }}"
+                           class="form-control form-control-sm">
                 </div>
             
-               <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-funnel"></i> Filter
-                    </button>
-            
-                    {% if request.args.get('from_date') or request.args.get('to_date') %}
-                    <a href="/" class="btn btn-secondary">
-                        Clear
-                    </a>
-                    {% endif %}
-                </div>
-            
-            </form>
-
-            <!-- SORT BUTTONS ->
-            <div class="mb-3">
-                <button class="btn btn-outline-secondary" onclick="sortTable(1)">Sort by Category</button>
-            </div-->
-            <!-- CATEGORY FILTER -->
-            <form method="GET" action="/" class="row g-1 align-items-end mb-3">
-                <input type="hidden" name="from_date" value="{{ request.args.get('from_date', '') }}">
-                <input type="hidden" name="to_date" value="{{ request.args.get('to_date', '') }}">
-                <input type="hidden" name="page" value="{{ current_page }}">
-            
+                <!-- Category -->
                 <div class="col-auto">
-                    <label class="form-label">Category</label>
+                    <label class="form-label mb-1">Category</label>
                     <select name="category"
-                            class="form-select form-select-sm"
-                            style="width: 160px;"
-                            onchange="this.form.submit()">
-            
+                            class="form-select form-select-sm">
                         <option value="">All</option>
                         {% for cat in ["Food","Transport","Shopping","Bills","Other"] %}
                         <option value="{{ cat }}"
@@ -189,16 +163,32 @@
                     </select>
                 </div>
             
+                <!-- Filter Button -->
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-sm mt-3">
+                        <i class="bi bi-funnel"></i> Apply
+                    </button>
+                </div>
+            
+                <!-- Clear Category -->
                 {% if request.args.get('category') %}
                 <div class="col-auto">
-                    <a href="{{ url_for(
-                        'exptracker3',
+                    <a href="{{ url_for('exptracker3',
                         from_date=request.args.get('from_date'),
                         to_date=request.args.get('to_date'),
                         page=current_page
                     ) }}"
-                    class="btn btn-outline-secondary btn-sm mt-4">
+                    class="btn btn-outline-danger btn-sm mt-3">
                         Clear Category
+                    </a>
+                </div>
+                {% endif %}
+            
+                <!-- Clear All -->
+                {% if request.args %}
+                <div class="col-auto">
+                    <a href="/" class="btn btn-outline-secondary btn-sm mt-3">
+                        Reset
                     </a>
                 </div>
                 {% endif %}
@@ -254,20 +244,20 @@
 
                         <td>
                             {% if item.attachment_url %}
-                            <button class="btn btn-sm btn-outline-primary"
+                            <button class="btn btn-outline-primary btn-sm"
                                     onclick="openAttachment('{{ item.attachment_url }}')">
                                 <i class="bi bi-paperclip"></i>
                             </button>
                             {% else %}-{% endif %}
                         </td>
                         <td>    
-                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm" onclick="confirmDelete(event, '/delete/{{ item.id }}')">
+                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm px-3" onclick="confirmDelete(event, '/delete/{{ item.id }}')">
                                 Delete
                             </a>
                         </td>
 
                         <td>
-                            <a href="/modify/{{ item.id }}" class="btn btn-secondary btn-sm">Modify</a>
+                            <a href="/modify/{{ item.id }}" class="btn btn-secondary btn-sm px-3">Modify</a>
                         </td>
                     </tr>
                     {% endfor %}
