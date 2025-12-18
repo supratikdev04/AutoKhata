@@ -22,7 +22,9 @@ import uuid
 from datetime import datetime, timedelta
 
 # ---------------- PDF Generation ----------------
-import pdfkit  # Requires wkhtmltopdf installed on the server
+from flask import make_response
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 # ---------------- Custom Utilities ----------------
 from utils import extract_amount
 
@@ -554,7 +556,6 @@ def download_expenses():
         flash("Please select both dates", "warning")
         return redirect(url_for("download_page"))
 
-    # Convert to full datetime range
     start_dt = f"{start_date} 00:00:00"
     end_dt = f"{end_date} 23:59:59"
 
@@ -578,9 +579,7 @@ def download_expenses():
     if file_type == "csv":
         output = io.StringIO()
         writer = csv.writer(output)
-
         writer.writerow(["Date", "Category", "Subcategory", "Amount", "Note"])
-
         for e in expenses:
             writer.writerow([
                 e["next_date"],
@@ -589,23 +588,56 @@ def download_expenses():
                 e["amount"],
                 e.get("note", "")
             ])
-
         output.seek(0)
         filename = f"expenses_{start_date}_to_{end_date}.csv"
-
         return Response(
             output.getvalue(),
             mimetype="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
 
-    # ---------- PDF ----------
+    # ---------- PDF using ReportLab ----------
     elif file_type == "pdf":
-        rendered = render_template("expenses_pdf.html", expenses=expenses)
-        pdf = pdfkit.from_string(rendered, False)  # wkhtmltopdf must be installed
-        filename = f"expenses_{start_date}_to_{end_date}.pdf"
+        buffer = io.BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=A4)
+        width, height = A4
+        pdf.setTitle(f"Expenses {start_date} to {end_date}")
 
-        response = make_response(pdf)
+        # Title
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawCentredString(width / 2, height - 50, f"Expenses Report ({start_date} to {end_date})")
+
+        # Table headers
+        pdf.setFont("Helvetica-Bold", 12)
+        y = height - 100
+        x_list = [50, 150, 300, 400, 500]  # column positions
+        headers = ["Date", "Category", "Subcategory", "Amount", "Note"]
+        for i, header in enumerate(headers):
+            pdf.drawString(x_list[i], y, header)
+
+        # Table rows
+        pdf.setFont("Helvetica", 12)
+        y -= 20
+        for e in expenses:
+            row = [
+                e["next_date"],
+                e["category"],
+                e["subcategory"],
+                str(e["amount"]),
+                e.get("note", "")
+            ]
+            for i, cell in enumerate(row):
+                pdf.drawString(x_list[i], y, cell)
+            y -= 20
+            if y < 50:
+                pdf.showPage()
+                y = height - 50
+
+        pdf.save()
+        buffer.seek(0)
+
+        filename = f"expenses_{start_date}_to_{end_date}.pdf"
+        response = make_response(buffer.read())
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = f'attachment; filename={filename}'
         return response
