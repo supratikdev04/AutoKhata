@@ -174,4 +174,72 @@ input, select, textarea, button {
 .btn-sm {
     border-radius: 6px;
 }
+/*--------------------- Filter Part -----------------------*/
+.filter-bar {
+    display: flex;
+    align-items: flex-end;   /* aligns buttons with inputs */
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.filter-item input,
+.filter-item select {
+    height: 34px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #ff944d;
+    background: #ffe1c1;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-actions a,
+.filter-actions button {
+    height: 34px;            /* SAME height as inputs */
+    padding: 0 14px;
+    font-size: 13px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* Buttons */
+.btn-apply {
+    background: #ff8c42;
+    border: none;
+    color: white;
+}
+
+.btn-clear {
+    border: 1px solid #ff8c42;
+    color: #ff8c42;
+    background: transparent;
+}
+
+.btn-reset {
+    border: 1px solid #999;
+    color: #555;
+    background: transparent;
+}
+
+.btn-apply:hover { background: #ff7a24; }
+.btn-clear:hover { background: #ffeddc; }
+.btn-reset:hover { background: #eee; }
 
