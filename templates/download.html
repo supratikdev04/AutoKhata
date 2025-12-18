@@ -33,12 +33,16 @@
                     </div>
                 </div>
 
-                <div class="d-grid">
-                    <button class="btn btn-success">
+               <div class="mb-3">
+                    <label class="form-label">Download As</label>
+                    <select name="file_type" class="form-select" required>
                         <option value="csv">CSV</option>
                         <option value="pdf">PDF</option>
-                        <i class="bi bi-file-earmark-arrow-down"></i>
-                        Download 
+                    </select>
+                </div>
+                 <div class="d-grid">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-file-earmark-arrow-down"></i> Download
                     </button>
                 </div>
             </form>
