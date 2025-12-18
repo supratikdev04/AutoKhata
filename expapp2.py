@@ -562,44 +562,37 @@ def download_expenses():
         flash("No expenses found for selected date range", "info")
         return redirect(url_for("download_page"))
 
-    # Create CSV
-    output = io.StringIO()
-    writer = csv.writer(output)
+    # ---------- CSV ----------
+    if file_type == "csv":
+        output = io.StringIO()
+        writer = csv.writer(output)
 
-    writer.writerow([
-        "Date",
-        "Category",
-        "Subcategory",
-        "Amount",
-        "Note"
-    ])
+        writer.writerow(["Date", "Category", "Subcategory", "Amount", "Note"])
 
-    for e in expenses:
-        writer.writerow([
-            e["next_date"],
-            e["category"],
-            e["subcategory"],
-            e["amount"],
-            e.get("note", "")
-        ])
+        for e in expenses:
+            writer.writerow([
+                e["next_date"],
+                e["category"],
+                e["subcategory"],
+                e["amount"],
+                e.get("note", "")
+            ])
 
-    output.seek(0)
+        output.seek(0)
+        filename = f"expenses_{start_date}_to_{end_date}.csv"
 
-    filename = f"expenses_{start_date}_to_{end_date}.csv"
+        return Response(
+            output.getvalue(),
+            mimetype="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
 
-    return Response(
-        output.getvalue(),
-        mimetype="text/csv",
-        headers={
-            "Content-Disposition": f"attachment; filename={filename}"
-        }
-    )
-      # ---------- PDF ----------
+    # ---------- PDF ----------
     elif file_type == "pdf":
         rendered = render_template("expenses_pdf.html", expenses=expenses)
-        pdf = pdfkit.from_string(rendered, False)  # make sure wkhtmltopdf is installed
-
+        pdf = pdfkit.from_string(rendered, False)  # wkhtmltopdf must be installed
         filename = f"expenses_{start_date}_to_{end_date}.pdf"
+
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = f'attachment; filename={filename}'
