@@ -218,7 +218,7 @@ input, select, textarea, button {
 
 /* ===== ROUND DATE PICKER ICON ===== */
 .filter-item input[type="date"] {
-    padding-right: 24px;
+    padding-right: 16px;
 }
 
 /* Chrome / Edge calendar icon */
