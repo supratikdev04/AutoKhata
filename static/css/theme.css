@@ -175,9 +175,17 @@ input, select, textarea, button {
     border-radius: 6px;
 }
 /*--------------------- Filter Part -----------------------*/
+/* ================= FILTER BAR ================= 
+.filter-bar {
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+}
+*/
 .filter-bar {
     display: flex;
-    align-items: flex-end;   /* aligns buttons with inputs */
+    align-items: flex-end;
     gap: 12px;
     flex-wrap: wrap;
     margin-bottom: 12px;
@@ -192,16 +200,39 @@ input, select, textarea, button {
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 4px;
+    color: var(--text-color);
 }
 
+/* Inputs & Select */
 .filter-item input,
 .filter-item select {
     height: 34px;
     padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid #ff944d;
-    background: #ffe1c1;
+    border-radius: 10px; /* 👈 rounded edges */
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-color);
 }
+
+/* ===== ROUND DATE PICKER ICON ===== */
+.filter-item input[type="date"] {
+    padding-right: 34px;
+}
+
+/* Chrome / Edge calendar icon */
+.filter-item input[type="date"]::-webkit-calendar-picker-indicator {
+    background-color: var(--accent);
+    padding: 4px;
+    border-radius: 50%;      /* 👈 round icon */
+    cursor: pointer;
+}
+
+/* Firefox fix */
+.filter-item input[type="date"] {
+    accent-color: var(--accent);
+}
+
+/* ================= ACTION BUTTONS ================= */
 
 .filter-actions {
     display: flex;
@@ -210,36 +241,46 @@ input, select, textarea, button {
 
 .filter-actions a,
 .filter-actions button {
-    height: 34px;            /* SAME height as inputs */
+    height: 34px;
     padding: 0 14px;
     font-size: 13px;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     gap: 6px;
     white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-/* Buttons */
+/* Apply */
 .btn-apply {
-    background: #ff8c42;
+    background: var(--accent);
     border: none;
-    color: white;
+    color: var(--white);
 }
 
+.btn-apply:hover {
+    background: var(--accent-hover);
+}
+
+/* Clear Category */
 .btn-clear {
-    border: 1px solid #ff8c42;
-    color: #ff8c42;
+    border: 1px solid var(--accent);
+    color: var(--accent);
     background: transparent;
 }
 
+.btn-clear:hover {
+    background: var(--card-bg);
+}
+
+/* Reset */
 .btn-reset {
-    border: 1px solid #999;
-    color: #555;
+    border: 1px solid var(--text-muted);
+    color: var(--text-color);
     background: transparent;
 }
 
-.btn-apply:hover { background: #ff7a24; }
-.btn-clear:hover { background: #ffeddc; }
-.btn-reset:hover { background: #eee; }
-
+.btn-reset:hover {
+    background: var(--input-bg);
+}
