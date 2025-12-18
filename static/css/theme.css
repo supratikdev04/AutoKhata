@@ -161,3 +161,17 @@ hr {
 input, select, textarea, button {
     margin-bottom: 1rem;
 }
+/*------------------------------------------*/
+.form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.btn-sm {
+    border-radius: 6px;
+}
+
