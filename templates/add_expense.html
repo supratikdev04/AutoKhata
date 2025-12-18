@@ -80,7 +80,9 @@
                     onclick="scanReceipt()">
                     📸 Scan Receipt
                 </button>
-
+                <button type="button" id="removeScanBtn" class="btn btn-outline-danger">
+                    ❌ Remove Scan
+                </button>
             </div>
             <div class="col-md-3 col-12 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">Add</button>
@@ -295,6 +297,19 @@ function autoDetectCategory(text) {
         updateSubcategories(); // keep subcategory in sync
     }
 }
+</script>
+<script>
+document.getElementById('removeScanBtn').addEventListener('click', () => {
+    const fileInput = document.getElementById("receiptInput");
+    const amountInput = document.getElementById("amount");
+    const noteInput = document.getElementById("note");
+
+    if (fileInput) fileInput.value = "";       // Clear uploaded file
+    if (amountInput) amountInput.value = "";   // Clear amount
+    if (noteInput) noteInput.value = "";       // Clear note
+
+    alert("Scanned document removed");
+});
 </script>
 
 </body>
