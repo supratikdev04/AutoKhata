@@ -1,19 +1,31 @@
 # expapp_fixed.py
-from flask import Flask, request, redirect, render_template, session, url_for, send_from_directory
-from supabase import create_client, Client
-from datetime import datetime, timedelta
+# ---------------- Flask & Utilities ----------------
+from flask import (
+    Flask, request, redirect, render_template, session, url_for,
+    send_from_directory, flash, Response
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+
+# ---------------- Database ----------------
+from supabase import create_client, Client
+
+# ---------------- Environment ----------------
 import os
 from dotenv import load_dotenv
-import re
-from utils import extract_amount
-import uuid
-from flask import flash
-import csv
-import pdfkit
+
+# ---------------- Python Utilities ----------------
 import io
-from flask import Response
+import csv
+import re
+import uuid
+from datetime import datetime, timedelta
+
+# ---------------- PDF Generation ----------------
+import pdfkit  # Requires wkhtmltopdf installed on the server
+# ---------------- Custom Utilities ----------------
+from utils import extract_amount
+
 
 
 # Load environment variables from .env
