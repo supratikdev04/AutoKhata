@@ -132,14 +132,14 @@
             <!-- FILTER BAR -->
             <form method="GET" action="/" class="filter-bar">
                 <!-- From -->
-                <div class="col-auto">
+                <div class="filter-item">
                     <label class="form-label mb-1">From</label>
                     <input type="date"
                            name="from_date"
                            value="{{ request.args.get('from_date','') }}">
                 </div>
                 <!-- To -->
-                <div class="col-auto">
+                <div class="filter-item">
                     <label class="form-label mb-1">To</label>
                     <input type="date"
                            name="to_date"
