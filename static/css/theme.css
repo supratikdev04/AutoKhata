@@ -224,7 +224,7 @@ input, select, textarea, button {
 /* Chrome / Edge calendar icon */
 .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--accent);
-    padding: 4px;
+    padding: 6px;
     border-radius: 50%;      /* 👈 perfectly round */
     cursor: pointer;
 }
