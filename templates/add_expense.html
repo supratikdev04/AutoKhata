@@ -148,16 +148,14 @@ document.querySelector("input[name='note']").addEventListener("input", function 
 });
 </script>
 <script>
-function extractAmount(text) {
+    function extractAmount(text) {
     if (!text) return null;
 
     // Normalize OCR mistakes
     text = text
         .replace(/0TAL/g, 'TOTAL')
         .replace(/T0TAL/g, 'TOTAL')
-        .replace(/AM0UNT/g, 'AMOUNT')
-        .replace(/[,]/g, '')
-        .replace(/[₹$Rs]/gi, '');
+        .replace(/AM0UNT/g, 'AMOUNT');
 
     const lines = text
         .toUpperCase()
@@ -171,8 +169,11 @@ function extractAmount(text) {
         'NET',
         'PAYABLE',
         'AMOUNT',
-        'CASH'
+        'CASH',
+        'SALE'
     ];
+
+    const CURRENCY_WORDS = ['₹', 'RS', 'INR'];
 
     const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|QTY|RATE|PRICE/;
 
@@ -187,6 +188,7 @@ function extractAmount(text) {
         if (!numbers) continue;
 
         const hasTotalWord = TOTAL_WORDS.some(w => line.includes(w));
+        const hasCurrencyWord = CURRENCY_WORDS.some(w => line.includes(w));
 
         numbers.forEach(n => {
             const value = Number(n);
@@ -194,20 +196,29 @@ function extractAmount(text) {
                 candidates.push({
                     value,
                     index: i,
-                    strong: hasTotalWord
+                    strong: hasTotalWord,
+                    currency: hasCurrencyWord
                 });
             }
         });
     }
 
-    // 1️⃣ Prefer strong TOTAL lines
+    // 1️⃣ Prefer amounts near currency words
+    const currencyCandidates = candidates.filter(c => c.currency);
+    if (currencyCandidates.length) {
+        // Pick the bottom-most one
+        currencyCandidates.sort((a, b) => b.index - a.index);
+        return currencyCandidates[0].value.toFixed(2);
+    }
+
+    // 2️⃣ Prefer strong TOTAL lines
     const strong = candidates.filter(c => c.strong);
     if (strong.length) {
         strong.sort((a, b) => b.index - a.index);
         return strong[0].value.toFixed(2);
     }
 
-    // 2️⃣ Fallback: bottom-most amount
+    // 3️⃣ Fallback: bottom-most amount
     if (candidates.length) {
         candidates.sort((a, b) => b.index - a.index);
         return candidates[0].value.toFixed(2);
@@ -288,3 +299,75 @@ function autoDetectCategory(text) {
 
 </body>
 </html>
+
+
+
+<!--script>
+function extractAmount(text) {
+    if (!text) return null;
+
+    // Normalize OCR mistakes
+    text = text
+        .replace(/0TAL/g, 'TOTAL')
+        .replace(/T0TAL/g, 'TOTAL')
+        .replace(/AM0UNT/g, 'AMOUNT')
+        .replace(/[,]/g, '')
+        .replace(/[₹$Rs]/gi, '');
+
+    const lines = text
+        .toUpperCase()
+        .split('\n')
+        .map(l => l.trim())
+        .filter(Boolean);
+
+    const TOTAL_WORDS = [
+        'TOTAL',
+        'GRAND',
+        'NET',
+        'PAYABLE',
+        'AMOUNT',
+        'CASH'
+    ];
+
+    const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|QTY|RATE|PRICE/;
+
+    let candidates = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (IGNORE.test(line)) continue;
+
+        const numbers = line.match(/\d+(\.\d{1,2})?/g);
+        if (!numbers) continue;
+
+        const hasTotalWord = TOTAL_WORDS.some(w => line.includes(w));
+
+        numbers.forEach(n => {
+            const value = Number(n);
+            if (value > 1 && value < 1000000) {
+                candidates.push({
+                    value,
+                    index: i,
+                    strong: hasTotalWord
+                });
+            }
+        });
+    }
+
+    // 1️⃣ Prefer strong TOTAL lines
+    const strong = candidates.filter(c => c.strong);
+    if (strong.length) {
+        strong.sort((a, b) => b.index - a.index);
+        return strong[0].value.toFixed(2);
+    }
+
+    // 2️⃣ Fallback: bottom-most amount
+    if (candidates.length) {
+        candidates.sort((a, b) => b.index - a.index);
+        return candidates[0].value.toFixed(2);
+    }
+
+    return null;
+}
+</script-->
