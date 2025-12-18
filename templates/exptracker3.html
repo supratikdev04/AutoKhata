@@ -128,7 +128,7 @@
 
         <div class="card-body table-responsive">
 
-            <!-- FILTER (SINGLE DATE) -->
+            <!-- FILTER (DATE RANGE) -->
             <form method="GET" action="/" class="row g-1 align-items-end mb-3">
                 <div class="col-auto">
                     <label class="form-label">From</label>
@@ -162,10 +162,48 @@
             
             </form>
 
-            <!-- SORT BUTTONS -->
+            <!-- SORT BUTTONS ->
             <div class="mb-3">
                 <button class="btn btn-outline-secondary" onclick="sortTable(1)">Sort by Category</button>
-            </div>
+            </div-->
+            <!-- CATEGORY FILTER -->
+            <form method="GET" action="/" class="row g-1 align-items-end mb-3">
+                <input type="hidden" name="from_date" value="{{ request.args.get('from_date', '') }}">
+                <input type="hidden" name="to_date" value="{{ request.args.get('to_date', '') }}">
+                <input type="hidden" name="page" value="{{ current_page }}">
+            
+                <div class="col-auto">
+                    <label class="form-label">Category</label>
+                    <select name="category"
+                            class="form-select form-select-sm"
+                            style="width: 160px;"
+                            onchange="this.form.submit()">
+            
+                        <option value="">All</option>
+                        {% for cat in ["Food","Transport","Shopping","Bills","Other"] %}
+                        <option value="{{ cat }}"
+                            {{ 'selected' if request.args.get('category') == cat else '' }}>
+                            {{ cat }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                {% if request.args.get('category') %}
+                <div class="col-auto">
+                    <a href="{{ url_for(
+                        'exptracker3',
+                        from_date=request.args.get('from_date'),
+                        to_date=request.args.get('to_date'),
+                        page=current_page
+                    ) }}"
+                    class="btn btn-outline-secondary btn-sm mt-4">
+                        Clear Category
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+
              <!--DELETE CONFIRMATION MODAL-->
             <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
@@ -262,20 +300,36 @@
             </div>
 
             <!-- PAGINATION -->
-            <div class="d-flex justify-content-between mt-3">
-                {% if current_page > 1 %}
+             <!--{% if current_page > 1 %}
+                
                 <a href="{{ url_for('exptracker3', page=current_page-1) }}"
                    class="btn btn-secondary">
+                    ⬅ Previous 10
+                </a>
+                {% endif %}-->
+           <div class="d-flex justify-content-between mt-3">
+                {% if current_page > 1 %}
+                <a href="{{ url_for('exptracker3',
+                    page=current_page-1,
+                    category=request.args.get('category'),
+                    from_date=request.args.get('from_date'),
+                    to_date=request.args.get('to_date')
+                ) }}" class="btn btn-secondary">
                     ⬅ Previous 10
                 </a>
                 {% endif %}
             
                 {% if current_page < total_pages %}
-                <a href="{{ url_for('exptracker3', page=current_page+1) }}"
-                   class="btn btn-secondary ms-auto">
+                <a href="{{ url_for('exptracker3',
+                    page=current_page+1,
+                    category=request.args.get('category'),
+                    from_date=request.args.get('from_date'),
+                    to_date=request.args.get('to_date')
+                ) }}" class="btn btn-secondary ms-auto">
                     Next 10 ➡
                 </a>
                 {% endif %}
+            
             </div>
         </div>
     </div>
