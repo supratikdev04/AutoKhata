@@ -11,6 +11,7 @@ from utils import extract_amount
 import uuid
 from flask import flash
 import csv
+import pdfkit
 import io
 from flask import Response
 
@@ -535,6 +536,7 @@ def download_expenses():
 
     start_date = request.form.get("start_date")
     end_date = request.form.get("end_date")
+    file_type = request.form.get("file_type", "pdf")
 
     if not start_date or not end_date:
         flash("Please select both dates", "warning")
@@ -592,6 +594,16 @@ def download_expenses():
             "Content-Disposition": f"attachment; filename={filename}"
         }
     )
+      # ---------- PDF ----------
+    elif file_type == "pdf":
+        rendered = render_template("expenses_pdf.html", expenses=expenses)
+        pdf = pdfkit.from_string(rendered, False)  # make sure wkhtmltopdf is installed
+
+        filename = f"expenses_{start_date}_to_{end_date}.pdf"
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+        return response
 # ------------------ Run App ------------------
 if __name__ == "__main__":
     # debug True for local dev. Turn off in production.
