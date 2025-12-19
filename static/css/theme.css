@@ -267,7 +267,7 @@ input, select, textarea, button {
 
 /* Clear Category */
 .btn-clear {
-    border: 1px solid var(--accent);
+    border: /*1px solid*/ var(--accent);
     color: var(--accent);
     border-radius: 16px;
     background: transparent;
@@ -279,7 +279,7 @@ input, select, textarea, button {
 
 /* Reset */
 .btn-reset {
-    border: 1px solid var(--text-muted);
+    border: /*1px solid*/ var(--text-muted);
     color: var(--text-color);
     border-radius: 16px;
     background: transparent;
