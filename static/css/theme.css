@@ -186,8 +186,8 @@ input, select, textarea, button {
 /* ================= FILTER BAR ================= */
 .filter-bar {
     display: flex;
-    align-items: flex-end;
-    /*align-items: center;*/
+    /*align-items: flex-end;*/
+    align-items: center;
     gap: 12px;
     flex-wrap: flex-ends;
     /*flex-wrap: wrap;*/
