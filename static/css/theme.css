@@ -188,7 +188,7 @@ input, select, textarea, button {
     display: flex;
     align-items: flex-end;
     gap: 12px;
-    flex-wrap: wrap;
+    flex-wrap: flex-ends;
     margin-bottom: 12px;
 }
 
@@ -238,6 +238,7 @@ input, select, textarea, button {
 .filter-actions {
     display: flex;
     gap: 8px;
+    align-items:center;
 }
 
 .filter-actions a,
@@ -286,4 +287,10 @@ input, select, textarea, button {
 
 .btn-reset:hover {
     background: var(--input-bg);
+}
+
+.btn-apply, .btn-clear, .btn-outline-secondary {
+    height: 36px; /* uniform button height */
+    padding: 0 12px;
+    font-size: 14px;
 }
