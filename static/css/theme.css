@@ -186,9 +186,11 @@ input, select, textarea, button {
 /* ================= FILTER BAR ================= */
 .filter-bar {
     display: flex;
-    align-items: flex-end;
+    /*align-items: flex-end;*/
+    align-items: center;
     gap: 12px;
-    flex-wrap: flex-ends;
+    /*flex-wrap: flex-ends;*/
+    flex-wrap: wrap;
     margin-bottom: 12px;
 }
 
@@ -293,4 +295,7 @@ input, select, textarea, button {
     height: 36px; /* uniform button height */
     padding: 0 12px;
     font-size: 14px;
+    display: flex;
+    align-items: center; /* center text/icon inside button */
+    justify-content: center;
 }
