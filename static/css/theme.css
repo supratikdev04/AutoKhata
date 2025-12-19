@@ -267,7 +267,7 @@ input, select, textarea, button {
 
 /* Clear Category */
 .btn-clear {
-    border: /*1px solid*/ var(--accent);
+    border: 1px solid var(--accent);
     color: var(--accent);
     border-radius: 16px;
     background: transparent;
