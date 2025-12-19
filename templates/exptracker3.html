@@ -30,6 +30,50 @@
                }
         }
     </style>
+    <style>
+        /* ================= MOBILE-FRIENDLY TABLE ================= */
+        
+        /* Make table horizontally scrollable on small screens */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+        }
+        
+        /* Sticky header */
+        #expenseTable thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa; /* match table header bg */
+            z-index: 2;
+        }
+        
+        /* Reduce padding for mobile */
+        @media (max-width: 576px) {
+            table#expenseTable th,
+            table#expenseTable td {
+                white-space: nowrap; /* prevent text from wrapping */
+                font-size: 0.75rem;
+                padding: 0.25rem 0.4rem;
+            }
+        
+            /* Make card body take full width */
+            .card-body {
+                padding: 0.5rem;
+            }
+        
+            /* Filter bar stacked above table */
+            .filter-bar {
+                flex-direction: column;
+                gap: 6px;
+            }
+        }
+        
+        /* Optional: add a subtle shadow for sticky headers */
+        #expenseTable thead th {
+            box-shadow: inset 0 -1px 0 #dee2e6;
+        }
+    </style>
+
 </head>
 
 <body class="bg-light">
