@@ -186,7 +186,7 @@
                            value="{{ request.args.get('to_date','') }}">
                 </div>
             
-                <!-- Category -->
+                <!-- Category ->
                 <div class="filter-item">
                     <label >Category</label>
                     <select name="category">
@@ -200,14 +200,14 @@
                     </select>
                 </div>
             
-                <!-- Filter Button -->
+                <!-- Filter Button ->
                 <div class="filter-actions">
                     <button type="submit" class="btn-apply">
                         <i class="bi bi-funnel"></i> Apply
                     </button>
                 </div>
             
-                <!-- Clear Category -->
+                <!-- Clear Category ->
                 {% if request.args.get('category') %}
                     <a href="{{ url_for('exptracker3',
                         from_date=request.args.get('from_date'),
@@ -219,9 +219,31 @@
                     </a>
                 {% endif %}
             
-                <!-- Clear All -->
+                <!-- Clear All ->
                 {% if request.args %}
                     <a href="/" class="btn btn-outline-secondary btn-sm mt-3">
+                        Reset
+                    </a>
+                {% endif %}
+            </div-->
+                <!-- Filter Buttons -->
+            <div class="filter-actions">
+                <button type="submit" class="btn-apply">
+                    <i class="bi bi-funnel"></i> Apply
+                </button>
+            
+                {% if request.args.get('category') %}
+                    <a href="{{ url_for('exptracker3',
+                        from_date=request.args.get('from_date'),
+                        to_date=request.args.get('to_date'),
+                        page=current_page
+                    ) }}" class="btn-clear">
+                        Clear Category
+                    </a>
+                {% endif %}
+            
+                {% if request.args %}
+                    <a href="/" class="btn btn-outline-secondary btn-sm">
                         Reset
                     </a>
                 {% endif %}
