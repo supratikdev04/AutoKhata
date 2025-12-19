@@ -1,4 +1,5 @@
-const CACHE_NAME = "expense-cache-v1";
+// Update cache name to force refresh on new version
+const CACHE_NAME = "expense-cache-v2"; // bumped from v1
 
 // Files to cache on install
 const ASSETS_TO_CACHE = [
@@ -26,9 +27,9 @@ self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
-                keys.map((key) => {
-                    if (key !== CACHE_NAME) return caches.delete(key);
-                })
+                keys
+                    .filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key))
             );
         }).then(() => self.clients.claim())
     );
