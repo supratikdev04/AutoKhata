@@ -186,7 +186,7 @@
                            value="{{ request.args.get('to_date','') }}">
                 </div>
             
-                <!-- Category ->
+                <!-- Category -->
                 <div class="filter-item">
                     <label >Category</label>
                     <select name="category">
@@ -231,7 +231,7 @@
                 <button type="submit" class="btn-apply">
                     <i class="bi bi-funnel"></i> Apply
                 </button>
-            
+                
                 {% if request.args.get('category') %}
                     <a href="{{ url_for('exptracker3',
                         from_date=request.args.get('from_date'),
