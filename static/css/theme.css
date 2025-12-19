@@ -291,7 +291,7 @@ input, select, textarea, button {
     background: var(--input-bg);
 }
 
-.btn-apply, .btn-clear, .btn-outline-secondary {
+.btn-clear, .btn-outline-secondary {
     height: 36px; /* uniform button height */
     padding: 0 12px;
     font-size: 14px;
