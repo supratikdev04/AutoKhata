@@ -1,10 +1,11 @@
 {
-  "name": "Expense Tracker",
-  "short_name": "Expenses",
-  "start_url": "/",
+  "name": "AutoKhata – Expense & Savings Tracker",
+  "short_name": "AutoKhata",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#FFBE98",
-  "theme_color": "#0dfdc4",
+  "theme_color": "#7B3F00",
   "icons": [
     {
       "src": "/static/icons/exptracker_app_icon1.png",
@@ -31,3 +32,4 @@
     }
   ]
 }
+
