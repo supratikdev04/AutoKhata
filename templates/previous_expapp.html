@@ -1,0 +1,332 @@
+<!--script>
+    const toggleBtn = document.getElementById("themeToggle");
+    const body = document.body;
+
+    // Load saved theme
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark-mode");
+        toggleBtn.innerText = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+            toggleBtn.innerText = "☀️";
+        } else {
+            localStorage.setItem("theme", "light");
+            toggleBtn.innerText = "🌙";
+        }
+    });
+</script-->
+
+<!--purono html jeta te delete ta kaj korche >
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Expense Tracker</title>
+    <link rel="icon" href="/static/icons/exptracker_app_icon1.png">
+    <link rel="icon" href="/static/icons/exptracker_app_icon2.png">
+    <meta name="theme-color" content="#0dfdc4">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS ->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons ->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="manifest" href="/static/manifest.json">
+    <style>
+        .navbar .dropdown-toggle {
+            padding: 6px 10px;
+        }
+    </style>
+    <style>
+        .profile-fixed {
+            position: absolute;
+            right: 30px;
+            top: 20px;
+        }
+    
+        @media (min-width: 992px) {
+            .profile-fixed {
+                position: static !important;
+            }
+        }
+    </style>
+
+</head>
+<body class="bg-light">
+
+<!---NAV Bar->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,#007bff,#004ecb);">
+  <div class="container">
+
+      <!-- LOGO + TITLE ->
+     <a class="navbar-brand text-white fw-bold d-flex align-items-center" href="/">
+      <img src="/static/icons/logo 2.png" width="35" class="me-2">
+      Expense Tracker
+    </a>
+    <!-- TOGGLER ->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- MENU ->
+    <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/dashboard">Dashboard</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/add_expense">Add Expense</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/reports">Reports</a>
+        </li>
+
+        <!-- MOBILE PROFILE (INSIDE MENU) ->
+        <li class="nav-item dropdown d-block d-lg-none">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> Profile
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+          </ul>
+        </li>
+
+      </ul>
+
+      <!-- INSTALL BUTTON (DESKTOP + MOBILE) ->
+      <button id="installBtn" class="btn btn-light btn-sm me-2 d-none">
+        Install App
+      </button>
+
+      <!-- DESKTOP PROFILE ICON (RIGHT SIDE)->
+      <li class="nav-item dropdown ms-3 d-none d-lg-block">
+        <a class="nav-link dropdown-toggle bg-white px-2 py-1 rounded" href="#" id="profileDropdown"
+           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="/static/icons/user.jpg" width="22">
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="/profile">Profile</a></li>
+          <li><a class="dropdown-item" href="/settings">Settings</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
+        </ul>
+      </li>
+
+    </div>
+
+  </div>
+</nav>
+
+<div class="container-fluid px-3">
+    <div>
+        <input type="text" id="searchExpense"  class="form-control" placeholder="Search by Amount,Category,Subcategory,etc....">
+    </div>
+    <!-- EXPENSE TABLE ->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-secondary text-white">
+            Your Expenses
+        </div>
+
+        <p class="mt-2 ms-3"><b>Total:</b> {{ total }}</p>
+
+        <div class="card-body table-responsive">
+          <form method="POST" action="/exptracker_filter" class="row g-2 mb-3">
+            <!--filter->
+           <form method="GET" class="d-flex align-items-center gap-2 mb-3">
+                <input type="date" name="date" class="form-control" value="{{ request.args.get('date', '') }}">
+            
+                <button type="submit" class="btn btn-primary">Filter</button>
+            
+                {% if request.args.get('date') %}
+                <a href="/history" class="btn btn-secondary">Clear Filter</a>
+                {% endif %}
+            </form>
+          </form>
+
+
+            <div class="mb-3">
+                <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(0)">Sort by Date</button-->
+                <!--button class="btn btn-outline-secondary me-2" onclick="sortTable(3)">Sort by Amount</button->
+                <button class="btn btn-outline-secondary" onclick="sortTable(1)">Sort by Category</button>
+            </div>
+            <!-- DELETE CONFIRMATION MODAL ->
+            <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">Are you sure you want to delete this expense?</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <a id="deleteLink" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- EXPENSE TABLE->
+            <table class="table table-striped table-hover" id="expenseTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Amount</th>
+                        <th>Note</th>
+                        <th>Delete</th>
+                        <th>Modify</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% set icons = {
+                        "Food": "bi bi-egg-fried",
+                        "Transport": "bi bi-bus-front-fill",
+                        "Shopping": "bi bi-bag-fill",
+                        "Bills": "bi bi-receipt-cutoff",
+                        "Other": "bi bi-three-dots"
+                    } %}
+
+                    {% for item in expense %}
+                    <tr>
+                        <td>{{ item.next_date }}</td>
+                        <td><i class="{{ icons[item.category] }}"></i> {{ item.category }}</td>
+                        <td>{{ item.subcategory }}</td>
+                        <td>{{ item.amount }}</td>
+                        <td>{{ item.note }}</td>
+
+                        <td>
+                            <a href="/delete/{{ item.id }}" class="btn btn-danger btn-sm" onclick="confirmDelete(event, '/delete/{{ item.id }}')">
+                                Delete
+                            </a>
+                        </td>
+
+                        <td>
+                            <a href="/modify/{{ item.id }}" class="btn btn-success btn-sm">Modify</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+           <div class="d-flex justify-content-between mt-3">
+                {% if current_page > 1 %}
+                <a href="/expenses_page/{{ current_page - 1 }}?start_date={{ start_date }}&end_date={{ end_date }}" 
+                   class="btn btn-secondary">
+                    ⬅ Previous 10
+                </a>
+                {% endif %}
+            
+                {% if current_page < total_pages %}
+                <a href="/expenses_page/{{ current_page + 1 }}?start_date={{ start_date }}&end_date={{ end_date }}"
+                   class="btn btn-primary ms-auto">
+                    Next 10 ➡
+                </a>
+                {% endif %}
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BOOTSTRAP JS ->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function confirmDelete(event, url) {
+        event.preventDefault(); // Prevent immediate navigation
+        document.getElementById('deleteLink').href = url; // Set link for modal button
+        var modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        modal.show();
+    }
+    function sortTable(column) {
+        let table = document.getElementById("expenseTable");
+        let rows = Array.from(table.rows).slice(1); // skip header
+    
+        // Determine if column is numeric (like Amount) or not
+        let isNumeric = column === 3; // Amount column index
+    
+        rows.sort((a, b) => {
+            let aText = a.cells[column].innerText.trim();
+            let bText = b.cells[column].innerText.trim();
+    
+            if (isNumeric) {
+                return parseFloat(aText) - parseFloat(bText);
+            } else {
+                return aText.localeCompare(bText);
+            }
+        });
+        // Append sorted rows back
+        rows.forEach(row => table.appendChild(row));
+    }
+    document.getElementById('searchExpense').addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        // Select all rows in tbody
+        const rows = document.querySelectorAll('#expenseTable tbody tr');
+    
+        rows.forEach(row => {
+            // Get all cell text in lowercase
+            const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(' ');
+            row.style.display = rowText.includes(query) ? '' : 'none';
+        });
+    });
+
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/service-worker.js')
+    .then(function(registration) {
+        console.log('ServiceWorker registered with scope:', registration.scope);
+    })
+    .catch(function(error) {
+        console.error('ServiceWorker registration failed:', error);
+    });
+}
+</script>
+<script>
+    let deferredPrompt;
+    
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById("installBtn").classList.remove("d-none");
+    });
+    
+    document.getElementById("installBtn").addEventListener("click", () => {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+    });
+</script>
+    <!--let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    
+    installButton.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      console.log(choice.outcome);
+      deferredPrompt = null;
+    });
+
+</script->
+
+</body>
+</html-->
