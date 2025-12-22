@@ -22,32 +22,7 @@
 
   /* Utility */
   --white: #F2E6EE;
-/* ========================= DARK THEME OVERRIDES ========================= */
-[data-theme="dark"] {
 
-  /* Backgrounds */
-  --primary-bg: #151A1F;
-  --secondary-bg: #272C2E;
-  --card-bg: #535D5E;
-  --input-bg: #394142;
-
-  /* Text */
-  --text-color: #EAEAEA;
-  --text-muted: #9E9E9E;
-  --text-light: #FFFFFF;
-
-  /* Accent */
-  --accent: #FF9F43;
-  --accent-hover: #FFB366;
-  --primary-gold: #FFD166;
-
-  /* Borders */
-  --input-border: #333333;
-  --card-border: #2E2E2E;
-
-  /* Utility */
-  --white: #F2E6EE;
-}
 /* ------------------------- Body -------------------------*/ 
 body {
   background-color: var(--primary-bg) !important; /* #001D39 */
@@ -323,64 +298,4 @@ input, select, textarea, button {
     display: flex;
     align-items: center; /* center text/icon inside button */
     justify-content: center;
-}
-
-/* ========================= DARK TABLE FIX ========================= */
-[data-theme="dark"] table {
-  background-color: var(--card-bg) !important;
-}
-
-[data-theme="dark"] table th {
-  background-color: #222222 !important;
-  color: var(--text-muted) !important;
-  border-bottom: 1px solid var(--card-border);
-}
-
-[data-theme="dark"] table td {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  border-bottom: 1px solid var(--card-border);
-}
-
-[data-theme="dark"] table tbody tr:hover {
-  background-color: #262626 !important;
-}
-
-/* ========================= DARK INPUT FIX ========================= */
-[data-theme="dark"] .form-control,
-[data-theme="dark"] .form-select {
-  background-color: var(--input-bg) !important;
-  color: var(--text-color) !important;
-}
-
-/* ========================= DARK FILTER BAR ========================= */
-[data-theme="dark"] .filter-bar {
-  background: var(--card-bg);
-  border-color: var(--card-border);
-}
-
-[data-theme="dark"] .filter-item label {
-  color: var(--text-muted);
-}
-
-/* ========================= DARK CARD HEADER ========================= */
-[data-theme="dark"] .card-header {
-  background-color: var(--secondary-bg) !important;
-  color: var(--text-light) !important;
-}
-
-/* ========================= DARK NAVBAR ========================= */
-[data-theme="dark"] .navbar,
-[data-theme="dark"] .navbar .dropdown-menu {
-  background-color: var(--secondary-bg) !important;
-}
-
-/* ========================= SMOOTH TRANSITION ========================= */
-body,
-.card,
-table,
-input,
-select,
-button {
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
