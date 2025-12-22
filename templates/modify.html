@@ -175,6 +175,10 @@ function openAttachment(url) {
     new bootstrap.Modal(document.getElementById("attachmentModal")).show();
 }
 </script>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+</script>
 
 </body>
 </html>
@@ -321,4 +325,4 @@ form.addEventListener("input", () => {
 </script>
 
 </body>
-</html>
+</html-->
