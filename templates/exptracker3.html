@@ -113,9 +113,9 @@
                     <a class="nav-link text-white" href="/report">
                         <i class="bi bi-question-diamond"></i>Reports</a>
                 </li>
-                <button id="themeToggle" class="btn btn-light btn-sm ms-2">
+                <!--button id="themeToggle" class="btn btn-light btn-sm ms-2">
                     🌙 Night Mode
-                </button>
+                </button-->
                 <!-- MOBILE PROFILE -->
                 <li class="nav-item dropdown d-block d-lg-none">
                     <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
@@ -470,27 +470,6 @@
         document.getElementById("attachmentModal")
       ).show();
     }
-</script>
-
-<button id="themeToggle" class="btn btn-light btn-sm ms-2">🌙</button>
-
-<script>
-  const themeToggle = document.getElementById("themeToggle");
-
-  // Load saved theme or default to dark
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  document.documentElement.setAttribute("data-theme", savedTheme);
-  themeToggle.textContent = savedTheme === "dark" ? "🌙" : "☀️";
-
-  // Toggle theme on button click
-  themeToggle.addEventListener("click", () => {
-      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
-
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
-  });
 </script>
 
 </body>
