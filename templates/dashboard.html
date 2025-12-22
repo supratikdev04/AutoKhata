@@ -13,7 +13,7 @@
     <style>
         #categoryChart {
             max-width: 250px;   /* adjust size */
-            margin: 0 auto;     /* center the chart */
+            margin: 0;     /* center the chart */
         }
     </style>
 
@@ -56,12 +56,13 @@
     <!-- CHARTS -->
     <div class="row g-4">
 
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3">
-                <h6 class="text-center">Expenses by Category</h6>
+        <div class="card shadow-sm p-3">
+            <h6 class="text-center">Expenses by Category</h6>
+            <div class="d-flex justify-content-start">
                 <canvas id="categoryChart" style="height:300px; width:200px;"></canvas>
             </div>
         </div>
+
 
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
