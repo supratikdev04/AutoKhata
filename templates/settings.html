@@ -34,6 +34,10 @@
     navigator.serviceWorker.register("/static/service-worker.js");
   }
 </script>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+</script>
 
 </body>
 </html>
