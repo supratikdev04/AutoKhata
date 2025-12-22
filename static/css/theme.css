@@ -1,29 +1,28 @@
-/* ------------------------- Variables ------------------------- */
 :root {
-  /* Backgrounds*/ 
-  --primary-bg: #3A1F0B;        /* Main app background - dark brown*/ 
+  /* Backgrounds */
+  --primary-bg: #3A1F0B;        /* Main app background - dark brown */
   --secondary-bg: #7B3F00;      /* Navbar / header - deep orange */
   --card-bg: #FFDAB3;           /* Cards / tables - soft peach */
   --input-bg: #FFE6CC;          /* Inputs - light cream */
 
   /* Text */
   --text-color: #3A1F0B;        /* Primary text - dark brown */
-  --text-muted: #A65A3D;        /* Secondary text - muted orange*/ 
+  --text-muted: #A65A3D;        /* Secondary text - muted orange */
   --text-light: #FFFFFF;        /* Text on dark bg */
 
   /* Accent / Actions */
-  --accent: #FF8C42;            /* Buttons, highlights - vivid orange*/ 
+  --accent: #FF8C42;            /* Buttons, highlights - vivid orange */
   --accent-hover: #FFA86B;      /* Hover states - lighter orange */
   --primary-gold: #FFC857;      /* Links / focus - golden yellow */
 
   /* Borders */
   --input-border: #FFA86B;      /* Input borders - soft orange */
-  --card-border: #FFB066;       /* Card borders - subtle highlight*/ 
+  --card-border: #FFB066;       /* Card borders - subtle highlight */
 
   /* Utility */
-  --white: #F2E6EE;
-
-/* ------------------------- Body -------------------------*/ 
+  --white: #FFFFFF;
+}
+/* ------------------------- Body ------------------------- */
 body {
   background-color: var(--primary-bg) !important; /* #001D39 */
   color: var(--text-light) !important;
@@ -175,7 +174,7 @@ input, select, textarea, button {
     border-radius: 6px;
 }
 /*--------------------- Filter Part -----------------------*/
-/* ================= FILTER BAR ================= */
+/* ================= FILTER BAR ================= 
 .filter-bar {
     background: var(--card-bg);
     padding: 10px;
@@ -183,7 +182,7 @@ input, select, textarea, button {
     border: 1px solid var(--card-border);
 }
 */
-/* ================= FILTER BAR ================= **/
+/* ================= FILTER BAR ================= */
 .filter-bar {
     display: flex;
     /*align-items: flex-end;*/
@@ -227,7 +226,7 @@ input, select, textarea, button {
 .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--accent);
     padding: 6px;
-    border-radius: 50%;      /* 👈 perfectly round *
+    border-radius: 50%;      /* 👈 perfectly round */
     cursor: pointer;
 }
 
@@ -281,7 +280,7 @@ input, select, textarea, button {
 
 /* Reset */
 .btn-reset {
-    border: /*1px solid*/var(--text-muted);
+    border: /*1px solid*/ var(--text-muted);
     color: var(--text-color);
     border-radius: 16px;
     background: transparent;
