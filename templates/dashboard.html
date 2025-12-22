@@ -59,7 +59,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
                 <h6 class="text-center">Expenses by Category</h6>
-                <canvas id="categoryChart" style="height:200px; width:200px;"></canvas>
+                <canvas id="categoryChart" style="height:300px; width:200px;"></canvas>
             </div>
         </div>
 
@@ -69,10 +69,6 @@
                 <canvas id="weekChart"></canvas>
             </div>
         </div>
-
-   
-
-
     <!-- RECENT EXPENSES -->
     <div class="card mt-4 shadow-sm">
     <div class="card-header bg-secondary text-white">Category Totals</div>
@@ -103,7 +99,7 @@
             labels: {{ category_labels | safe }},
             datasets: [{
                 data: {{ category_values | safe }},
-                borderWidth: 2
+                borderWidth: 1
             }]
         }
     });
