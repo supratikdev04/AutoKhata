@@ -311,6 +311,10 @@ document.getElementById('removeScanBtn').addEventListener('click', () => {
     alert("Scanned document removed");
 });
 </script>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+</script>
 
 </body>
 </html>
