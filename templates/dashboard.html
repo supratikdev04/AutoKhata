@@ -49,26 +49,15 @@
                 <h3 class="fw-bold text-success">₹{{ monthly_total }}</h3>
             </div>
         </div>
-
-        <<div class="card shadow-sm p-3">
-            <h6 class="text-center">Expenses by Category</h6>
-            <div class="chart-left">
-                <canvas id="categoryChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="row g-4">
-
+        <div class="row g-4">
         <div class="card shadow-sm p-3">
             <h6 class="text-center">Expenses by Category</h6>
-            <div class="d-flex justify-content-start">
-                <canvas id="categoryChart"></canvas>
+            <div class="chart-left">
+                <div class="d-flex justify-content-start">
+                    <canvas id="categoryChart"></canvas>
+                </div>
             </div>
         </div>
-
-
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
                 <h6 class="text-center">Last 7 Days Spending</h6>
