@@ -99,40 +99,17 @@
 <!-- CHART JS SCRIPT -->
 <script>
       // CATEGORY PIE CHART
-   /* const categoryChart = new Chart(document.getElementById('categoryChart'), {
+   const categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'pie',
         data: {
             labels: {{ category_labels | safe }},
             datasets: [{
                 data: {{ category_values | safe }},
-                borderWidth: 1
+                borderWidth: 2
             }]
-        }
-    });*/
-    // CATEGORY PIE CHART
-    const categoryChart = new Chart(document.getElementById('categoryChart'), {
-        type: 'pie',
-        data: {
-            labels: {{ category_labels | safe }},
-            datasets: [{
-                data: {{ category_values | safe }},
-                borderWidth: 1
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'right', // Moves legend to the right
-                    labels: {
-                        boxWidth: 20,
-                        padding: 20
-                    }
-                }
-            },
-            maintainAspectRatio: false // Allows the chart to breathe
         }
     });
+ 
     // WEEKLY BAR CHART
     const weekChart = new Chart(document.getElementById('weekChart'), {
         type: 'bar',
