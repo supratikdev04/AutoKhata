@@ -1,59 +1,64 @@
-/* ------------------------- VARIABLES ------------------------- */
+/* ------------------------- Variables ------------------------- */
 :root {
-  /* Backgrounds */
-  --primary-bg: #3A1F0B;        /* Main app background */
-  --secondary-bg: #7B3F00;      /* Navbar / header */
-  --card-bg: #FFDAB3;           /* Cards / tables */
-  --input-bg: #FFE6CC;          /* Inputs */
+  /* Backgrounds*/ 
+  --primary-bg: #3A1F0B;        /* Main app background - dark brown*/ 
+  --secondary-bg: #7B3F00;      /* Navbar / header - deep orange */
+  --card-bg: #FFDAB3;           /* Cards / tables - soft peach */
+  --input-bg: #FFE6CC;          /* Inputs - light cream */
 
   /* Text */
-  --text-color: #3A1F0B;        /* Primary text */
-  --text-muted: #A65A3D;        /* Secondary text */
+  --text-color: #3A1F0B;        /* Primary text - dark brown */
+  --text-muted: #A65A3D;        /* Secondary text - muted orange*/ 
   --text-light: #FFFFFF;        /* Text on dark bg */
 
   /* Accent / Actions */
-  --accent: #FF8C42;            /* Buttons, highlights */
-  --accent-hover: #FFA86B;      /* Hover states */
-  --primary-gold: #FFC857;      /* Links / focus */
+  --accent: #FF8C42;            /* Buttons, highlights - vivid orange*/ 
+  --accent-hover: #FFA86B;      /* Hover states - lighter orange */
+  --primary-gold: #FFC857;      /* Links / focus - golden yellow */
 
   /* Borders */
-  --input-border: #FFA86B;      /* Input borders */
-  --card-border: #FFB066;       /* Card borders */
+  --input-border: #FFA86B;      /* Input borders - soft orange */
+  --card-border: #FFB066;       /* Card borders - subtle highlight*/ 
 
   /* Utility */
-  --white: #ebebeb;
-}
-
-/* ========================== DARK THEME ========================== */
+  --white: #F2E6EE;
+/* ========================= DARK THEME OVERRIDES ========================= */
 [data-theme="dark"] {
-  --primary-bg: #121212;
-  --secondary-bg: #1E1E1E;
-  --card-bg: #1A1A1A;
-  --input-bg: #242424;
 
+  /* Backgrounds */
+  --primary-bg: #151A1F;
+  --secondary-bg: #272C2E;
+  --card-bg: #535D5E;
+  --input-bg: #394142;
+
+  /* Text */
   --text-color: #EAEAEA;
   --text-muted: #9E9E9E;
   --text-light: #FFFFFF;
 
+  /* Accent */
   --accent: #FF9F43;
   --accent-hover: #FFB366;
   --primary-gold: #FFD166;
 
-  --input-border: #404040;
+  /* Borders */
+  --input-border: #333333;
   --card-border: #2E2E2E;
-}
 
-/* ------------------------- BODY ------------------------- */
+  /* Utility */
+  --white: #F2E6EE;
+}
+/* ------------------------- Body -------------------------*/ 
 body {
-  background-color: var(--primary-bg) !important;
+  background-color: var(--primary-bg) !important; /* #001D39 */
   color: var(--text-light) !important;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ------------------------- NAVBAR ------------------------- */
+/* ------------------------- Navbar ------------------------- */
 .navbar,
 .navbar .dropdown-menu {
-  background-color: var(--secondary-bg) !important;
+  background-color: var(--secondary-bg) !important; /* #0A4174 */
 }
 
 .navbar a,
@@ -63,254 +68,33 @@ body {
 
 .navbar a:hover,
 .navbar .nav-link:hover {
-  color: var(--primary-gold) !important;
+  color: var(--primary-blue) !important; /* #7BBDE8 */
 }
 
-/* ------------------------- CARDS ------------------------- */
+/* ------------------------- Cards ------------------------- */
 .card {
-  background-color: var(--card-bg) !important;
+  background-color: var(--card-bg) !important; /* #BDD8E9 */
   border-radius: 14px;
-  border: 1px solid var(--card-border);
-  box-shadow: 0 6px 16px rgba(0, 29, 57, 0.15);
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-
-.card-header {
-  background-color: var(--secondary-bg) !important;
-  color: var(--text-light) !important;
-  font-weight: 600;
-  border-bottom: 1px solid var(--card-border);
-}
-
-.card-body {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  padding: 1.5rem;
-}
-
-/* ------------------------- BUTTONS ------------------------- */
-.btn, .btn-sm {
-  border-radius: 10px;
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-
-.btn-primary {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: var(--white) !important;
-  font-weight: 500;
-}
-
-.btn-primary:hover,
-.btn-success:hover {
-  background-color: var(--accent-hover) !important;
-  border-color: var(--accent-hover) !important;
-}
-
-.btn-outline-secondary,
-.btn-back {
-  border-radius: 10px;
-  border-color: var(--text-muted);
-  color: var(--text-muted);
-  border: 1px solid var(--accent);
-}
-
-.btn-outline-secondary:hover,
-.btn-back:hover {
-  background-color: var(--primary-gold);
-  color: var(--white);
-}
-
-/* ------------------------- FORMS ------------------------- */
-.form-control,
-.form-select {
-  border-radius: 10px;
-  background-color: var(--input-bg) !important;
-  border: 1px solid var(--input-border) !important;
-  color: var(--text-color) !important;
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--primary-gold) !important;
-  box-shadow: 0 0 0 0.2rem rgba(255, 193, 87, 0.35);
-  outline: none;
-}
-
-/* ------------------------- TABLES ------------------------- */
-table {
-  background-color: var(--card-bg) !important;
-}
-
-table th {
-  color: var(--text-color) !important;
-  background-color: #7BBDE8;
-}
-
-table td {
-  color: var(--text-color) !important;
-}
-
-[data-theme="dark"] table {
-  background-color: var(--card-bg) !important;
-}
-
-[data-theme="dark"] table th {
-  background-color: #222222 !important;
-  color: var(--text-muted) !important;
-  border-bottom: 1px solid var(--card-border);
-}
-
-[data-theme="dark"] table td {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  border-bottom: 1px solid var(--card-border);
-}
-
-[data-theme="dark"] table tbody tr:hover {
-  background-color: #262626 !important;
-}
-
-/* ------------------------- LINKS ------------------------- */
-a {
-  color: var(--accent) !important;
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--accent-hover) !important;
-  text-decoration: underline;
-}
-
-/* ------------------------- FILTER BAR ------------------------- */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.filter-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.filter-item label {
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--text-color);
-}
-
-.filter-item input,
-.filter-item select {
-  height: 34px;
-  padding: 4px 10px;
-  border-radius: 16px;
-  border: 1px solid var(--input-border);
-  background: var(--input-bg);
-  color: var(--text-color);
-}
-
-[data-theme="dark"] .filter-item label {
-  color: var(--text-muted);
-}
-
-/* ------------------------- MISC ------------------------- */
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-hr {
-  border-color: var(--card-border) !important;
-}
-
-input, select, textarea, button {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.table td, .table th {
-  vertical-align: middle;
-}
-
-/* ------------------------- Variables ------------------------- *
-:root {
-  /* Backgrounds 
-  --primary-bg: #3A1F0B;        /* Main app background - dark brown 
-  --secondary-bg: #7B3F00;      /* Navbar / header - deep orange 
-  --card-bg: #FFDAB3;           /* Cards / tables - soft peach 
-  --input-bg: #FFE6CC;          /* Inputs - light cream 
-
-  /* Text 
-  --text-color: #3A1F0B;        /* Primary text - dark brown 
-  --text-muted: #A65A3D;        /* Secondary text - muted orange 
-  --text-light: #FFFFFF;        /* Text on dark bg 
-
-  /* Accent / Actions 
-  --accent: #FF8C42;            /* Buttons, highlights - vivid orange 
-  --accent-hover: #FFA86B;      /* Hover states - lighter orange 
-  --primary-gold: #FFC857;      /* Links / focus - golden yellow 
-
-  /* Borders 
-  --input-border: #FFA86B;      /* Input borders - soft orange 
-  --card-border: #FFB066;       /* Card borders - subtle highlight 
-
-  /* Utility 
-  --white: #FFFFFF;
-}
-/* ------------------------- Body ------------------------- 
-body {
-  background-color: var(--primary-bg) !important; /* #001D39 
-  color: var(--text-light) !important;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* ------------------------- Navbar ------------------------- 
-.navbar,
-.navbar .dropdown-menu {
-  background-color: var(--secondary-bg) !important; /* #0A4174 
-}
-
-.navbar a,
-.navbar .nav-link {
-  color: var(--text-light) !important;
-}
-
-.navbar a:hover,
-.navbar .nav-link:hover {
-  color: var(--primary-blue) !important; /* #7BBDE8 *
-}
-
-/* ------------------------- Cards ------------------------- 
-.card {
-  background-color: var(--card-bg) !important; /* #BDD8E9 *
-  border-radius: 14px;
-  border: 1px solid var(--card-border); /* #49769F *
+  border: 1px solid var(--card-border); /* #49769F */
   box-shadow: 0 6px 16px rgba(0, 29, 57, 0.15);
 }
-/* Card Header *
+/* Card Header */
 .card-header {
-    background-color: var(--secondary-bg) !important; /* Navbar / Header color *
+    background-color: var(--secondary-bg) !important; /* Navbar / Header color */
     color: var(--text-light) !important;
     font-weight: 600;
     border-bottom: 1px solid var(--card-border);
 }
 
-/* Card Body *
+/* Card Body */
 .card-body {
     background-color: var(--card-bg) !important;
     color: var(--text-color) !important;
 }
 
-/* ------------------------- Buttons ------------------------- *
+/* ------------------------- Buttons ------------------------- */
 .btn-primary {
-  background-color: var(--accent) !important; /* #4E8EA2 *
+  background-color: var(--accent) !important; /* #4E8EA2 */
   border-color: var(--accent) !important;
   color: var(--white) !important;
   border-radius: 10px;
@@ -319,11 +103,11 @@ body {
 
 .btn-primary:hover,
 .btn-success:hover{
-  background-color: var(--accent-hover) !important; /* #6EA2B3 *
+  background-color: var(--accent-hover) !important; /* #6EA2B3 */
   border-color: var(--accent-hover) !important;
 }
 
-/* Outline secondary button *
+/* Outline secondary button */
 .btn-outline-secondary, .btn-back{
   border-radius: 10px;
   border-color: var(--text-muted);
@@ -336,23 +120,23 @@ body {
   color: var(--white);
 }
 
-/* ------------------------- Forms ------------------------- *
+/* ------------------------- Forms ------------------------- */
 .form-control,
 .form-select {
   border-radius: 10px;
-  background-color: var(--input-bg) !important; /* light *
-  border: 1px solid var(--input-border) !important; /* #6EA2B3 *
+  background-color: var(--input-bg) !important; /* light */
+  border: 1px solid var(--input-border) !important; /* #6EA2B3 */
   color: var(--text-color) !important;
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--primary-blue) !important; /* #7BBDE8 *
+  border-color: var(--primary-blue) !important; /* #7BBDE8 */
   box-shadow: 0 0 0 0.2rem rgba(123, 189, 232, 0.35);
   outline: none;
 }
 
-/* ------------------------- Tables ------------------------- *
+/* ------------------------- Tables ------------------------- */
 table {
   background-color: var(--card-bg) !important;
 }
@@ -366,7 +150,7 @@ table td {
   color: var(--text-color) !important;
 }
 
-/* ------------------------- Links ------------------------- *
+/* ------------------------- Links ------------------------- */
 a {
   color: var(--accent) !important;
   text-decoration: none;
@@ -377,20 +161,20 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ------------------------- Alerts ------------------------- *
+/* ------------------------- Alerts ------------------------- */
 .alert {
   border-radius: 10px;
 }
 
-/* ------------------------- Misc ------------------------- *
+/* ------------------------- Misc ------------------------- */
 .text-muted {
-  color: var(--text-muted) !important; /* #49769F *
+  color: var(--text-muted) !important; /* #49769F */
 }
 
 hr {
   border-color: var(--card-border) !important;
 }
-/*-----------------------------------------------------*
+/*-----------------------------------------------------*/
 .card, .form-control, .form-select, .btn {
     border-radius: 10px;
 }
@@ -402,7 +186,7 @@ hr {
 input, select, textarea, button {
     margin-bottom: 1rem;
 }
-/*------------------------------------------*
+/*------------------------------------------*/
 .form-label {
     font-size: 0.75rem;
     font-weight: 600;
@@ -416,7 +200,7 @@ input, select, textarea, button {
     border-radius: 6px;
 }
 /*--------------------- Filter Part -----------------------*/
-/* ================= FILTER BAR ================= 
+/* ================= FILTER BAR ================= */
 .filter-bar {
     background: var(--card-bg);
     padding: 10px;
@@ -424,18 +208,18 @@ input, select, textarea, button {
     border: 1px solid var(--card-border);
 }
 */
-/* ================= FILTER BAR ================= *
+/* ================= FILTER BAR ================= **/
 .filter-bar {
     display: flex;
-    /*align-items: flex-end;*
+    /*align-items: flex-end;*/
     align-items: center;
     gap: 12px;
     flex-wrap: flex-ends;
-    /*flex-wrap: wrap;*
+    /*flex-wrap: wrap;*/
     margin-bottom: 12px;
 }
 
-/* Filter items *
+/* Filter items */
 .filter-item {
     display: flex;
     flex-direction: column;
@@ -448,23 +232,23 @@ input, select, textarea, button {
     color: var(--text-color);
 }
 
-/* Inputs & Select *
+/* Inputs & Select */
 .filter-item input,
 .filter-item select {
     height: 34px;
     padding: 4px 10px;
-    border-radius: 16px; /* 👈 more rounded edges *
+    border-radius: 16px; /* 👈 more rounded edges */
     border: 1px solid var(--input-border);
     background: var(--input-bg);
     color: var(--text-color);
 }
 
-/* ===== ROUND DATE PICKER ICON ===== *
+/* ===== ROUND DATE PICKER ICON ===== */
 .filter-item input[type="date"] {
     padding-right: 16px;
 }
 
-/* Chrome / Edge calendar icon *
+/* Chrome / Edge calendar icon */
 .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--accent);
     padding: 6px;
@@ -472,12 +256,12 @@ input, select, textarea, button {
     cursor: pointer;
 }
 
-/* Firefox fix *
+/* Firefox fix */
 .filter-item input[type="date"] {
     accent-color: var(--accent);
 }
 
-/* ================= ACTION BUTTONS ================= *
+/* ================= ACTION BUTTONS ================= */
 .filter-actions {
     display: flex;
     gap: 8px;
@@ -489,7 +273,7 @@ input, select, textarea, button {
     height: 34px;
     padding: 0 14px;
     font-size: 13px;
-    border-radius: 16px; /* 👈 more rounded *
+    border-radius: 16px; /* 👈 more rounded */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -497,7 +281,7 @@ input, select, textarea, button {
     transition: all 0.2s ease;
 }
 
-/* Apply *
+/* Apply */
 .btn-apply {
     background: var(--accent);
     border: none;
@@ -508,7 +292,7 @@ input, select, textarea, button {
     background: var(--accent-hover);
 }
 
-/* Clear Category *
+/* Clear Category */
 .btn-clear {
     border: 1px solid var(--accent);
     color: var(--accent);
@@ -520,9 +304,9 @@ input, select, textarea, button {
     background: var(--card-bg);
 }
 
-/* Reset *
+/* Reset */
 .btn-reset {
-    border: /*1px solid*var(--text-muted);
+    border: /*1px solid*/var(--text-muted);
     color: var(--text-color);
     border-radius: 16px;
     background: transparent;
@@ -533,42 +317,15 @@ input, select, textarea, button {
 }
 
 .btn-clear, .btn-outline-secondary {
-    height: 36px; /* uniform button height *
+    height: 36px; /* uniform button height */
     padding: 0 12px;
     font-size: 14px;
     display: flex;
-    align-items: center; /* center text/icon inside button *
+    align-items: center; /* center text/icon inside button */
     justify-content: center;
 }
 
-/* ========================= DARK THEME OVERRIDES ========================= *
-[data-theme="dark"] {
-
-  /* Backgrounds *
-  --primary-bg: #121212;
-  --secondary-bg: #1E1E1E;
-  --card-bg: #1A1A1A;
-  --input-bg: #242424;
-
-  /* Text *
-  --text-color: #EAEAEA;
-  --text-muted: #9E9E9E;
-  --text-light: #FFFFFF;
-
-  /* Accent *
-  --accent: #FF9F43;
-  --accent-hover: #FFB366;
-  --primary-gold: #FFD166;
-
-  /* Borders *
-  --input-border: #333333;
-  --card-border: #2E2E2E;
-
-  /* Utility *
-  --white: #FFFFFF;
-}
-
-/* ========================= DARK TABLE FIX ========================= *
+/* ========================= DARK TABLE FIX ========================= */
 [data-theme="dark"] table {
   background-color: var(--card-bg) !important;
 }
@@ -589,14 +346,14 @@ input, select, textarea, button {
   background-color: #262626 !important;
 }
 
-/* ========================= DARK INPUT FIX ========================= *
+/* ========================= DARK INPUT FIX ========================= */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select {
   background-color: var(--input-bg) !important;
   color: var(--text-color) !important;
 }
 
-/* ========================= DARK FILTER BAR ========================= *
+/* ========================= DARK FILTER BAR ========================= */
 [data-theme="dark"] .filter-bar {
   background: var(--card-bg);
   border-color: var(--card-border);
@@ -606,19 +363,19 @@ input, select, textarea, button {
   color: var(--text-muted);
 }
 
-/* ========================= DARK CARD HEADER ========================= *
+/* ========================= DARK CARD HEADER ========================= */
 [data-theme="dark"] .card-header {
   background-color: var(--secondary-bg) !important;
   color: var(--text-light) !important;
 }
 
-/* ========================= DARK NAVBAR ========================= *
+/* ========================= DARK NAVBAR ========================= */
 [data-theme="dark"] .navbar,
 [data-theme="dark"] .navbar .dropdown-menu {
   background-color: var(--secondary-bg) !important;
 }
 
-/* ========================= SMOOTH TRANSITION ========================= *
+/* ========================= SMOOTH TRANSITION ========================= */
 body,
 .card,
 table,
@@ -626,4 +383,4 @@ input,
 select,
 button {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}*/
+}
