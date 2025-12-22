@@ -96,7 +96,7 @@
 
 <!-- CHART JS SCRIPT -->
 <script>
-    // CATEGORY PIE CHART
+    /*=== pie Chart ===*/
     const categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'pie',
         data: {
@@ -105,8 +105,23 @@
                 data: {{ category_values | safe }},
                 borderWidth: 1
             }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right',  // This aligns the legend to the right
+                    labels: {
+                        boxWidth: 20,    // size of the color box
+                        padding: 15      // space between legend items
+                    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
         }
     });
+
 
     // WEEKLY BAR CHART
     const weekChart = new Chart(document.getElementById('weekChart'), {
