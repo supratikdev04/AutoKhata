@@ -164,7 +164,7 @@
     <div class="card shadow-sm mb-5">
         <div class="card-header bg-secondary text-white">Your Expenses</div>
 
-        <div class="px-3 pt-2 pb-1 fw-semibold">
+        <div class="px-3 pt-2 pb-1 fw-semibold" style="color: var(--text-light);">
             Total: ₹ {{ total }}
         </div>
         <div class="card-body table-responsive">
@@ -471,53 +471,28 @@
       ).show();
     }
 </script>
-<script>
-  // Apply saved theme or default to dark
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  document.documentElement.setAttribute("data-theme", savedTheme);
 
-  // Save default theme if none exists
-  if (!localStorage.getItem("theme")) {
-    localStorage.setItem("theme", "dark");
-  }
+<button id="themeToggle" class="btn btn-light btn-sm ms-2">🌙</button>
+
 <script>
   const themeToggle = document.getElementById("themeToggle");
 
-  themeToggle.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-
-    // Optional: change button icon
-    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
-  });
-
-  // Set initial button icon based on saved theme
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  themeToggle.textContent = savedTheme === "dark" ? "🌙" : "☀️";
-</script>
-<script>
-  const themeToggle = document.getElementById("themeToggle");
-
-  // Apply saved theme on load
+  // Load saved theme or default to dark
   const savedTheme = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", savedTheme);
   themeToggle.textContent = savedTheme === "dark" ? "🌙" : "☀️";
 
   // Toggle theme on button click
   themeToggle.addEventListener("click", () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
 
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-
-    // Update button icon
-    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
   });
 </script>
+
 </body>
 </html>
 
