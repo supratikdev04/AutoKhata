@@ -498,7 +498,25 @@
   const savedTheme = localStorage.getItem("theme") || "dark";
   themeToggle.textContent = savedTheme === "dark" ? "🌙" : "☀️";
 </script>
+<script>
+  const themeToggle = document.getElementById("themeToggle");
 
+  // Apply saved theme on load
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  themeToggle.textContent = savedTheme === "dark" ? "🌙" : "☀️";
+
+  // Toggle theme on button click
+  themeToggle.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+
+    // Update button icon
+    themeToggle.textContent = newTheme === "dark" ? "🌙" : "☀️";
+  });
 </script>
 </body>
 </html>
