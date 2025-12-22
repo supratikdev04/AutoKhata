@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 
 
-    <style>
+    <!--style>
         #categoryChart {
             max-width: 250px;   /* adjust size */
             margin: 0 auto;     /* center the chart */
         }
-    </style>
+</style-->
 
 </head>
 
@@ -60,6 +60,8 @@
             <div class="card shadow-sm p-3">
                 <h6 class="text-center">Expenses by Category</h6>
                 <canvas id="categoryChart" style="height:200px; width:200px;"></canvas>
+                    <div style="height: 300px;"> <canvas id="categoryChart"></canvas>
+                    </div>
             </div>
         </div>
 
@@ -97,6 +99,17 @@
 <!-- CHART JS SCRIPT -->
 <script>
       // CATEGORY PIE CHART
+   /* const categoryChart = new Chart(document.getElementById('categoryChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ category_labels | safe }},
+            datasets: [{
+                data: {{ category_values | safe }},
+                borderWidth: 1
+            }]
+        }
+    });*/
+    // CATEGORY PIE CHART
     const categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'pie',
         data: {
@@ -105,6 +118,19 @@
                 data: {{ category_values | safe }},
                 borderWidth: 1
             }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right', // Moves legend to the right
+                    labels: {
+                        boxWidth: 20,
+                        padding: 20
+                    }
+                }
+            },
+            maintainAspectRatio: false // Allows the chart to breathe
         }
     });
     // WEEKLY BAR CHART
@@ -119,7 +145,6 @@
         }
     });
 </script>
-<script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
 <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/static/service-worker.js");
