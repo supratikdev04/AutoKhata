@@ -298,3 +298,14 @@ input, select, textarea, button {
     align-items: center; /* center text/icon inside button */
     justify-content: center;
 }
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.bg-purple {
+    background-color: #9966FF;
+}
