@@ -4,6 +4,156 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <style>
+        .category-card {
+            height: 260px;
+        }
+
+        .chart-wrapper {
+            height: 200px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 20px;
+        }
+
+        #categoryChart {
+            width: 180px !important;
+            height: 180px !important;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<h2 class="text-center mb-4" style="color:#3A1F0B">Dashboard</h2>
+
+<div class="container">
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Total Spent</h6>
+                <h3 class="fw-bold text-primary">₹{{ total_expense }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>This Month</h6>
+                <h3 class="fw-bold text-success">₹{{ monthly_total }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="row g-4">
+
+        <!-- CATEGORY PIE -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 category-card">
+                <h6 class="text-center mb-2">Expenses by Category</h6>
+
+                <div class="row h-100 align-items-center">
+                    <div class="col-6"></div>
+
+                    <div class="col-6">
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEEKLY BAR -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="text-center">Last 7 Days Spending</h6>
+                <canvas id="weekChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATEGORY TOTALS -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-secondary text-white">Category Totals</div>
+        <ul class="list-group list-group-flush">
+            {% for category, total in category_map.items() %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ category }}</span>
+                <span class="fw-bold">₹{{ total }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="mt-3">
+        <a href="/" class="btn btn-primary">⬅ Back to Main Page</a>
+    </div>
+</div>
+
+<!-- CHART JS -->
+<script>
+const categoryChart = new Chart(document.getElementById('categoryChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ category_labels | safe }},
+        datasets: [{
+            data: {{ category_values | safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+
+const weekChart = new Chart(document.getElementById('weekChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ week_labels | safe }},
+        datasets: [{
+            data: {{ week_values | safe }},
+            borderWidth: 1
+        }]
+    }
+});
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/static/service-worker.js");
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+<!--DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="manifest" href="/static/manifest.json">
@@ -33,10 +183,10 @@
 <!-- NAVBAR ->
 <nav class="navbar navbar-dark bg-primary navbar-expand-lg px-3 mb-4">
     <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
-</nav-->
+</nav->
 <h2 class="text-center mb-4" style="color:#3A1F0B">DashBoard</h2>
 <div class="container">
-    <!-- SUMMARY CARDS -->
+    <!-- SUMMARY CARDS ->
     <div class="row g-3 mb-4">
 
         <div class="col-md-4">
@@ -58,11 +208,11 @@
                 <h6 class="text-center mb-3">Expenses by Category</h6>
         
                 <div class="row align-items-center h-100">
-                    <!-- LEFT SIDE (can be empty or text later) -->
+                    <!-- LEFT SIDE (can be empty or text later) ->
                     <div class="col-6">
-                        <!-- Optional content -->
+                        <!-- Optional content ->
                     </div>
-                    <!-- RIGHT SIDE (PIE CHART) -->
+                    <!-- RIGHT SIDE (PIE CHART) ->
                     <div class="col-6">
                         <div class="chart-wrapper">
                             <canvas id="categoryChart"></canvas>
@@ -78,7 +228,7 @@
                 <canvas id="weekChart"></canvas>
             </div>
         </div>
-        <!-- RECENT EXPENSES -->
+        <!-- RECENT EXPENSES ->
         <div class="card mt-4 shadow-sm">
         <div class="card-header bg-secondary text-white">Category Totals</div>
     
@@ -91,7 +241,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <!-- BACK BUTTON -->
+        <!-- BACK BUTTON ->
         <div class="mt-3">
             <a href="/" class="btn btn-primary">
                 ⬅ Back to Main Page
@@ -99,7 +249,7 @@
         </div>
 </div>
 
-<!-- CHART JS SCRIPT -->
+<!-- CHART JS SCRIPT ->
 <script>
       // CATEGORY PIE CHART
    /*const categoryChart = new Chart(document.getElementById('categoryChart'), {
