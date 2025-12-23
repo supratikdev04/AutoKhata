@@ -15,11 +15,14 @@
             max-width: 150px;   /* adjust size *
             margin: 0;      center the chart 
         }*/
-        .chart-left {
-            width: 220px;        /* control size */
+        .chart-wrapper {
+            height: 220px;      /* controls pie chart size */
+            width: 100%;
         }
+        
         #categoryChart {
-            display: block;
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 
@@ -50,39 +53,50 @@
             </div>
         </div>
         <div class="row g-4">
-        <div class="card shadow-sm p-3">
-            <h6 class="text-center">Expenses by Category</h6>
-            <div class="chart-left">
-                <div class="d-flex justify-content-start">
-                    <canvas id="categoryChart"></canvas>
+           <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="text-center mb-3">Expenses by Category</h6>
+        
+                <div class="row align-items-center h-100">
+                    <!-- LEFT SIDE (can be empty or text later) -->
+                    <div class="col-6">
+                        <!-- Optional content -->
+                    </div>
+                    <!-- RIGHT SIDE (PIE CHART) -->
+                    <div class="col-6">
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
                 <h6 class="text-center">Last 7 Days Spending</h6>
                 <canvas id="weekChart"></canvas>
             </div>
         </div>
-    <!-- RECENT EXPENSES -->
-    <div class="card mt-4 shadow-sm">
-    <div class="card-header bg-secondary text-white">Category Totals</div>
-
-        <ul class="list-group list-group-flush">
-            {% for category, total in category_map.items() %}
-            <li class="list-group-item d-flex justify-content-between">
-                <span>{{ category }}</span>
-                <span class="fw-bold">₹{{ total }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <!-- BACK BUTTON -->
-    <div class="mt-3">
-        <a href="/" class="btn btn-primary">
-            ⬅ Back to Main Page
-        </a>
-    </div>
+        <!-- RECENT EXPENSES -->
+        <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-secondary text-white">Category Totals</div>
+    
+            <ul class="list-group list-group-flush">
+                {% for category, total in category_map.items() %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ category }}</span>
+                    <span class="fw-bold">₹{{ total }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- BACK BUTTON -->
+        <div class="mt-3">
+            <a href="/" class="btn btn-primary">
+                ⬅ Back to Main Page
+            </a>
+        </div>
 </div>
 
 <!-- CHART JS SCRIPT -->
