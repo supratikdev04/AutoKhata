@@ -57,7 +57,18 @@
     <div class="row g-4">
 
         <!-- CATEGORY PIE -->
-        <div class="col-md-6">
+       <div class="col-6">
+            <ul class="list-unstyled small">
+                {% for category, total in category_map.items() %}
+                <li class="d-flex align-items-center mb-2">
+                    <span class="me-2"
+                          style="width:12px;height:12px;background-color:{{ loop.index0 }};">
+                    </span>
+                    {{ category }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
             <div class="card shadow-sm p-3 category-card">
                 <h6 class="text-center mb-2">Expenses by Category</h6>
 
