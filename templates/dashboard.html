@@ -4,192 +4,6 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <link rel="manifest" href="/static/manifest.json">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
-
-    <style>
-        .chart-wrapper {
-            height: 220px;
-            width: 100%;
-        }
-
-        #categoryChart {
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
-</head>
-
-<body class="bg-light">
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-dark bg-primary navbar-expand-lg px-3 mb-4">
-    <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
-</nav>
-
-<h2 class="text-center mb-4" style="color:#3A1F0B">Dashboard</h2>
-
-<div class="container">
-
-    <!-- SUMMARY CARDS -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-                <h6>Total Spent</h6>
-                <h3 class="fw-bold text-primary">₹{{ total_expense }}</h3>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-                <h6>This Month</h6>
-                <h3 class="fw-bold text-success">₹{{ monthly_total }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <!-- CHARTS ROW -->
-    <div class="row g-4">
-
-        <!-- PIE CHART -->
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3 h-100">
-                <h6 class="text-center mb-3">Expenses by Category</h6>
-
-               <div class="row align-items-center h-100">
-
-                    <!-- LEFT SIDE : CATEGORY LEGEND -->
-                    <div class="col-6">
-                        <ul class="list-unstyled small mb-0">
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="legend-dot bg-primary"></span> Bills
-                            </li>
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="legend-dot bg-danger"></span> Food
-                            </li>
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="legend-dot bg-warning"></span> Shopping
-                            </li>
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="legend-dot bg-info"></span> Transport
-                            </li>
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="legend-dot bg-success"></span> Other
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <span class="legend-dot bg-purple"></span> Travel
-                            </li>
-                        </ul>
-                    </div>
-                
-                    <!-- RIGHT SIDE : PIE CHART -->
-                    <div class="col-6">
-                        <div class="chart-wrapper">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                    </div>
-                
-                </div>
-                    <div class="col-6">
-                        <div class="chart-wrapper">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BAR CHART -->
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3 h-100">
-                <h6 class="text-center mb-3">Last 7 Days Spending</h6>
-                <canvas id="weekChart"></canvas>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- CATEGORY TOTALS -->
-    <div class="card mt-4 shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            Category Totals
-        </div>
-
-        <ul class="list-group list-group-flush">
-            {% for category, total in category_map.items() %}
-            <li class="list-group-item d-flex justify-content-between">
-                <span>{{ category }}</span>
-                <span class="fw-bold">₹{{ total }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <!-- BACK BUTTON -->
-    <div class="mt-3">
-        <a href="/" class="btn btn-primary">
-            ⬅ Back to Main Page
-        </a>
-    </div>
-
-</div> <!-- container -->
-
-<!-- CHART JS -->
-<script>
-    const categoryChart = new Chart(document.getElementById('categoryChart'), {
-        type: 'pie',
-        data: {
-            labels: {{ category_labels | safe }},
-            datasets: [{
-                data: {{ category_values | safe }},
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
-
-    const weekChart = new Chart(document.getElementById('weekChart'), {
-        type: 'bar',
-        data: {
-            labels: {{ week_labels | safe }},
-            datasets: [{
-                data: {{ week_values | safe }},
-                borderWidth: 1
-            }]
-        }
-    });
-</script>
-
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/static/service-worker.js");
-  }
-</script>
-
-</body>
-</html>
-
-
-
-
-<!--DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="manifest" href="/static/manifest.json">
@@ -197,18 +11,9 @@
 
 
     <style>
-        /*#categoryChart {
-            max-width: 150px;   /* adjust size *
-            margin: 0;      center the chart 
-        }*/
-        .chart-wrapper {
-            height: 220px;      /* controls pie chart size */
-            width: 100%;
-        }
-        
         #categoryChart {
-            width: 100% !important;
-            height: 100% !important;
+            max-width: 250px;   /* adjust size */
+            margin: 0 auto;     /* center the chart */
         }
     </style>
 
@@ -219,10 +24,11 @@
 <!-- NAVBAR ->
 <nav class="navbar navbar-dark bg-primary navbar-expand-lg px-3 mb-4">
     <a class="navbar-brand fw-bold" href="/">Expense Tracker</a>
-</nav->
+</nav-->
+
 <h2 class="text-center mb-4" style="color:#3A1F0B">DashBoard</h2>
 <div class="container">
-    <!-- SUMMARY CARDS ->
+    <!-- SUMMARY CARDS -->
     <div class="row g-3 mb-4">
 
         <div class="col-md-4">
@@ -238,23 +44,23 @@
                 <h3 class="fw-bold text-success">₹{{ monthly_total }}</h3>
             </div>
         </div>
-        <div class="row g-4">
-           <div class="col-md-6">
-            <div class="card shadow-sm p-3 h-100">
-                <h6 class="text-center mb-3">Expenses by Category</h6>
-        
-                <div class="row align-items-center h-100">
-                    <!-- LEFT SIDE (can be empty or text later) ->
-                    <div class="col-6">
-                        <!-- Optional content ->
-                    </div>
-                    <!-- RIGHT SIDE (PIE CHART) ->
-                    <div class="col-6">
-                        <div class="chart-wrapper">
-                            <canvas id="categoryChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Highest Category</h6>
+                <h3 class="fw-bold text-danger">{{ top_category }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="text-center">Expenses by Category</h6>
+                <canvas id="categoryChart" style="height:200px; width:200px;"></canvas>
             </div>
         </div>
 
@@ -264,40 +70,31 @@
                 <canvas id="weekChart"></canvas>
             </div>
         </div>
-        <!-- RECENT EXPENSES ->
-        <div class="card mt-4 shadow-sm">
-        <div class="card-header bg-secondary text-white">Category Totals</div>
-    
-            <ul class="list-group list-group-flush">
-                {% for category, total in category_map.items() %}
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>{{ category }}</span>
-                    <span class="fw-bold">₹{{ total }}</span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <!-- BACK BUTTON ->
-        <div class="mt-3">
-            <a href="/" class="btn btn-primary">
-                ⬅ Back to Main Page
-            </a>
-        </div>
+
+    <!-- RECENT EXPENSES -->
+    <div class="card mt-4 shadow-sm">
+    <div class="card-header bg-secondary text-white">Category Totals</div>
+
+        <ul class="list-group list-group-flush">
+            {% for category, total in category_map.items() %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ category }}</span>
+                <span class="fw-bold">₹{{ total }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- BACK BUTTON -->
+    <div class="mt-3">
+        <a href="/" class="btn btn-primary">
+            ⬅ Back to Main Page
+        </a>
+    </div>
 </div>
 
-<!-- CHART JS SCRIPT ->
+<!-- CHART JS SCRIPT -->
 <script>
-      // CATEGORY PIE CHART
-   /*const categoryChart = new Chart(document.getElementById('categoryChart'), {
-        type: 'pie',
-        data: {
-            labels: {{ category_labels | safe }},
-            datasets: [{
-                data: {{ category_values | safe }},
-                borderWidth: 1
-            }]
-        }
-    });*/
+    // CATEGORY PIE CHART
     const categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'pie',
         data: {
@@ -306,20 +103,9 @@
                 data: {{ category_values | safe }},
                 borderWidth: 1
             }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false   // legend removed
-                }
-            }
         }
     });
 
-
- 
     // WEEKLY BAR CHART
     const weekChart = new Chart(document.getElementById('weekChart'), {
         type: 'bar',
