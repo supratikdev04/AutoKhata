@@ -291,7 +291,7 @@ input, select, textarea, button {
 }
 
 .btn-clear, .btn-outline-secondary {
-    height: 34px; /* uniform button height */
+    height: 38px; /* uniform button height */
     padding: 0 12px;
     font-size: 14px;
     display: flex;
