@@ -58,17 +58,6 @@
 
         <!-- CATEGORY PIE -->
        <div class="col-6">
-            <ul class="list-unstyled small">
-                {% for category, total in category_map.items() %}
-                <li class="d-flex align-items-center mb-2">
-                    <span class="me-2"
-                          style="width:12px;height:12px;background-color:{{ loop.index0 }};">
-                    </span>
-                    {{ category }}
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
             <div class="card shadow-sm p-3 category-card">
                 <h6 class="text-center mb-2">Expenses by Category</h6>
 
@@ -111,7 +100,8 @@
         <a href="/" class="btn btn-primary">⬅ Back to Main Page</a>
     </div>
 </div>
-
+    
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <!-- CHART JS -->
 <script>
 const categoryChart = new Chart(document.getElementById('categoryChart'), {
@@ -127,9 +117,23 @@ const categoryChart = new Chart(document.getElementById('categoryChart'), {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { display: false }
+            legend: { display: false },   // still no legend
+            datalabels: {
+                color: '#000',
+                font: {
+                    weight: 'bold',
+                    size: 12
+                },
+                formatter: (value, ctx) => {
+                    const label = ctx.chart.data.labels[ctx.dataIndex];
+                    const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    const percent = ((value / total) * 100).toFixed(1);
+                    return `${label}\n${percent}%`;
+                }
+            }
         }
-    }
+    },
+    plugins: [ChartDataLabels]
 });
 
 const weekChart = new Chart(document.getElementById('weekChart'), {
