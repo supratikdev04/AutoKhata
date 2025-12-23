@@ -60,11 +60,40 @@
             <div class="card shadow-sm p-3 h-100">
                 <h6 class="text-center mb-3">Expenses by Category</h6>
 
-                <div class="row align-items-center h-100">
-                    <div class="col-6 text-center text-muted small">
-                        Categories
-                    </div>
+               <div class="row align-items-center h-100">
 
+                    <!-- LEFT SIDE : CATEGORY LEGEND -->
+                    <div class="col-6">
+                        <ul class="list-unstyled small mb-0">
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="legend-dot bg-primary"></span> Bills
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="legend-dot bg-danger"></span> Food
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="legend-dot bg-warning"></span> Shopping
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="legend-dot bg-info"></span> Transport
+                            </li>
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="legend-dot bg-success"></span> Other
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <span class="legend-dot bg-purple"></span> Travel
+                            </li>
+                        </ul>
+                    </div>
+                
+                    <!-- RIGHT SIDE : PIE CHART -->
+                    <div class="col-6">
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                
+                </div>
                     <div class="col-6">
                         <div class="chart-wrapper">
                             <canvas id="categoryChart"></canvas>
