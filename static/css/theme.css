@@ -182,14 +182,21 @@ input, select, textarea, button {
     border: 1px solid var(--card-border);
 }
 */
-/* ================= FILTER BAR ================= */
+/* ================= FILTER BAR ================= *
 .filter-bar {
     display: flex;
-    /*align-items: flex-end;*/
+    /*align-items: flex-end;*
     align-items: center;
     gap: 12px;
     flex-wrap: flex-ends;
-    /*flex-wrap: wrap;*/
+    /*flex-wrap: wrap;*
+    margin-bottom: 12px;
+}*/
+.filter-bar {
+    display: flex;
+    align-items: flex-end;   /* 👈 KEY FIX */
+    gap: 12px;
+    flex-wrap: wrap;         /* 👈 FIXED */
     margin-bottom: 12px;
 }
 
@@ -240,8 +247,8 @@ input, select, textarea, button {
     display: flex;
     gap: 8px;
     align-items:center;
+     margin-bottom: 2px;
 }
-
 .filter-actions a,
 .filter-actions button {
     height: 34px;
