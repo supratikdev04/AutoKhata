@@ -430,32 +430,26 @@ def modify_expense(id):
     return render_template("modify.html", expense=expense)
 
 # ------------------ Reports route (fixed single copy) ------------------
-@app.route("/report", methods=["GET", "POST"])
-def report():
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        issue_type = request.form.get("issue_type")
-        message = request.form.get("message")
-        screenshot = request.files.get("screenshot")
-
-        screenshot_filename = None
-        if screenshot and screenshot.filename:
-            filename = secure_filename(screenshot.filename)
-            screenshot.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            screenshot_filename = filename
-
-        # Save report data to a simple CSV (or you can use a DB)
-        with open("issue_reports.csv", "a") as f:
-            f.write(f"{name},{email},{issue_type},{message},{screenshot_filename}\n")
-
-        return redirect(url_for("support_success"))
-
+@app.route('/report', methods=['GET', 'POST'])
+def report(): 
+    if request.method == "POST": 
+        name = request.form.get("name") 
+        email = request.form.get("email") 
+        issue_type = request.form.get("issue_type") 
+        message = request.form.get("message") 
+        screenshot = request.files.get("screenshot") 
+        
+        if screenshot and screenshot.filename: 
+            os.makedirs("uploads", exist_ok=True) 
+            filename = secure_filename(screenshot.filename) 
+            screenshot.save(os.path.join("uploads", filename)) 
+        
+        return redirect(url_for("support_success")) 
+        
     return render_template("report.html")
-
-# Success page
-@app.route("/support_success")
-def support_success():
+    
+@app.route("/support_success") 
+def support_success(): 
     return render_template("support_success.html")
 '''
 # ------------------ Support success page ------------------
