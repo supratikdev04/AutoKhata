@@ -432,47 +432,19 @@ def modify_expense(id):
 # ------------------ Reports route (fixed single copy) ------------------
 @app.route('/report', methods=["GET", "POST"])
 def report(): 
-    user_id = session["user_id"]
-    
+
     if request.method == "POST": 
         name = request.form.get("name") 
         email = request.form.get("email") 
         issue_type = request.form.get("issue_type") 
         message = request.form.get("message") 
         screenshot = request.files.get("screenshot") 
-        #---------------------------------------------------------
-        if screenshot and screenshot.filename:                   |
-            os.makedirs("uploads", exist_ok=True)                |
-            filename = secure_filename(screenshot.filename)      |
-            screenshot.save(os.path.join("uploads", filename))   |
-        #--------------------------------------------------------
-        next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        attachment = request.files.get("attachment")
-        attachment_url = None
-
-        if attachment and attachment.filename and allowed_file(attachment.filename):
-            filename = secure_filename(attachment.filename)
-            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
-
-            supabase.storage.from_("issue_report").upload(
-                unique_path,
-                attachment.read(),
-                {"content-type": attachment.content_type}
-            )
-
-            attachment_url = supabase.storage.from_("issue_report").get_public_url(unique_path)
-
-        supabase.table("issue_reports").insert({
-            "user_id": user_id,
-            "category": category,
-            "subcategory": subcategory,
-            "amount": amount_float,
-            "note": note,
-            "attachment_url": attachment_url,
-            "next_date": next_date
-        }).execute()
-
+        
+        if screenshot and screenshot.filename:                   
+            os.makedirs("uploads", exist_ok=True)                
+            filename = secure_filename(screenshot.filename)      
+            screenshot.save(os.path.join("uploads", filename))   
+    
         return redirect(url_for("support_success")) 
         
     return render_template("report.html")
