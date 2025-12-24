@@ -37,14 +37,14 @@
                     <option value="">Auto Detect</option>
                 </select>
 
-                <!-- Subcategory ->
+                <!-- Subcategory >
                 <label class="form-label mt-3">Subcategory</label>
-                <select class="form-select" name="subcategory" id="subcategory" required></select-->
-
+                <select class="form-select" name="subcategory" id="subcategory" required></select>
+                    -->
                 <!-- Amount -->
                 <label class="form-label mt-3">Amount</label>
                 <!--input type="number" step="0.01" class="form-control" name="amount" placeholder="ex: 100" required>
-                <!-input type="number" step="0.01" class="form-control" id="amount" name="amount">
+                <input type="number" step="0.01" class="form-control" id="amount" name="amount">
                 <textarea class="form-control" id="note" name="note" rows="3"placeholder="e.g. Paid ₹2.5k for groceries"></textarea-->
                 <input type="number" step="0.01"
                    class="form-control"
@@ -93,6 +93,13 @@
                 </a>
             </div>
         </form>
+    </div>
+</div>
+<!-- ================= CUSTOM POPUP ================= -->
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup-box">
+        <p id="popupMessage"></p>
+        <button class="btn btn-primary btn-sm" onclick="closePopup()">OK</button>
     </div>
 </div>
 
@@ -234,7 +241,7 @@ async function scanReceipt() {
     const fileInput = document.getElementById("receiptInput");
 
     if (!fileInput || !fileInput.files.length) {
-        alert("Please upload or capture a receipt");
+        showPopup("Please upload or capture a receipt");
         return;
     }
 
@@ -246,28 +253,24 @@ async function scanReceipt() {
     amountInput.value = "";
 
     try {
-        const result = await Tesseract.recognize(
-            file,
-            "eng",
-            { logger: m => console.log(m) }
-        );
-
+        const result = await Tesseract.recognize(file, "eng");
         const text = result.data.text;
-        console.log("OCR TEXT ↓↓↓");
-        console.log(text);
+
         autoDetectCategory(text);
         const amount = extractAmount(text);
+
         if (amount) {
             amountInput.value = amount;
             noteInput.value = "Scanned from receipt";
+            showPopup("Receipt scanned successfully");
         } else {
             noteInput.value = "Total not detected";
-            alert("Could not detect TOTAL amount");
+            showPopup("Could not detect total amount");
         }
 
     } catch (error) {
-        console.error("OCR ERROR:", error);
-        alert("Receipt scan failed");
+        console.error(error);
+        showPopup("Receipt scan failed");
     }
 }
 </script>
@@ -304,12 +307,27 @@ document.getElementById('removeScanBtn').addEventListener('click', () => {
     const amountInput = document.getElementById("amount");
     const noteInput = document.getElementById("note");
 
-    if (fileInput) fileInput.value = "";       // Clear uploaded file
-    if (amountInput) amountInput.value = "";   // Clear amount
-    if (noteInput) noteInput.value = "";       // Clear note
+    if (!fileInput.value) {
+        showPopup("No scanned receipt to remove");
+        return;
+    }
 
-    alert("Scanned document removed");
+    fileInput.value = "";
+    amountInput.value = "";
+    noteInput.value = "";
+
+    showPopup("Scanned receipt removed successfully");
 });
+</script>
+<script>
+function showPopup(message) {
+    document.getElementById("popupMessage").innerText = message;
+    document.getElementById("popupOverlay").style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("popupOverlay").style.display = "none";
+}
 </script>
 </body>
 </html>
