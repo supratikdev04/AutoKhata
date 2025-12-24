@@ -429,25 +429,99 @@ def modify_expense(id):
 
     return render_template("modify.html", expense=expense)
 
-# ------------------ Reports route (fixed single copy) ------------------
-@app.route('/report', methods=['GET', 'POST'])
+# -------------------------- Reports --------------------------------
+@app.route('/report', methods=["GET", "POST"])
 def report(): 
+    user_id = session.get("user_id")  # make sure user is logged in
+    
+    if request.method == "POST": 
+        name = request.form.get("name") 
+        email = request.form.get("email") 
+        issue_type = request.form.get("issue_type") 
+        message = request.form.get("message") 
+        attachment = request.files.get("attachment")
+        
+        attachment_url = None
+
+        if attachment and attachment.filename and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+
+            # Upload to Supabase storage
+            supabase.storage.from_("issue_report").upload(
+                unique_path,
+                attachment.read(),
+                {"content-type": attachment.content_type}
+            )
+
+            # Get public URL
+            attachment_url = supabase.storage.from_("issue_report").get_public_url(unique_path)['publicUrl']
+
+        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Insert into Supabase table
+        supabase.table("issue_reports").insert({
+            "user_id": user_id,
+            "name": name,
+            "email": email,
+            "issue_type": issue_type,
+            "message": message,
+            "attachment_url": attachment_url,
+            "created_at": created_at
+        }).execute()
+
+        return redirect(url_for("support_success")) 
+        
+    return render_template("report.html")
+'''
+# ------------------ Reports route (fixed single copy) ------------------
+@app.route('/report', methods=["GET", "POST"])
+def report(): 
+    user_id = session["user_id"]
+    
     if request.method == "POST": 
         name = request.form.get("name") 
         email = request.form.get("email") 
         issue_type = request.form.get("issue_type") 
         message = request.form.get("message") 
         screenshot = request.files.get("screenshot") 
-        
-        if screenshot and screenshot.filename: 
-            os.makedirs("uploads", exist_ok=True) 
-            filename = secure_filename(screenshot.filename) 
-            screenshot.save(os.path.join("uploads", filename)) 
-        
+        #---------------------------------------------------------
+        if screenshot and screenshot.filename:                   |
+            os.makedirs("uploads", exist_ok=True)                |
+            filename = secure_filename(screenshot.filename)      |
+            screenshot.save(os.path.join("uploads", filename))   |
+        #--------------------------------------------------------
+        next_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        attachment = request.files.get("attachment")
+        attachment_url = None
+
+        if attachment and attachment.filename and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+
+            supabase.storage.from_("issue_report").upload(
+                unique_path,
+                attachment.read(),
+                {"content-type": attachment.content_type}
+            )
+
+            attachment_url = supabase.storage.from_("issue_report").get_public_url(unique_path)
+
+        supabase.table("issue_reports").insert({
+            "user_id": user_id,
+            "category": category,
+            "subcategory": subcategory,
+            "amount": amount_float,
+            "note": note,
+            "attachment_url": attachment_url,
+            "next_date": next_date
+        }).execute()
+
         return redirect(url_for("support_success")) 
         
     return render_template("report.html")
-'''    
+#----------------------------------------------------------------------    
 @app.route("/support_success") 
 def support_success(): 
     return render_template("support_success.html")
