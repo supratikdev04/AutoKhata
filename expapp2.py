@@ -432,46 +432,55 @@ def modify_expense(id):
 # -------------------------- Reports --------------------------------
 @app.route('/report', methods=["GET", "POST"])
 def report(): 
-    user_id = session.get("user_id")  # make sure user is logged in
-    
+    # safely get user_id from session
+    user_id = session.get("user_id")
+    if not user_id:
+        return "Error: User not logged in."
+
     if request.method == "POST": 
-        name = request.form.get("name") 
-        email = request.form.get("email") 
-        issue_type = request.form.get("issue_type") 
-        message = request.form.get("message") 
-        attachment = request.files.get("attachment")
+        try:
+            name = request.form.get("name") 
+            email = request.form.get("email") 
+            issue_type = request.form.get("issue_type") 
+            message = request.form.get("message") 
+            attachment = request.files.get("attachment")
+            attachment_url = None
+
+            # Handle attachment upload
+            if attachment and attachment.filename and allowed_file(attachment.filename):
+                filename = secure_filename(attachment.filename)
+                unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
+
+                # Upload to Supabase storage
+                supabase.storage.from_("issue_report").upload(
+                    unique_path,
+                    attachment.read(),
+                    {"content-type": attachment.content_type}
+                )
+
+                # Get public URL
+                attachment_url = supabase.storage.from_("issue_report").get_public_url(unique_path)['publicUrl']
+
+            created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Insert into Supabase table
+            supabase.table("issue_reports").insert({
+                "user_id": user_id,
+                "name": name,
+                "email": email,
+                "issue_type": issue_type,
+                "message": message,
+                "attachment_url": attachment_url,
+                "created_at": created_at
+            }).execute()
+
+            return redirect(url_for("support_success")) 
         
-        attachment_url = None
+        except Exception as e:
+            # Print error for debugging
+            print("Error submitting report:", e)
+            return "Internal Server Error: Could not submit report."
 
-        if attachment and attachment.filename and allowed_file(attachment.filename):
-            filename = secure_filename(attachment.filename)
-            unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
-
-            # Upload to Supabase storage
-            supabase.storage.from_("issue_report").upload(
-                unique_path,
-                attachment.read(),
-                {"content-type": attachment.content_type}
-            )
-
-            # Get public URL
-            attachment_url = supabase.storage.from_("issue_report").get_public_url(unique_path)['publicUrl']
-
-        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        # Insert into Supabase table
-        supabase.table("issue_reports").insert({
-            "user_id": user_id,
-            "name": name,
-            "email": email,
-            "issue_type": issue_type,
-            "message": message,
-            "attachment_url": attachment_url,
-            "created_at": created_at
-        }).execute()
-
-        return redirect(url_for("support_success")) 
-        
     return render_template("report.html")
 '''
 # ------------------ Reports route (fixed single copy) ------------------
