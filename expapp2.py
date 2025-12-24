@@ -428,63 +428,7 @@ def modify_expense(id):
             return redirect(request.url)
 
     return render_template("modify.html", expense=expense)
-
-# -------------------------- Reports --------------------------------
-@app.route('/report', methods=["GET", "POST"])
-def report(): 
-    # safely get user_id from session
-    user_id = session.get("user_id")
-    if not user_id:
-        return "Error: User not logged in."
-
-    if request.method == "POST": 
-        try:
-            name = request.form.get("name") 
-            email = request.form.get("email") 
-            issue_type = request.form.get("issue_type") 
-            message = request.form.get("message") 
-            attachment = request.files.get("attachment")
-            screenshot_url = None  # updated to match table column
-
-            # Handle attachment upload
-            if attachment and attachment.filename and allowed_file(attachment.filename):
-                filename = secure_filename(attachment.filename)
-                unique_path = f"{user_id}/{uuid.uuid4()}_{filename}"
-
-                # Upload to Supabase storage
-                supabase.storage.from_("issue_report").upload(
-                    unique_path,
-                    attachment.read(),
-                    {"content-type": attachment.content_type}
-                )
-
-                # Get public URL
-                screenshot_url = supabase.storage.from_("issue_report").get_public_url(unique_path)['publicUrl']
-
-            created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Insert into Supabase table
-            supabase.table("issue_reports").insert({
-                "user_id": user_id,
-                "name": name,
-                "email": email,
-                "issue_type": issue_type,
-                "message": message,
-                "screenshot_url": screenshot_url,  # updated column
-                "created_at": created_at
-            }).execute()
-
-            return redirect(url_for("support_success")) 
-        
-        except Exception as e:
-            # Print error for debugging
-            print("Error submitting report:", e)
-            return "Internal Server Error: Could not submit report."
-
-    return render_template("report.html")
-
-
-'''
+    
 # ------------------ Reports route (fixed single copy) ------------------
 @app.route('/report', methods=["GET", "POST"])
 def report(): 
@@ -545,7 +489,7 @@ def support_success():
         return render_template("support_success.html")
     else:
         return "Report submitted successfully! We will contact you soon."
-
+'''
 # ------------------ Dashboard & other UI routes ------------------
 @app.route("/dashboard")
 @login_required
