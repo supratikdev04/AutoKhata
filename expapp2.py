@@ -455,10 +455,12 @@ def support_success():
 # ------------------ Support success page ------------------
 @app.route("/support_success")
 def support_success():
-    # simple success page (you can replace with a template)
-    if os.path.exists("templates/support_success.html") 
-        else "Report submitted successfully! We will contact you soon."
-return render_template("support_success.html") 
+    template_path = "templates/support_success.html"
+    if os.path.exists(template_path):
+        return render_template("support_success.html")
+    else:
+        return "Report submitted successfully! We will contact you soon."
+
 # ------------------ Dashboard & other UI routes ------------------
 @app.route("/dashboard")
 @login_required
