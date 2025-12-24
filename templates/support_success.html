@@ -45,6 +45,40 @@
         <i class="bi bi-speedometer2"></i> Back to Main Page
     </a>
 </div>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+  const supabaseUrl = 'YOUR_SUPABASE_URL'
+  const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
+  const form = document.getElementById('issueForm')
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()  // prevent page reload
+
+    const selectedIssue = document.getElementById('issueType').value
+    const issueText = document.getElementById('issueDescription').value
+    const user = supabase.auth.user() // or get the logged-in user however you handle auth
+
+    // Insert into Supabase
+    const { error } = await supabase
+      .from("issue_reports")
+      .insert([{
+        user_id: user?.id,
+        email: user?.email,
+        page_url: window.location.href,
+        issue_type: selectedIssue,
+        description: issueText
+      }]);
+
+    if (error) {
+      alert("Failed to submit issue")
+    } else {
+      alert("Issue reported successfully")
+      form.reset()
+    }
+  })
+</script>
 </body>
 </html>
