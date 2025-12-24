@@ -41,7 +41,7 @@
         Thank you for reporting the issue. Our support team will review your request and get back to you shortly.
     </p>
 
-    <a href="/exptracker3" class="btn btn-primary btn-rounded px-4 mt-3">
+    <a href="/" class="btn btn-primary btn-rounded px-4 mt-3">
         <i class="bi bi-speedometer2"></i> Back to Main Page
     </a>
 </div>
@@ -72,8 +72,8 @@
         description: issueText
       }]);
 
-    if (error) {
-      alert("Failed to submit issue")
+    if (!error) {
+      window.location.href = "/report-submitted.html";
     } else {
       alert("Issue reported successfully")
       form.reset()
