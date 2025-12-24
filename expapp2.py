@@ -447,7 +447,7 @@ def report():
         return redirect(url_for("support_success")) 
         
     return render_template("report.html")
-    
+'''    
 @app.route("/support_success") 
 def support_success(): 
     return render_template("support_success.html")
@@ -456,9 +456,9 @@ def support_success():
 @app.route("/support_success")
 def support_success():
     # simple success page (you can replace with a template)
-    return render_template("support_success.html") if os.path.exists("templates/support_success.html") else "Report submitted successfully! We will contact you soon."
-'''
-
+    if os.path.exists("templates/support_success.html") 
+        else "Report submitted successfully! We will contact you soon."
+return render_template("support_success.html") 
 # ------------------ Dashboard & other UI routes ------------------
 @app.route("/dashboard")
 @login_required
