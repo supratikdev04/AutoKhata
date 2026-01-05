@@ -332,3 +332,12 @@ input, select, textarea, button {
     font-size: 14px;
     font-weight: 500;
 }
+
+ .attachment {
+  /* optional: make size consistent with text fields */
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
