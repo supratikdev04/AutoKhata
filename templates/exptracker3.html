@@ -299,8 +299,9 @@
 
                         <td>
                             {% if item.attachment_url %}
-                            <button class="btn btn-outline-primary btn-sm px-3"
-                                    onclick="openAttachment('{{ item.attachment_url }}')">
+                            <button class="btn btn-outline-primary btn-sm btn-attachment"
+                                onclick="openAttachment('{{ item.attachment_url }}')"
+                                title="View Attachment">
                                 <i class="bi bi-paperclip"></i>
                             </button>
                             {% else %}-{% endif %}
