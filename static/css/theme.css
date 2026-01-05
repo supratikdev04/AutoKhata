@@ -347,11 +347,11 @@ input, select, textarea, button {
 /* Attachment icon button */
 .table td .btn-attachment {
     width: 32px;
-    padding: 0;
+    padding: 10px;
 }
 
-/* Fix Bootstrap btn-sm text centering */
+/* Fix Bootstrap btn-sm text centering *
 .table td .btn-sm {
     line-height: 1;
-}
+}*/
 
