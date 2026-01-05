@@ -342,7 +342,6 @@ input, select, textarea, button {
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    margin-top: 8px;
 }
 
 /* Attachment icon button */
