@@ -333,11 +333,25 @@ input, select, textarea, button {
     font-weight: 500;
 }
 
- .attachment {
-  /* optional: make size consistent with text fields */
-  height: 32px;
-  width: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ================= TABLE ACTION BUTTON ALIGNMENT ================= */
+
+/* Ensure all table buttons align perfectly */
+.table td .btn {
+    height: 32px;                  /* SAME height */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
 }
+
+/* Attachment icon button */
+.table td .btn-attachment {
+    width: 32px;
+    padding: 0;
+}
+
+/* Fix Bootstrap btn-sm text centering */
+.table td .btn-sm {
+    line-height: 1;
+}
+
