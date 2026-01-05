@@ -342,12 +342,14 @@ input, select, textarea, button {
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+    margin-top: 6px;
 }
 
 /* Attachment icon button */
 .table td .btn-attachment {
     width: 32px;
     padding: 10px;
+    margin-top: 6px;
 }
 
 /* Fix Bootstrap btn-sm text centering *
