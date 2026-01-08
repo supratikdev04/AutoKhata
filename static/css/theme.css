@@ -260,6 +260,7 @@ input, select, textarea, button {
     gap: 6px;
     white-space: nowrap;
     transition: all 0.2s ease;
+    justify-content: center;
 }
 
 /* Apply */
