@@ -101,7 +101,7 @@ body {
   background-color: var(--input-bg) !important; /* light */
   border: 1px solid var(--input-border) !important; /* #6EA2B3 */
   color: var(--text-color) !important;
-  padding-right: 26px;
+  padding-right: 22px;
 }
 /*.filter-item select {
     appearance: none;
