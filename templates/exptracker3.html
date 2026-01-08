@@ -227,6 +227,7 @@
             </div-->
                 <!-- Filter Buttons -->
             <div class="filter-actions">
+                <div class="center-buttons">
                 <button type="submit" class="btn-apply">
                     <i class="bi bi-funnel"></i> Apply
                 </button>
@@ -236,7 +237,7 @@
                         from_date=request.args.get('from_date'),
                         to_date=request.args.get('to_date'),
                         page=current_page
-                    ) }}" class="btn-clear" class="center-buttons">
+                    ) }}" class="btn-clear" >
                         Clear Category
                     </a>
                 {% endif %}
@@ -247,6 +248,7 @@
                     </a>
                 {% endif %}
             </div>
+        </div>
         </form>
 
              <!--DELETE CONFIRMATION MODAL-->
