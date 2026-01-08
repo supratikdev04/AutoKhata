@@ -312,6 +312,19 @@ input, select, textarea, button {
     align-items: center; /* center text/icon inside button */
     justify-content: center;
 }
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.center-buttons {
+  width: 100%;          /* Take full row */
+  display: flex;
+  justify-content: center;  /* Horizontally center buttons */
+  gap: 10px;            /* Space between buttons */
+  margin-top: 10px;     /* Optional spacing from row above */
+}
 /* ================= POPUP ================= */
 .popup-overlay {
     position: fixed;
