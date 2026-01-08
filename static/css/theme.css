@@ -269,6 +269,7 @@ input, select, textarea, button {
     background: var(--accent);
     border: none;
     color: var(--white);
+    
 }
 
 .btn-apply:hover {
@@ -281,6 +282,8 @@ input, select, textarea, button {
     color: var(--accent);
     border-radius: 16px;
     background: transparent;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .btn-clear:hover {
@@ -293,6 +296,8 @@ input, select, textarea, button {
     color: var(--text-color);
     border-radius: 16px;
     background: transparent;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .btn-reset:hover {
