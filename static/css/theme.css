@@ -21,6 +21,10 @@
 
   /* Utility */
   --white: #FFFFFF;
+  /* Shadow */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 6px 14px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 /* ------------------------- Body ------------------------- */
 body {
@@ -51,6 +55,7 @@ body {
   border-radius: 14px;
   border: 1px solid var(--card-border); /* #49769F */
   box-shadow: 0 6px 16px rgba(0, 29, 57, 0.15);
+  box-shadow: var(--shadow-md) !important;
 }
 /* Card Header */
 .card-header {
@@ -93,7 +98,14 @@ body {
   background-color: var(--primary-blue);
   color: var(--white);
 }
+.btn {
+  box-shadow: var(--shadow-sm);
+}
 
+.btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
 /* ------------------------- Forms ------------------------- */
 .form-control,
 .form-select {
@@ -385,4 +397,19 @@ input, select, textarea, button {
 .table td .btn-sm {
     line-height: 1;
 }*/
-
+/* ============ input and select ======== */
+input, select, textarea {
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.12),
+              var(--shadow-sm);
+}
+/* ========= dropdown ============= */ 
+.dropdown-menu,
+.modal-content {
+  box-shadow: var(--shadow-lg);
+}
+/* ============= glow ========= */
+input:focus,
+select:focus {
+  box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.35),
+              var(--shadow-md);
+}
