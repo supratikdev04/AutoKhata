@@ -165,6 +165,7 @@ document.querySelector("input[name='note']").addEventListener("input", function 
         .replace(/0TAL/g, 'TOTAL')
         .replace(/T0TAL/g, 'TOTAL')
         .replace(/AM0UNT/g, 'AMOUNT');
+        .replace(/(\d),(\d{3})/g, '$1$2'); 
 
     const lines = text
         .toUpperCase()
@@ -179,12 +180,13 @@ document.querySelector("input[name='note']").addEventListener("input", function 
         'PAYABLE',
         'AMOUNT',
         'CASH',
-        'SALE'
     ];
 
-    const CURRENCY_WORDS = ['₹', 'RS', 'INR'];
+    ///const CURRENCY_WORDS = ['₹', 'RS', 'INR'];
+    const CURRENCY_RE = /₹|\bRS\.?\b|\bINR\b/;
 
-    const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|QTY|RATE|PRICE/;
+    const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL\s*NO|QTY|RATE|PER\s*UNIT|PRICE|DISCOUNT|\bMRP\b/;
+    ///const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL NO|QTY|RATE|PRICE/;
 
     let candidates = [];
 
@@ -197,7 +199,8 @@ document.querySelector("input[name='note']").addEventListener("input", function 
         if (!numbers) continue;
 
         const hasTotalWord = TOTAL_WORDS.some(w => line.includes(w));
-        const hasCurrencyWord = CURRENCY_WORDS.some(w => line.includes(w));
+        const hasCurrencyWord = CURRENCY_RE.test(line);
+        ///const hasCurrencyWord = CURRENCY_WORDS.some(w => line.includes(w));
 
         numbers.forEach(n => {
             const value = Number(n);
@@ -212,26 +215,43 @@ document.querySelector("input[name='note']").addEventListener("input", function 
         });
     }
 
-    // 1️⃣ Prefer amounts near currency words
-    const currencyCandidates = candidates.filter(c => c.currency);
-    if (currencyCandidates.length) {
-        // Pick the bottom-most one
-        currencyCandidates.sort((a, b) => b.index - a.index);
-        return currencyCandidates[0].value.toFixed(2);
+    
+    // Priority 1 — TOTAL keyword lines with currency symbol
+    const bestBoth = candidates.filter(c => c.strong && c.currency);
+    if (bestBoth.length) {
+        bestBoth.sort((a, b) => b.index - a.index);
+        return bestBoth[0].value.toFixed(2);
     }
-
-    // 2️⃣ Prefer strong TOTAL lines
+        ///1️⃣ Prefer amounts near currency words
+   //const currencyCandidates = candidates.filter(c => c.currency);
+    //if (currencyCandidates.length) {
+        // Pick the bottom-most one
+    //    currencyCandidates.sort((a, b) => b.index - a.index);
+     //   return currencyCandidates[0].value.toFixed(2);
+    //}///-->
+// Priority 2 — TOTAL keyword lines only
     const strong = candidates.filter(c => c.strong);
     if (strong.length) {
-        strong.sort((a, b) => b.index - a.index);
+        strong.sort((a, b) => b.value - a.value); // pick largest on TOTAL lines
         return strong[0].value.toFixed(2);
     }
-
-    // 3️⃣ Fallback: bottom-most amount
+        
+    // 2️⃣ Prefer strong TOTAL lines
+   // const strong = candidates.filter(c => c.strong);
+   // if (strong.length) {
+     //   strong.sort((a, b) => b.index - a.index);
+       // return strong[0].value.toFixed(2);
+    //}
+// Fallback — largest amount in the doc (avoids phone numbers / dates)
     if (candidates.length) {
-        candidates.sort((a, b) => b.index - a.index);
+        candidates.sort((a, b) => b.value - a.value);
         return candidates[0].value.toFixed(2);
     }
+    // 3️⃣ Fallback: bottom-most amount
+    //if (candidates.length) {
+      //  candidates.sort((a, b) => b.index - a.index);
+      //  return candidates[0].value.toFixed(2);
+    //}
 
     return null;
 }
@@ -253,7 +273,9 @@ async function scanReceipt() {
     amountInput.value = "";
 
     try {
-        const result = await Tesseract.recognize(file, "eng");
+        const processedBlob = await preprocessImage(fileInput.files[0]);
+        const result = await Tesseract.recognize(file, "eng",{
+            tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,₹:/ '});
         const text = result.data.text;
 
         autoDetectCategory(text);
