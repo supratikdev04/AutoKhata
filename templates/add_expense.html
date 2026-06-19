@@ -156,6 +156,7 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     }
 });
 </script>
+    
 <script>
     function extractAmount(text) {
     if (!text) return null;
@@ -164,7 +165,7 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     text = text
         .replace(/0TAL/g, 'TOTAL')
         .replace(/T0TAL/g, 'TOTAL')
-        .replace(/AM0UNT/g, 'AMOUNT');
+        .replace(/AM0UNT/g, 'AMOUNT')
         .replace(/(\d),(\d{3})/g, '$1$2'); 
 
     const lines = text
@@ -242,6 +243,12 @@ document.querySelector("input[name='note']").addEventListener("input", function 
      //   strong.sort((a, b) => b.index - a.index);
        // return strong[0].value.toFixed(2);
     //}
+    // 3) Lines with a currency symbol, bottom-most
+    const currency = candidates.filter(c => c.currency);
+    if (currency.length) {
+        currency.sort((a, b) => b.index - a.index);
+        return currency[0].value.toFixed(2);
+    }
 // Fallback — largest amount in the doc (avoids phone numbers / dates)
     if (candidates.length) {
         candidates.sort((a, b) => b.value - a.value);
@@ -256,7 +263,114 @@ document.querySelector("input[name='note']").addEventListener("input", function 
     return null;
 }
 </script>
+<!-- ===================== NEW: preprocessImage ===================== -->
 <script>
+// Grayscale + contrast boost before OCR — improves Tesseract accuracy on
+// photos with shadows, low contrast, or uneven lighting.
+function preprocessImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+ 
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Image failed to load"));
+        };
+ 
+        img.onload = () => {
+            try {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+ 
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    const contrasted = gray < 128
+                        ? Math.max(0, gray - 40)
+                        : Math.min(255, gray + 40);
+                    data[i] = data[i + 1] = data[i + 2] = contrasted;
+                }
+                ctx.putImageData(imageData, 0, 0);
+                URL.revokeObjectURL(url);
+ 
+                // FIX: canvas.toBlob() can return null — must be checked,
+                // otherwise Tesseract gets called with null and throws.
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error("canvas.toBlob() returned null"));
+                    }
+                }, "image/png");
+ 
+            } catch (err) {
+                URL.revokeObjectURL(url);
+                reject(err);
+            }
+        };
+ 
+        img.src = url;
+    });
+}
+</script>
+<script>
+async function scanReceipt() {
+    const fileInput = document.getElementById("receiptInput");
+ 
+    if (!fileInput || !fileInput.files.length) {
+        showPopup("Please upload or capture a receipt");
+        return;
+    }
+ 
+    const amountInput = document.getElementById("amount");
+    const noteInput = document.getElementById("note");
+ 
+    noteInput.value = "Scanning receipt...";
+    amountInput.value = "";
+ 
+    try {
+        // FIX: fall back to the raw file if preprocessing fails for any reason,
+        // instead of letting one error kill the whole scan.
+        let imageSource = fileInput.files[0];
+        try {
+            imageSource = await preprocessImage(fileInput.files[0]);
+        } catch (preprocErr) {
+            console.warn("Preprocessing failed, using raw image:", preprocErr);
+        }
+ 
+        // FIX: removed tessedit_char_whitelist — not a valid option for the
+        // simple Tesseract.recognize() call, it was silently ignored before
+        // but kept as dead weight.
+        const result = await Tesseract.recognize(imageSource, "eng");
+        const text = result.data.text;
+ 
+        console.log("OCR raw output:\n", text);
+ 
+        autoDetectCategory(text);
+        const amount = extractAmount(text);
+ 
+        if (amount) {
+            amountInput.value = amount;
+            noteInput.value = "Scanned from receipt";
+            showPopup("Receipt scanned successfully");
+        } else {
+            noteInput.value = "Total not detected";
+            showPopup("Could not detect total amount");
+        }
+ 
+    } catch (error) {
+        console.error("Scan error:", error);
+        noteInput.value = "";
+        showPopup("Receipt scan failed: " + error.message);
+    }
+}
+</script>
+
+<!--script>
 async function scanReceipt() {
     const fileInput = document.getElementById("receiptInput");
 
@@ -265,7 +379,7 @@ async function scanReceipt() {
         return;
     }
 
-    const file = fileInput.files[0];
+    //const file = fileInput.files[0];
     const amountInput = document.getElementById("amount");
     const noteInput = document.getElementById("note");
 
@@ -295,7 +409,7 @@ async function scanReceipt() {
         showPopup("Receipt scan failed");
     }
 }
-</script>
+</script-->
 <script>
 function autoDetectCategory(text) {
     if (!text) return;
