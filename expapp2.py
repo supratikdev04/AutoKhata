@@ -351,101 +351,7 @@ def delete_row(id):
 
 @app.route("/modify/<int:id>", methods=["GET", "POST"])
 @login_required
-def modify_expense(id):
-    user_id = session["user_id"]
-    # Fetch the expense
-    result = (
-        supabase.table("expenses")
-        .select("*")
-        .eq("id", id)
-        .eq("user_id", user_id)
-        .execute()
-    )
-    if not result.data:
-        flash("Expense not found.", "warning")
-        return redirect(url_for("exptracker3"))
-    expense = result.data[0]
-    attachment_url = expense.get("attachment_url")
 
-    if request.method == "POST":
-        # --- Form data ---
-        new_category = request.form.get("category")
-        new_subcategory = request.form.get("subcategory")
-        new_note = request.form.get("note")
-        remove_attachment = request.form.get("remove_attachment")
-        new_attachment = request.files.get("attachment")
-
-        # --- FIX 1: validate amount before touching storage or DB ---
-        raw_amount = request.form.get("amount")
-        try:
-            new_amount = float(raw_amount)
-        except (TypeError, ValueError):
-            flash("Amount must be a valid number.", "warning")
-            return redirect(request.url)
-
-        # --- FIX 2: reject disallowed file types instead of failing silently ---
-        if new_attachment and new_attachment.filename:
-            if not allowed_file(new_attachment.filename):
-                flash("That file type isn't supported.", "warning")
-                return redirect(request.url)
-
-        uploaded_path = None     # tracks newly-uploaded file, for rollback on DB failure
-        old_attachment_url = attachment_url
-        final_attachment_url = attachment_url
-
-        try:
-            # --- Upload new attachment (old one is NOT deleted yet) ---
-            if new_attachment and new_attachment.filename:
-                filename = secure_filename(new_attachment.filename)
-                uploaded_path = f"{user_id}/{uuid.uuid4()}_{filename}"
-                supabase.storage.from_("expense-attachments").upload(
-                    uploaded_path,
-                    new_attachment.read(),
-                    {"content-type": new_attachment.content_type or "application/octet-stream"}
-                )
-                final_attachment_url = supabase.storage.from_("expense-attachments").get_public_url(uploaded_path)
-
-            # --- Or mark for removal (old one is NOT deleted yet) ---
-            elif remove_attachment:
-                final_attachment_url = None
-
-            # --- Update expense row first ---
-            supabase.table("expenses").update({
-                "category": new_category,
-                "subcategory": new_subcategory,
-                "amount": new_amount,
-                "note": new_note,
-                "attachment_url": final_attachment_url
-            }).eq("id", id).eq("user_id", user_id).execute()
-
-            # --- FIX 4: only delete the OLD attachment after the DB update succeeds ---
-            # (new file replaced it, or it was explicitly removed)
-            if old_attachment_url and (uploaded_path or remove_attachment):
-                try:
-                    old_path = old_attachment_url.split("/storage/v1/object/public/expense-attachments/")[-1]
-                    supabase.storage.from_("expense-attachments").remove([old_path])
-                except Exception as e:
-                    print(f"Failed to delete old attachment: {e}")
-
-            flash("Expense updated successfully!", "success")
-            return redirect(url_for("exptracker3"))
-
-        except Exception as e:
-            # --- FIX 4 (rollback): DB update failed after a new file was uploaded —
-            # delete the orphaned upload so storage doesn't accumulate unreferenced files ---
-            if uploaded_path:
-                try:
-                    supabase.storage.from_("expense-attachments").remove([uploaded_path])
-                except Exception as cleanup_err:
-                    print(f"Failed to clean up orphaned upload: {cleanup_err}")
-
-            import traceback
-            print(traceback.format_exc())
-            flash(f"Failed to update expense: {e}", "danger")
-            return redirect(request.url)
-
-    return render_template("modify.html", expense=expense)
-'''
 def modify_expense(id):
     user_id = session["user_id"]
 
@@ -522,8 +428,7 @@ def modify_expense(id):
             flash(f"Failed to update expense: {e}", "danger")
             return redirect(request.url)
 
-    return render_template("modify.html", expense=expense)
- '''   
+    return render_template("modify.html", expense=expense)  
 # ------------------ Reports route (fixed single copy) ------------------
 @app.route('/report', methods=["GET", "POST"])
 def report(): 
