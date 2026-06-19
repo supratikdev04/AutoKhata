@@ -338,8 +338,91 @@ function detectCategory(text) {
     return null;
 }
 </script>
+<!------button triggered scan ------>
+<script>
+// Clear any stale status message when a new file is picked, so an old
+// "Detected..." message doesn't linger after swapping the attachment.
+document.getElementById("attachmentInput").addEventListener("change", () => {
+    const statusEl = document.getElementById("scanStatus");
+    statusEl.textContent = "";
+    statusEl.classList.remove("text-success", "text-danger");
+});
  
-<!-- ===================== NEW: auto-scan on attach ===================== -->
+async function scanAttachment() {
+    const fileInput = document.getElementById("attachmentInput");
+    const statusEl = document.getElementById("scanStatus");
+ 
+    if (!fileInput.files.length) {
+        statusEl.textContent = "Please attach an image first";
+        statusEl.classList.remove("text-success");
+        statusEl.classList.add("text-danger");
+        return;
+    }
+ 
+    const file = fileInput.files[0];
+ 
+    if (!file.type.startsWith("image/")) {
+        statusEl.textContent = "OCR only works on image files, not PDFs";
+        statusEl.classList.remove("text-success");
+        statusEl.classList.add("text-danger");
+        return;
+    }
+ 
+    statusEl.textContent = "Scanning receipt...";
+    statusEl.classList.remove("text-success", "text-danger");
+ 
+    try {
+        // Fall back to the raw file if preprocessing fails for any reason
+        let imageSource = file;
+        try {
+            imageSource = await preprocessImage(file);
+        } catch (preprocErr) {
+            console.warn("Preprocessing failed, using raw image:", preprocErr);
+        }
+ 
+        const result = await Tesseract.recognize(imageSource, "eng");
+        const text = result.data.text;
+ 
+        console.log("OCR raw output:\n", text);
+ 
+        const amount = extractAmount(text);
+        const category = detectCategory(text);
+ 
+        if (amount) {
+            document.getElementById("amount").value = amount;
+        }
+        if (category) {
+            document.getElementById("category").value = category;
+            updateSubcategories();
+        }
+ 
+        if (amount || category) {
+            const parts = [];
+            if (amount) parts.push("amount ₹" + amount);
+            if (category) parts.push("category " + category);
+            statusEl.textContent = "Detected " + parts.join(" and ");
+            statusEl.classList.remove("text-danger");
+            statusEl.classList.add("text-success");
+        } else {
+            statusEl.textContent = "Could not detect amount or category from this image";
+            statusEl.classList.remove("text-success");
+            statusEl.classList.add("text-danger");
+        }
+ 
+        // Amount/category are set programmatically and won't fire a native
+        // input event on their own — re-check changed state so Save reflects
+        // the detected values (file selection already enables it too).
+        form.dispatchEvent(new Event("input", { bubbles: true }));
+ 
+    } catch (error) {
+        console.error("Scan error:", error);
+        statusEl.textContent = "Receipt scan failed: " + error.message;
+        statusEl.classList.remove("text-success");
+        statusEl.classList.add("text-danger");
+    }
+}
+</script>
+<!-- ===================== NEW: auto-scan on attach ===================== ->
 <script>
 document.getElementById("attachmentInput").addEventListener("change", scanAttachment);
  
@@ -412,7 +495,7 @@ async function scanAttachment(e) {
         statusEl.classList.add("text-danger");
     }
 }
-</script>
+</script-->
 </body>
 </html>
 
