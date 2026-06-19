@@ -93,7 +93,7 @@
 </div>
     
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const subcategories = {
     Food: ["Breakfast", "Lunch", "Dinner", "Snacks", "Grocery", "Other"],
@@ -175,8 +175,244 @@ function openAttachment(url) {
     new bootstrap.Modal(document.getElementById("attachmentModal")).show();
 }
 </script>
-
-
+<!-- ===================== NEW: preprocessImage ===================== -->
+<script>
+// Grayscale + contrast boost before OCR — improves Tesseract accuracy on
+// photos with shadows, low contrast, or uneven lighting.
+function preprocessImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+ 
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Image failed to load"));
+        };
+ 
+        img.onload = () => {
+            try {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+ 
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    const contrasted = gray < 128
+                        ? Math.max(0, gray - 40)
+                        : Math.min(255, gray + 40);
+                    data[i] = data[i + 1] = data[i + 2] = contrasted;
+                }
+                ctx.putImageData(imageData, 0, 0);
+                URL.revokeObjectURL(url);
+ 
+                // canvas.toBlob() can return null — must be checked, otherwise
+                // Tesseract gets called with null and throws.
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error("canvas.toBlob() returned null"));
+                    }
+                }, "image/png");
+ 
+            } catch (err) {
+                URL.revokeObjectURL(url);
+                reject(err);
+            }
+        };
+ 
+        img.src = url;
+    });
+}
+</script>
+ 
+<!-- ===================== NEW: extractAmount ===================== -->
+<script>
+function extractAmount(text) {
+    if (!text) return null;
+ 
+    // Normalize common OCR mistakes, and strip thousand-separator commas
+    // ("1,234.00" would otherwise split into "1" and "234.00")
+    text = text
+        .replace(/0TAL/g, 'TOTAL')
+        .replace(/T0TAL/g, 'TOTAL')
+        .replace(/AM0UNT/g, 'AMOUNT')
+        .replace(/(\d),(\d{3})/g, '$1$2');
+ 
+    const lines = text
+        .toUpperCase()
+        .split('\n')
+        .map(l => l.trim())
+        .filter(Boolean);
+ 
+    const TOTAL_WORDS = ['TOTAL', 'GRAND TOTAL', 'NET TOTAL', 'PAYABLE', 'NET PAYABLE', 'CASH'];
+ 
+    // Word-boundary regex so "RS" doesn't match inside words like GROCERIES
+    const CURRENCY_RE = /₹|\bRS\.?\b|\bINR\b/;
+ 
+    const IGNORE = /GST|CGST|SGST|TAX|PHONE|MOBILE|GSTIN|INVOICE|BILL\s*NO|QTY|RATE|PER\s*UNIT|PRICE|DISCOUNT|\bMRP\b/;
+ 
+    let candidates = [];
+ 
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+ 
+        if (IGNORE.test(line)) continue;
+ 
+        const numbers = line.match(/\d+(\.\d{1,2})?/g);
+        if (!numbers) continue;
+ 
+        const hasTotalWord = TOTAL_WORDS.some(w => line.includes(w));
+        const hasCurrencyWord = CURRENCY_RE.test(line);
+ 
+        numbers.forEach(n => {
+            const value = Number(n);
+            if (value > 1 && value < 1000000) {
+                candidates.push({
+                    value,
+                    index: i,
+                    strong: hasTotalWord,
+                    currency: hasCurrencyWord
+                });
+            }
+        });
+    }
+ 
+    // 1) Best: a TOTAL-keyword line that also has a currency symbol
+    const bestBoth = candidates.filter(c => c.strong && c.currency);
+    if (bestBoth.length) {
+        bestBoth.sort((a, b) => b.index - a.index);
+        return bestBoth[0].value.toFixed(2);
+    }
+ 
+    // 2) TOTAL-keyword lines — pick the largest value on those lines
+    const strong = candidates.filter(c => c.strong);
+    if (strong.length) {
+        strong.sort((a, b) => b.value - a.value);
+        return strong[0].value.toFixed(2);
+    }
+ 
+    // 3) Lines with a currency symbol, bottom-most
+    const currency = candidates.filter(c => c.currency);
+    if (currency.length) {
+        currency.sort((a, b) => b.index - a.index);
+        return currency[0].value.toFixed(2);
+    }
+ 
+    // 4) Fallback — largest number anywhere
+    if (candidates.length) {
+        candidates.sort((a, b) => b.value - a.value);
+        return candidates[0].value.toFixed(2);
+    }
+ 
+    return null;
+}
+</script>
+ 
+<!-- ===================== NEW: detectCategory ===================== -->
+<script>
+// Returns a category string matching this page's <select> options, or null
+// if nothing matches (so we don't override a category the user already set).
+function detectCategory(text) {
+    if (!text) return null;
+ 
+    const content = text.toUpperCase();
+ 
+    if (/ELECTRICITY|POWER|\bEB\b|WATER|INTERNET|BROADBAND|WIFI|MOBILE|RECHARGE|RENT/.test(content)) {
+        return "Bills";
+    }
+    if (/RESTAURANT|HOTEL|FOOD|CAFE|MEAL|BREAKFAST|LUNCH|DINNER|SNACK|GROCERY/.test(content)) {
+        return "Food";
+    }
+    if (/PETROL|DIESEL|FUEL|CAB|TAXI|UBER|OLA|BUS|TRAIN|FLIGHT|METRO|PARKING/.test(content)) {
+        return "Transport";
+    }
+    if (/AMAZON|FLIPKART|SHOPPING|STORE|MALL|CLOTHES|ELECTRONICS/.test(content)) {
+        return "Shopping";
+    }
+ 
+    return null;
+}
+</script>
+ 
+<!-- ===================== NEW: auto-scan on attach ===================== -->
+<script>
+document.getElementById("attachmentInput").addEventListener("change", scanAttachment);
+ 
+async function scanAttachment(e) {
+    const fileInput = e.target;
+    const statusEl = document.getElementById("scanStatus");
+ 
+    if (!fileInput.files.length) {
+        statusEl.textContent = "";
+        return;
+    }
+ 
+    const file = fileInput.files[0];
+ 
+    // OCR only works on images — skip silently for PDFs
+    if (!file.type.startsWith("image/")) {
+        statusEl.textContent = "PDF attached — amount/category won't be auto-detected";
+        statusEl.classList.remove("text-success", "text-danger");
+        return;
+    }
+ 
+    statusEl.textContent = "Scanning receipt...";
+    statusEl.classList.remove("text-success", "text-danger");
+ 
+    try {
+        // Fall back to the raw file if preprocessing fails for any reason
+        let imageSource = file;
+        try {
+            imageSource = await preprocessImage(file);
+        } catch (preprocErr) {
+            console.warn("Preprocessing failed, using raw image:", preprocErr);
+        }
+ 
+        const result = await Tesseract.recognize(imageSource, "eng");
+        const text = result.data.text;
+ 
+        console.log("OCR raw output:\n", text);
+ 
+        const amount = extractAmount(text);
+        const category = detectCategory(text);
+ 
+        if (amount) {
+            document.getElementById("amount").value = amount;
+        }
+        if (category) {
+            document.getElementById("category").value = category;
+            updateSubcategories();
+        }
+ 
+        if (amount || category) {
+            const parts = [];
+            if (amount) parts.push("amount ₹" + amount);
+            if (category) parts.push("category " + category);
+            statusEl.textContent = "Detected " + parts.join(" and ");
+            statusEl.classList.add("text-success");
+        } else {
+            statusEl.textContent = "Could not detect amount or category from this image";
+            statusEl.classList.add("text-danger");
+        }
+ 
+        // Amount/category are set programmatically and won't fire a native
+        // input event on their own — re-check the changed state so Save
+        // reflects the detected values too (file selection already enables
+        // it, but this keeps the check accurate either way).
+        form.dispatchEvent(new Event("input", { bubbles: true }));
+ 
+    } catch (error) {
+        console.error("Scan error:", error);
+        statusEl.textContent = "Receipt scan failed: " + error.message;
+        statusEl.classList.add("text-danger");
+    }
+}
+</script>
 </body>
 </html>
 
