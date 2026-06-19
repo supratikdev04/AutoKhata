@@ -83,7 +83,10 @@
                     </div>
                 {% endif %}
                 <input type="file" name="attachment" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
-
+                <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="scanAttachment()">
+                    📸 Scan Attachment
+                </button>
+                <div id="scanStatus" class="form-text"></div>
                 <button class="btn btn-primary mt-4 w-100" type="submit" id="saveBtn" disabled>Save Changes</button>
                 <a href="/" class="btn btn-secondary mt-3 w-100">Cancel</a>
 
